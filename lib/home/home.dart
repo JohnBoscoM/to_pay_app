@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 
 
-class Home extends StatefulWidget {
-  Home({Key key, this.title}) : super(key: key);
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -20,8 +20,9 @@ class Home extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<Home> {
+class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  int _currenIndex = 0;
 
   void _incrementCounter() {
     setState(() {
@@ -84,35 +85,28 @@ class _MyHomePageState extends State<Home> {
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currenIndex,
+        type: BottomNavigationBarType.fixed,
+        iconSize: 23,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home_rounded),
             label: 'Home',
-            backgroundColor: Colors.red
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.payment_rounded),
+            icon: Icon(Icons.account_balance_wallet_rounded),
             label: 'Budget',
-            backgroundColor: Colors.red
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle_outline_rounded),
-            label: "Add Payment",
-            backgroundColor: Colors.red
-            ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.flag_rounded),
-            label: 'Goals',
-            backgroundColor: Colors.red
-          ),
-           BottomNavigationBarItem(
             icon: Icon(Icons.more_horiz_rounded),
             label: 'More',
-            backgroundColor: Colors.red
           ),
-          
         ],
-      
+        onTap: (index) {
+          setState(() {
+            _currenIndex = index;
+          });
+        },
       ),
     );
   }
