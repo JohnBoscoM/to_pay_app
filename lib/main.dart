@@ -13,11 +13,12 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         
-        primarySwatch: Colors.indigo,
+        primarySwatch: Colors.deepPurple,
     
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'To Pay'),
+      home: HomePage(),
+      
     );
   }
 }
