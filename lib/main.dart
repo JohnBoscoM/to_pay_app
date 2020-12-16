@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './home/home.dart';
+import 'nav/nav.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
     
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(),
+      home: NavPage(),
       
     );
   }

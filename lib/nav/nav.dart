@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:to_pay_app/budget/payments/payments_page.dart';
 
-class HomePage extends StatefulWidget {
+class NavPage extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _NavState createState() => _NavState();
 }
 
-class _HomeState extends State<HomePage> {
+class _NavState extends State<NavPage> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
+  static final List<Widget> _widgetOptions = <Widget>[
+    
+    
     Text(
-      'Index 0: Home',
+      'Index 1: Home',
       style: optionStyle,
     ),
-    Text(
-      'Index 1: Likes',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: Search',
-      style: optionStyle,
-    ),
+    PaymentsPage(),
+   
     Text(
       'Index 3: Profile',
+      style: optionStyle,
+    ),
+    Text(
+      'Index 4: Bosco',
       style: optionStyle,
     ),
   ];
