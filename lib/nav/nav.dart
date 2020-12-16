@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:to_pay_app/budget/payments/addPayment_page.dart';
 import 'package:to_pay_app/budget/payments/payments_page.dart';
+import 'package:to_pay_app/calendar/calendar_page.dart';
 
 class NavPage extends StatefulWidget {
   @override
@@ -12,32 +14,52 @@ class _NavState extends State<NavPage> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static final List<Widget> _widgetOptions = <Widget>[
-    
-    
     Text(
-      'Index 1: Home',
+      'Page 1: Home',
       style: optionStyle,
     ),
     PaymentsPage(),
-   
+    CalendarScreen(),
     Text(
-      'Index 3: Profile',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 4: Bosco',
+      'Page 4: More',
       style: optionStyle,
     ),
   ];
 
-
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home',style: TextStyle(color: Colors.black),),
-        backgroundColor: Colors.white,
-        shadowColor: Colors.black,
+        title: const Text(
+          'To Pay',
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.white24,
+        shadowColor: Colors.white,
+        elevation: 0,
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(right: 40, top: 10),
+            child: Text(
+              "Saldo:",
+              style: TextStyle(
+                  color: Colors.grey[700],
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600),
+            ),
+          ),
+
+          // IconButton(
+          //   icon: Icon(
+          //     Icons.settings_outlined,
+          //     size: 27,
+          //     color: Colors.black,
+
+          //   ),
+          // onPressed: () {
+          // do something
+          //  },
+        ],
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
@@ -64,7 +86,7 @@ class _NavState extends State<NavPage> {
                   GButton(
                     icon: Icons.account_balance_wallet_outlined,
                     text: 'Budget',
-                  ),     
+                  ),
                   GButton(
                     icon: Icons.calendar_today_outlined,
                     text: 'Calendar',
@@ -82,11 +104,17 @@ class _NavState extends State<NavPage> {
                 }),
           ),
         ),
-        
       ),
-      
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          AddPaymentsPage();
+        },
+      ),
     );
-    
   }
 }
 
@@ -138,19 +166,19 @@ class ThirdScreen extends StatelessWidget {
 //         child: Icon(Icons.add),
 //       ),
 
- // bottomNavigationBar: CurvedNavigationBar( 
-      //   backgroundColor: Colors.red,
-      //   buttonBackgroundColor: Colors.white,
-      //   height: 50,
-      //   items: <Widget>[
-      //     Icon(Icons.home_outlined, size: 22, color: Colors.black),
-      //     Icon(Icons.account_balance_wallet_outlined, size: 22, color: Colors.black),
-      //     Icon(Icons.calendar_today_outlined, size: 22, color: Colors.black),
-      //     Icon(Icons.menu, size: 22, color: Colors.black),
-      //     //Icon(Icons.menu, size: 25, color: Colors.black)
-      //   ],
-      //   animationDuration: Duration(milliseconds: 200),
-      //   onTap: (index) {
+// bottomNavigationBar: CurvedNavigationBar(
+//   backgroundColor: Colors.red,
+//   buttonBackgroundColor: Colors.white,
+//   height: 50,
+//   items: <Widget>[
+//     Icon(Icons.home_outlined, size: 22, color: Colors.black),
+//     Icon(Icons.account_balance_wallet_outlined, size: 22, color: Colors.black),
+//     Icon(Icons.calendar_today_outlined, size: 22, color: Colors.black),
+//     Icon(Icons.menu, size: 22, color: Colors.black),
+//     //Icon(Icons.menu, size: 25, color: Colors.black)
+//   ],
+//   animationDuration: Duration(milliseconds: 200),
+//   onTap: (index) {
 
-      //   },
-      // ),
+//   },
+// ),
