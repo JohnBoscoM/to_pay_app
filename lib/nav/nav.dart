@@ -31,7 +31,7 @@ class _NavState extends State<NavPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'To Pay',
+          'My Budget',
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.white24,
@@ -41,7 +41,7 @@ class _NavState extends State<NavPage> {
           Padding(
             padding: EdgeInsets.only(right: 40, top: 10),
             child: Text(
-              "Saldo:",
+              "Balance:",
               style: TextStyle(
                   color: Colors.grey[700],
                   fontSize: 13,
@@ -76,7 +76,7 @@ class _NavState extends State<NavPage> {
                 activeColor: Colors.white,
                 iconSize: 24,
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                duration: Duration(milliseconds: 200),
+                duration: Duration(milliseconds: 400),
                 tabBackgroundColor: Colors.grey[800],
                 tabs: [
                   GButton(
@@ -93,7 +93,7 @@ class _NavState extends State<NavPage> {
                   ),
                   GButton(
                     icon: Icons.more_horiz_outlined,
-                    text: 'More',
+                    text: 'Menu',
                   ),
                 ],
                 selectedIndex: _selectedIndex,

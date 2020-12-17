@@ -23,32 +23,52 @@ class _PaymentsPageState extends State<PaymentsPage> {
                 children: <Widget>[
                   new CheckboxListTile(
                       isThreeLine: false,
-                      activeColor: Colors.grey[700],
+                      activeColor: Colors.red,
+                    
                       dense: true,
                       //font change
-                      title: new Text(
+                      contentPadding: EdgeInsets.all(3),
+                      title: Text(
                         pl.payments[index].title,
                         style: TextStyle(
-                            fontSize: 17,
+                            fontSize: 18,
                             fontWeight: FontWeight.w600,
+                            //fontFamily: FontFamily.,
                             letterSpacing: 0.5),
+                            textAlign: TextAlign.center,
                       ),
                       subtitle: Container(
                         child: Text(
-                            pl.payments[index]
-                                .deadline
-                                .toString()
-                                .substring(0, 10),
+                          "Days left: 12",
+                            // pl.payments[index]
+                            //     .deadline
+                            //     .toString()
+                            //     .substring(0, 10),
                             style: TextStyle(
-                                fontSize: 15,
+                                fontSize: 13,
                                 fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5)),
+                                fontStyle: FontStyle.italic,
+                                letterSpacing: 0.5),
+                                textAlign: TextAlign.center,
+                                ),
                       ),
                       value: true, //payments[index].isChecked,
-                      secondary: Icon(
-                        Icons.electrical_services_rounded,
-                        size: 30,
-                      ),
+                      secondary: Container(
+                        child: Text(
+                        pl.payments[index].cost.toString()+" kr",
+                        style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 16,
+                          fontFamily: 'Raleway',
+                          fontFamilyFallback: <String>[
+                              'Noto Sans CJK SC',
+                              'Noto Color Emoji',
+                          ],
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.5),
+                          
+                        ),
+                      ),    
                       onChanged: (bool val) {
                         // itemChange(val, index);
                       })

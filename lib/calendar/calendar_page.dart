@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_calendar/flutter_clean_calendar.dart';
+import 'package:to_pay_app/budget/payments/paymentList.dart';
+import 'package:to_pay_app/budget/payments/payments_page.dart';
 
 class CalendarScreen extends StatefulWidget {
   @override
@@ -9,6 +11,7 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
+  PaymentList pl = new PaymentList();
   void _handleNewDate(date) {
     setState(() {
       _selectedDay = date;
@@ -17,7 +20,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     print(_selectedEvents);
   }
 
-  List _selectedEvents;
+  List _selectedEvents = new List<String>();
   DateTime _selectedDay;
 
   final Map<DateTime, List> _events = {
@@ -87,21 +90,77 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildEventList() {
+    _selectedEvents.add("Hyra");
+    _selectedEvents.add("Nätverk");
+    _selectedEvents.add("Bil");
+    _selectedEvents.add("Netflix");
+    _selectedEvents.add("Klarna: IKEA");
+    //_selectedEvents.clear();
     return Expanded(
       child: ListView.builder(
-        itemBuilder: (BuildContext context, int index) => Container(
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(width: 1.5, color: Colors.black12),
+        itemCount: pl.payments.length,
+        itemBuilder: (context, index) {
+          return Card(
+            child: new Container(
+              padding: new EdgeInsets.all(10.0),
+              child: Column(
+                children: <Widget>[
+                  new CheckboxListTile(
+                      isThreeLine: false,
+                      activeColor: Colors.red,
+                    
+                      dense: true,
+                      //font change
+                      contentPadding: EdgeInsets.all(1),
+                      title: Text(
+                        pl.payments[index].title,
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            //fontFamily: FontFamily.,
+                            letterSpacing: 0.5),
+                            textAlign: TextAlign.center,
+                      ),
+                      subtitle: Container(
+                        child: Text(
+                          "Dagar kvar: 12",
+                            // pl.payments[index]
+                            //     .deadline
+                            //     .toString()
+                            //     .substring(0, 10),
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                fontStyle: FontStyle.italic,
+                                letterSpacing: 0.5),
+                                textAlign: TextAlign.center,
+                                ),
+                      ),
+                      value: true, //payments[index].isChecked,
+                      secondary: Container(
+                        child: Text(
+                        pl.payments[index].cost.toString()+" kr",
+                        style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 16,
+                          fontFamily: 'Raleway',
+                          fontFamilyFallback: <String>[
+                              'Noto Sans CJK SC',
+                              'Noto Color Emoji',
+                          ],
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.5),
+                          
+                        ),
+                      ),    
+                      onChanged: (bool val) {
+                        // itemChange(val, index);
+                      })
+                ],
+              ),
             ),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 4.0),
-          child: ListTile(
-            title: Text(_selectedEvents[index]['name'].toString()),
-            onTap: () {},
-          ),
-        ),
-        itemCount: _selectedEvents.length,
+          );
+        },
       ),
     );
   }
