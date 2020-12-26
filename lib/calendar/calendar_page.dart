@@ -107,8 +107,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 children: <Widget>[
                   new CheckboxListTile(
                       isThreeLine: false,
-                      activeColor: Colors.red,
-                    
+                      activeColor: Colors.black,                   
                       dense: true,
                       //font change
                       contentPadding: EdgeInsets.all(1),
@@ -116,7 +115,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         pl.payments[index].title,
                         style: TextStyle(
                             fontSize: 18,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w400,
                             //fontFamily: FontFamily.,
                             letterSpacing: 0.5),
                             textAlign: TextAlign.center,

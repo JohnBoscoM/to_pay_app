@@ -31,10 +31,10 @@ class _NavState extends State<NavPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'My Budget',
+          'My Finance',
           style: TextStyle(color: Colors.black),
         ),
-        backgroundColor: Colors.white24,
+        backgroundColor: Colors.white,
         shadowColor: Colors.white,
         elevation: 0,
         actions: <Widget>[
@@ -77,7 +77,7 @@ class _NavState extends State<NavPage> {
                 iconSize: 24,
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 duration: Duration(milliseconds: 400),
-                tabBackgroundColor: Colors.grey[800],
+                tabBackgroundColor: Colors.black,
                 tabs: [
                   GButton(
                     icon: Icons.home_outlined,
@@ -93,7 +93,7 @@ class _NavState extends State<NavPage> {
                   ),
                   GButton(
                     icon: Icons.more_horiz_outlined,
-                    text: 'Menu',
+                    text: 'More',
                   ),
                 ],
                 selectedIndex: _selectedIndex,
@@ -114,6 +114,7 @@ class _NavState extends State<NavPage> {
           AddPaymentsPage();
         },
       ),
+      
     );
   }
 }
