@@ -1,4 +1,4 @@
-import 'package:to_pay_app/budget/payments/paymentItem.dart';
+import 'package:to_pay_app/models/paymentItem.dart';
 
 class PaymentList{
 List<PaymentItem> payments = [

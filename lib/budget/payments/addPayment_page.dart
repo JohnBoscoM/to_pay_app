@@ -1,4 +1,4 @@
-import 'package:to_pay_app/budget/payments/paymentItem.dart';
+import 'package:to_pay_app/models/paymentItem.dart';
 import 'package:to_pay_app/budget/payments/paymentList.dart';
 import 'package:flutter/material.dart';
 
