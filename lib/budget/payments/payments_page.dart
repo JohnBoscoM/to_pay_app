@@ -18,7 +18,12 @@ class _PaymentsPageState extends State<PaymentsPage> {
         child: Column(
           children: <Widget>[
             Chip(
-              label: Text("Electricity"),
+              label: 
+              Text(
+              "Electricity",
+              style: TextStyle(
+              fontFamily: "avenir"
+              )),
               backgroundColor: Colors.grey[200],
               //shape: StadiumBorder(side: BorderSide()),
               avatar: CircleAvatar(
@@ -69,7 +74,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w400,
-                            //fontFamily: FontFamily.,
+                            fontFamily: "avenir",
                             letterSpacing: 0.5),
                         textAlign: TextAlign.center,
                       ),
@@ -80,6 +85,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
                               .substring(0, 10),
                           style: TextStyle(
                               fontSize: 13,
+                              fontFamily: "ubuntu",
                               fontWeight: FontWeight.w600,
                               fontStyle: FontStyle.italic,
                               letterSpacing: 0.5),
@@ -90,14 +96,12 @@ class _PaymentsPageState extends State<PaymentsPage> {
                       secondary: Container(
                         child: Text(
                           pl.payments[index].cost.toString() + " kr",
+                          
                           style: TextStyle(
                               color: Colors.grey[700],
                               fontSize: 16,
-                              fontFamily: 'Raleway',
-                              fontFamilyFallback: <String>[
-                                'Noto Sans CJK SC',
-                                'Noto Color Emoji',
-                              ],
+                              fontFamily: "ubuntu",
+                              
                               fontWeight: FontWeight.w500,
                               letterSpacing: 0.5),
                         ),

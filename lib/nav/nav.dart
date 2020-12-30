@@ -3,6 +3,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:to_pay_app/budget/payments/addPayment_page.dart';
 import 'package:to_pay_app/budget/payments/payments_page.dart';
 import 'package:to_pay_app/calendar/calendar_page.dart';
+import 'package:to_pay_app/home/home.dart';
 
 class NavPage extends StatefulWidget {
   @override
@@ -14,15 +15,12 @@ class _NavState extends State<NavPage> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static final List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Page 1: Home',
-      style: optionStyle,
-    ),
+    HomePage(),
     PaymentsPage(),
     CalendarScreen(),
     Text(
-      'Page 4: More',
-      style: optionStyle,
+      'Page 4: Avenir',
+      style: TextStyle(fontFamily: "avenir"),
     ),
   ];
 
@@ -31,10 +29,10 @@ class _NavState extends State<NavPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'My Finance',
-          style: TextStyle(color: Colors.black),
+          'My Wallet',
+          style: TextStyle(fontFamily: "avenir", color: Colors.white),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.black,
         shadowColor: Colors.white,
         elevation: 0,
         actions: <Widget>[
@@ -43,7 +41,8 @@ class _NavState extends State<NavPage> {
             child: Text(
               "Balance:",
               style: TextStyle(
-                  color: Colors.grey[700],
+                  color: Colors.grey[400],
+                  fontFamily: "ubuntu",
                   fontSize: 13,
                   fontWeight: FontWeight.w600),
             ),
@@ -77,12 +76,12 @@ class _NavState extends State<NavPage> {
                 iconSize: 24,
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 duration: Duration(milliseconds: 400),
-                tabBackgroundColor: Colors.black,
+                tabBackgroundColor: Color(0xffffac30),
                 tabs: [
                   GButton(
-                    icon: Icons.home_outlined,
-                    text: 'Home',
-                  ),
+                      icon: Icons.home_outlined,
+                      text: 'Home',
+                      textStyle: TextStyle(fontFamily: "ubuntu")),
                   GButton(
                     icon: Icons.account_balance_wallet_outlined,
                     text: 'Budget',
@@ -106,15 +105,15 @@ class _NavState extends State<NavPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Color(0xffffac30),
         child: Icon(
           Icons.add,
-          color: Colors.white,
+          color: Colors.black,
         ),
         onPressed: () {
           AddPaymentsPage();
         },
       ),
-      
     );
   }
 }

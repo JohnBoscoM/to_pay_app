@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'nav/nav.dart';
 
 void main() {
@@ -10,14 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'To Pay',
-      theme: ThemeData(
-        colorScheme: ColorScheme.light(
-          primary: Colors.black,
-          secondary: Colors.black
-        ),  
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+      debugShowCheckedModeBanner: false,
       home: NavPage(),  
     );
   }
