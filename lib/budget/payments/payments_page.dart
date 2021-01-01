@@ -51,7 +51,6 @@ class _PaymentsPageState extends State<PaymentsPage> {
     );
   }
 
-  Widget FilterChips() {}
 
   Widget buildList() {
     return Expanded(

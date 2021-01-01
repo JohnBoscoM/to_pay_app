@@ -19,7 +19,7 @@ class _homePageState extends State<homePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       body: Container(
         padding: EdgeInsets.all(30),
         child: Column(
@@ -29,10 +29,11 @@ class _homePageState extends State<homePage> {
               height: 20,
             ),
             Text(
-              "Account Overview",
+              "Overview",
               style: TextStyle(
                   fontSize: 21,
                   fontWeight: FontWeight.w800,
+                  color: Colors.white,
                   fontFamily: 'avenir'),
             ),
             SizedBox(
@@ -42,7 +43,8 @@ class _homePageState extends State<homePage> {
               padding: EdgeInsets.all(30),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(20)),
-                color: Color(0xfff1f3f6),
+                color: Colors.grey[900]
+                //Color(0xfff1f3f6),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,9 +54,9 @@ class _homePageState extends State<homePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "20,600",
+                        "24,240",
                         style: TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.w700),
+                            fontSize: 22, fontWeight: FontWeight.w700, fontFamily: "ubuntu",color: Colors.white),
                       ),
                       SizedBox(
                         height: 6,
@@ -62,7 +64,7 @@ class _homePageState extends State<homePage> {
                       Text(
                         "Current Balance",
                         style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w400),
+                            fontSize: 16, fontWeight: FontWeight.w400,color: Colors.white,fontFamily: "avenir"),
                       )
                     ],
                   ),
@@ -70,7 +72,9 @@ class _homePageState extends State<homePage> {
                     height: 60,
                     width: 60,
                     decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: Color(0xffffac30)),
+                        shape: BoxShape.circle, color: Colors.deepOrange[400]
+                        //Color(0xffffac30)
+                        ),
                     child: Icon(
                       Icons.add,
                       size: 30,
@@ -88,6 +92,7 @@ class _homePageState extends State<homePage> {
                 Text(
                   "Status",
                   style: TextStyle(
+                    color: Colors.white,
                       fontSize: 21,
                       fontWeight: FontWeight.w800,
                       fontFamily: 'avenir'),
@@ -103,8 +108,8 @@ class _homePageState extends State<homePage> {
                 )
               ],
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+            Container(
+              //scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
                   // Container(
@@ -120,14 +125,14 @@ class _homePageState extends State<homePage> {
                   //     size: 40,
                   //   ),
                   // ),
-                  avatarWidget("upcoming_bill", "Upcoming bill"),
-                  avatarWidget("check", "Payed Bills"),
-                  avatarWidget("missed_bill", "Missed Bills"),
+                  avatarWidget("upcoming_pay", "Upcoming Bills"),
+                  avatarWidget("check_bill", "Payed Bills"),
+                  avatarWidget("missed-bills-color", "Missed Bills"),
                 ],
               ),
             ),
             SizedBox(
-              height: 20,
+              height: 10,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -135,6 +140,7 @@ class _homePageState extends State<homePage> {
                 Text(
                   'Categories',
                   style: TextStyle(
+                    color: Colors.white,
                       fontSize: 21,
                       fontWeight: FontWeight.w800,
                       fontFamily: 'avenir'),
@@ -149,11 +155,11 @@ class _homePageState extends State<homePage> {
             Expanded(
               child: GridView.count(
                 crossAxisCount: 3,
-                childAspectRatio: 0.85,
+                childAspectRatio: 0.72,
                 children: [
                   serviceWidget("house", "House\n"),
                   serviceWidget("food_1", "Food\n"),
-                  serviceWidget("bus", "Transport\n"),
+                  serviceWidget("train", "Transport\n"),
                   serviceWidget("education", "Education\n"),
                   serviceWidget("car", "Car\n"),
                   serviceWidget("bulb", "Electricity\n"),
@@ -162,7 +168,7 @@ class _homePageState extends State<homePage> {
                   serviceWidget("clothes", "Clothes\n"),
                   serviceWidget("fun", "Fun\n"),
                   serviceWidget("entertainment", "Entertainment\n"),
-                  serviceWidget("more", "More\n"),
+                  serviceWidget("more_icon", "More\n"),
                 ],
               ),
             )
@@ -182,7 +188,8 @@ class _homePageState extends State<homePage> {
               margin: EdgeInsets.all(4),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(20)),
-                color: Color(0xfff1f3f6),
+                color:Colors.grey[900]
+                // Color(0xfff1f3f6),
               ),
               child: Center(
                 child: Container(
@@ -203,6 +210,7 @@ class _homePageState extends State<homePage> {
           style: TextStyle(
             fontFamily: 'avenir',
             fontSize: 14,
+            color: Colors.white
           ),
           textAlign: TextAlign.center,
         )
@@ -213,11 +221,13 @@ class _homePageState extends State<homePage> {
   Container avatarWidget(String img, String name) {
     return Container(
       margin: EdgeInsets.only(right: 10),
-      height: 110,
-      width: 110,
+      height: 115,
+      width: 107.1,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(15)),
-          color: Color(0xfff1f3f6)),
+          color: Colors.grey[900]
+          //Color(0xfff1f3f6)
+          ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -238,6 +248,7 @@ class _homePageState extends State<homePage> {
             style: TextStyle(
                 fontSize: 13,
                 fontFamily: 'avenir',
+                color: Colors.white,
                 fontWeight: FontWeight.w700),
           )
         ],
