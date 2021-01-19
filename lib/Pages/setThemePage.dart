@@ -120,49 +120,49 @@ class _SetThemePageState extends State<SetThemePage>
                   alignment: Alignment.bottomCenter,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: width * 0.025),
-                        child: Text(
-                          'Skip',
-                          style: TextStyle(
-                            fontSize: width * 0.045,
-                            color: const Color(0xFF7c7b7e),
-                            fontFamily: 'Rubik',
-                          ),
-                        ),
-                      ),
-                      RaisedButton(
-                        onPressed: () {
-                          _scaffoldKey.currentState.showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Loved it? Give a star on Github',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'Rubik',
-                                  fontSize: width * 0.045,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        shape: CircleBorder(),
-                        color: themeProvider.isLightTheme
-                            ? const Color(0xFFFFFFFF)
-                            : const Color(0xFF35303f),
-                        child: Padding(
-                          padding: EdgeInsets.all(width * 0.05),
-                          child: Icon(
-                            Icons.arrow_forward,
-                            color: themeProvider.isLightTheme
-                                ? const Color(0xFF000000)
-                                : const Color(0xFFFFFFFF),
-                          ),
-                        ),
-                      )
-                    ],
+                    // children: <Widget>[
+                    //   Padding(
+                    //     padding:
+                    //         EdgeInsets.symmetric(horizontal: width * 0.025),
+                    //     child: Text(
+                    //       'Skip',
+                    //       style: TextStyle(
+                    //         fontSize: width * 0.045,
+                    //         color: const Color(0xFF7c7b7e),
+                    //         fontFamily: 'Rubik',
+                    //       ),
+                    //     ),
+                    //   ),
+                    //   RaisedButton(
+                    //     onPressed: () {
+                    //       _scaffoldKey.currentState.showSnackBar(
+                    //         SnackBar(
+                    //           content: Text(
+                    //             'Loved it? Give a star on Github',
+                    //             textAlign: TextAlign.center,
+                    //             style: TextStyle(
+                    //               fontFamily: 'Rubik',
+                    //               fontSize: width * 0.045,
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       );
+                    //     },
+                    //     shape: CircleBorder(),
+                    //     color: themeProvider.isLightTheme
+                    //         ? const Color(0xFFFFFFFF)
+                    //         : const Color(0xFF35303f),
+                    //     child: Padding(
+                    //       padding: EdgeInsets.all(width * 0.05),
+                    //       child: Icon(
+                    //         Icons.arrow_forward,
+                    //         color: themeProvider.isLightTheme
+                    //             ? const Color(0xFF000000)
+                    //             : const Color(0xFFFFFFFF),
+                    //       ),
+                    //     ),
+                    //   )
+                    // ],
                   ),
                 ),
               ),

@@ -6,8 +6,7 @@ class ThemeProvider with ChangeNotifier {
   bool isLightTheme;
   ThemeData _themeData;
 
-  
-    ThemeProvider({this.isLightTheme});
+  ThemeProvider({this.isLightTheme});
 
   getTheme() => _themeData;
 
@@ -17,7 +16,7 @@ class ThemeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-   getCurrentStatusNavigationBarColor() {
+  getCurrentStatusNavigationBarColor() {
     if (isLightTheme) {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -70,6 +69,7 @@ class ThemeProvider with ChangeNotifier {
       toggleButtonColor: isLightTheme ? Color(0xFFFFFFFF) : Color(0xFf34323d),
       toggleBackgroundColor:
           isLightTheme ? Color(0xFFe7e7e8) : Color(0xFF222029),
+          color:  isLightTheme ? Colors.white : Colors.grey[900],
       shadow: [
         if (isLightTheme)
           BoxShadow(
@@ -83,7 +83,7 @@ class ThemeProvider with ChangeNotifier {
               spreadRadius: 5,
               blurRadius: 10,
               offset: Offset(0, 5))
-      ],
+      ],  
     );
   }
 }
@@ -95,6 +95,7 @@ class ThemeColor {
   Color toggleButtonColor;
   Color toggleBackgroundColor;
   Color textColor;
+  Color color;
   List<BoxShadow> shadow;
 
   ThemeColor({
@@ -104,9 +105,8 @@ class ThemeColor {
     this.toggleButtonColor,
     this.textColor,
     this.shadow,
+    this.color
   });
 }
 
 // Provider finished
-
-

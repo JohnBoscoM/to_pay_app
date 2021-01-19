@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:to_pay_app/Pages/userPage.dart';
+import 'Pages/paymentsTabbedView.dart';
 import 'Pages/setThemePage.dart';
-import 'home/home.dart';
+import 'Pages/home.dart';
+import 'Pages/userPage.dart';
 import 'model_providers/theme_provider.dart'; 
-import 'nav/nav.dart';
+import 'Pages/nav.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:path_provider/path_provider.dart' as pathProvider;
@@ -12,6 +15,7 @@ import 'package:path_provider/path_provider.dart' as pathProvider;
 
 void main() async{
     WidgetsFlutterBinding.ensureInitialized();
+    //Storage Path
   final appDocumentDirectory =
       await pathProvider.getApplicationDocumentsDirectory();
 
@@ -26,7 +30,6 @@ void main() async{
     create: (_) => ThemeProvider(isLightTheme: isLightTheme),
     child: AppStart(),
   ));
-
 }
 
 
@@ -57,7 +60,8 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Light Dark Theme',
       theme: widget.themeProvider.themeData(),
-      home: SetThemePage(),
+      
+      home: NavPage(),
     );
   }
 }

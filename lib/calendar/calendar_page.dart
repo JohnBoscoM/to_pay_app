@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_calendar/flutter_clean_calendar.dart';
 import 'package:to_pay_app/budget/payments/paymentList.dart';
-import 'package:to_pay_app/budget/payments/payments_page.dart';
+import 'package:to_pay_app/Pages/allPayments.dart';
 
 class CalendarScreen extends StatefulWidget {
   @override
@@ -11,7 +11,7 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  PaymentList pl = new PaymentList();
+  AllPaymentsList pl = new AllPaymentsList();
   void _handleNewDate(date) {
     setState(() {
       _selectedDay = date;
@@ -101,6 +101,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
         itemCount: pl.payments.length,
         itemBuilder: (context, index) {
           return Card(
+            shadowColor: Colors.transparent,
+            borderOnForeground: true,
+            margin: new EdgeInsets.only(left: 20.0, top: 10, right: 20.0,bottom:10),
+            color: Color(0xfff1f3f6),
             child: new Container(
               padding: new EdgeInsets.all(10.0),
               child: Column(
@@ -115,10 +119,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         pl.payments[index].title,
                         style: TextStyle(
                             fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                            //fontFamily: FontFamily.,
+                            color:Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "avenir",
                             letterSpacing: 0.5),
-                            textAlign: TextAlign.center,
+                        textAlign: TextAlign.left,
                       ),
                       subtitle: Container(
                         child: Text(
@@ -127,12 +132,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             //     .deadline
                             //     .toString()
                             //     .substring(0, 10),
-                            style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                fontStyle: FontStyle.italic,
-                                letterSpacing: 0.5),
-                                textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color:Colors.grey[600],
+                              fontSize: 13,
+                              fontFamily: "ubuntu",
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FontStyle.italic,
+                              letterSpacing: 0.5),
+                                textAlign: TextAlign.left,
                                 ),
                       ),
                       value: true, //payments[index].isChecked,
@@ -140,14 +147,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         child: Text(
                         pl.payments[index].cost.toString()+" kr",
                         style: TextStyle(
-                          color: Colors.grey[700],
+                          color: Colors.deepOrangeAccent,
                           fontSize: 16,
-                          fontFamily: 'Raleway',
+                          fontFamily: 'ubuntu',
+                          fontWeight: FontWeight.w600,
                           fontFamilyFallback: <String>[
-                              'Noto Sans CJK SC',
-                              'Noto Color Emoji',
+
                           ],
-                          fontWeight: FontWeight.w500,
                           letterSpacing: 0.5),
                           
                         ),
