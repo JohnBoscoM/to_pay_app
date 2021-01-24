@@ -6,7 +6,10 @@ import 'package:to_pay_app/Pages/payedPayements.dart';
 import 'package:to_pay_app/Pages/upcomingPayments.dart';
 import 'package:to_pay_app/budget/payments/addPayment_page.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
-import 'package:to_pay_app/models/paymentItem.dart';
+import 'package:to_pay_app/models/bill.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:to_pay_app/budget/payments/paymentList.dart';
@@ -18,14 +21,23 @@ class PaymentsTabbedPage extends StatefulWidget {
 
 class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
     with SingleTickerProviderStateMixin {
+  final Box paymentBox = Hive.box('paymentBox');
+  final titleController = TextEditingController();
+  final costController = TextEditingController();
+  final deadlineController = TextEditingController();
+
+  AllPaymentsList pl = new AllPaymentsList();
+  Category category = new Category();
+  bool checkBoxValue = false;
+
   DateTime _date = DateTime.now();
+  String _categoryValue;
   Future<Null> _selectDate(BuildContext context) async {
     DateTime datePicker = await showDatePicker(
         context: context,
         initialDate: _date,
         firstDate: DateTime(1900),
         lastDate: DateTime(3000));
-        
 
     if (datePicker != null && datePicker != _date) {
       setState(() {
@@ -36,16 +48,23 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
 
   TabController _controller;
   int _selectedIndex = 0;
-  String dropdownValue = 'Rent';
+  String dropdownValue = 'Other';
 
   List<Widget> list = [
     Tab(text: "All"),
-    Tab(text: "Upcoming"),
     Tab(text: "Payed"),
     Tab(text: "Missed"),
   ];
-  AllPaymentsList pl = new AllPaymentsList();
-  bool checkBoxValue = false;
+
+  void createPayment(
+      String title, double cost, DateTime deadline, String category) async {
+   
+    String title = titleController.text;
+    double cost = double.parse(costController.text);
+    var paymentItem = new BillItem(
+        title, cost, _date, false, 'PaymentDateStatus', false, category);
+    paymentBox.add(paymentItem);
+  }
 
   @override
   void initState() {
@@ -53,13 +72,27 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
     super.initState();
     // Create TabController for getting the index of current tab
     _controller = TabController(length: list.length, vsync: this);
-
     _controller.addListener(() {
       setState(() {
         _selectedIndex = _controller.index;
       });
       print("Selected Index: " + _controller.index.toString());
     });
+  }
+
+  // Future _openBox() async {
+  //   var dir = await getApplicationDocumentsDirectory();
+  //   Hive.init(dir.path);
+  //   paymentBox = await Hive.openBox('paymentBox');
+  //   return;
+  // }
+
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    titleController.dispose();
+    costController.dispose();
+    deadlineController.dispose();
+    super.dispose();
   }
 
   @override
@@ -86,9 +119,8 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
           controller: _controller,
           children: [
             AllPaymentsPage(),
-            UpcomingPaymentsPage(),
-            PayedPaymentsPage(),
-            MissedPaymentsPage(),
+            PayedBillsPage(),
+            MissedBillsPage(),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -101,91 +133,17 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
     );
   }
 
-  Widget buildList() {
-    return Expanded(
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-              topRight: Radius.circular(0), topLeft: Radius.circular(30)),
-        ),
-        child: ListView.builder(
-          itemCount: pl.payments.length,
-          itemBuilder: (context, index) {
-            return Container(
-              margin: new EdgeInsets.only(
-                  left: 20.0, top: 0, right: 20.0, bottom: 0),
-              child: new Container(
-                padding: new EdgeInsets.all(15.0),
-                child: Column(
-                  children: <Widget>[
-                    new ListTile(
-                      leading: Checkbox(
-                          value: pl.payments[index].isChecked,
-                          onChanged: (bool value) {
-                            setState(() {
-                              pl.payments[index].isChecked = value;
-                            });
-                          }),
-                      isThreeLine: false,
-                      dense: true,
-                      //font change
-                      contentPadding: EdgeInsets.all(1),
-                      title: Text(
-                        pl.payments[index].title,
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: "avenir",
-                            letterSpacing: 0.5),
-                        textAlign: TextAlign.left,
-                      ),
-                      subtitle: Container(
-                        child: Text(
-                          pl.payments[index].deadline
-                              .toString()
-                              .substring(0, 10),
-                          style: TextStyle(
-                              fontSize: 13,
-                              fontFamily: "ubuntu",
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FontStyle.italic,
-                              letterSpacing: 0.5),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
+  
 
-                      trailing: Text(
-                        pl.payments[index].cost.toString() + " kr",
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 16,
-                            fontFamily: "ubuntu",
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.5),
-                      ),
-
-                      // onChanged: (bool val) {
-                      //   itemChange(val, index);
-                      // }
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildModal(ThemeProvider themeProvider, MediaQueryData mediaQuery, double height) {
+  Widget _buildModal(
+      ThemeProvider themeProvider, MediaQueryData mediaQuery, double height) {
     showModalBottomSheet(
         backgroundColor: Colors.transparent,
         context: context,
         builder: (context) {
           return Container(
-            height: height,
-           // padding: mediaQuery.viewInsets,
+              height: height,
+              // padding: mediaQuery.viewInsets,
               decoration: BoxDecoration(
                 color: themeProvider.themeMode().color,
                 borderRadius: BorderRadius.only(
@@ -216,11 +174,12 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
           padding: EdgeInsets.only(top: 20, left: 0, right: 10, bottom: 15),
           child: TextField(
             autofocus: true,
-            // controller: usernameController,
+            controller: titleController,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.title_outlined),
               hintStyle: TextStyle(color: Colors.grey, fontSize: 20),
-              border: OutlineInputBorder(borderRadius:  BorderRadius.all(Radius.circular(20))),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
               labelText: "Title",
             ),
           ),
@@ -231,15 +190,14 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
           padding: EdgeInsets.only(top: 10, left: 0, right: 10, bottom: 20),
           child: TextField(
             keyboardType: TextInputType.number,
-            //  controller: usernameController,
+            controller: costController,
             decoration: InputDecoration(
                 prefixIcon: Icon(Icons.payment_outlined),
                 labelText: "Cost",
                 hoverColor: Colors.red,
                 hintStyle: TextStyle(color: Colors.grey, fontSize: 20),
                 border: OutlineInputBorder(
-                  borderRadius:  BorderRadius.all(Radius.circular(20))
-                )),
+                    borderRadius: BorderRadius.all(Radius.circular(20)))),
           ),
         ),
         Container(
@@ -253,28 +211,26 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
                 _selectDate(context);
               });
             },
-            //  controller: usernameController,
+            controller: deadlineController,
             decoration: InputDecoration(
                 prefixIcon: Icon(Icons.date_range),
                 labelText: "Deadline",
                 hintStyle: TextStyle(color: Colors.grey, fontSize: 20),
-                border: OutlineInputBorder(borderRadius:  BorderRadius.all(Radius.circular(20)))),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)))),
           ),
         ),
         Container(
             width: 300,
             padding: EdgeInsets.only(top: 10),
             child: buildDropDownList()),
-
-               RaisedButton(
+        RaisedButton(
           padding: EdgeInsets.only(top: 100, right: 50, left: 50),
           color: Colors.transparent,
           elevation: 0,
           onPressed: () {
-            // createUser(
-            //     usernameController.text, double.parse(incomeController.text));
-
-  
+            createPayment(titleController.text,
+                double.parse(costController.text), _date, _categoryValue);
           },
           textColor: Colors.white,
           child: Container(
@@ -300,7 +256,6 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
     );
   }
 
-  Widget buildDatePicker() {}
   Widget buildDropDownList() {
     return Container(
       padding: EdgeInsets.only(top: 10, left: 0, right: 0, bottom: 0),
@@ -319,11 +274,14 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
             dropdownValue = newValue;
           });
         },
-        items: <String>['Rent', 'Car', 'Electricty', 'Fitness']
-            .map<DropdownMenuItem<String>>((String value) {
+        items:
+            category.categories.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(value),
+            onTap: () {
+              _categoryValue = value;
+            },
           );
         }).toList(),
       ),

@@ -1,7 +1,7 @@
-import 'package:to_pay_app/models/paymentItem.dart';
+import 'package:to_pay_app/models/bill.dart';
 
 class AllPaymentsList{
-List<PaymentItem> payments = [
+List<BillItem> payments = [
     // PaymentItem("Rent", 3202, DateTime.now(),false,PaymentDateStatus.PayedPayment,, Category.House),
     // PaymentItem("Telia Bredband 500", 379, DateTime.now(),false,PaymentDateStatus.PayedPayment,Category.House),
     // PaymentItem("Unionen", 235, DateTime.now(), false,PaymentDateStatus.PayedPayment,Category.House),

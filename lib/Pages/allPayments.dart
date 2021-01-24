@@ -1,12 +1,12 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
-import 'package:to_pay_app/models/paymentItem.dart';
+import 'package:to_pay_app/models/bill.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:to_pay_app/budget/payments/paymentList.dart';
-import 'package:to_pay_app/models/paymentItem.dart';
+import 'package:to_pay_app/models/bill.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:to_pay_app/models/user.dart';
 
@@ -16,21 +16,14 @@ class AllPaymentsPage extends StatefulWidget {
 }
 
 class _AllPaymentsPageState extends State<AllPaymentsPage> {
-  Box _userBox;
+  final paymentBox =  Hive.box('paymentBox');
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   Hive.registerAdapter(UserAdapter());
-  //   _openBox();
-  // }
-
-  Future _openBox() async {
-    var dir = await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-    _userBox = await Hive.openBox('userBox');
-    return;
+  @override
+  void initState() {
+    super.initState();
   }
+
+
 
   AllPaymentsList pl = new AllPaymentsList();
   bool checkBoxValue = false;
@@ -104,7 +97,7 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
                           topLeft: Radius.circular(20),
                         ),
                       ),
-                      child: Text("Missed Bills",
+                      child: Text("All Bills",
                           style: TextStyle(fontSize: 25, fontFamily: "avenir"),
                           textAlign: TextAlign.left),
                     ),
@@ -127,8 +120,9 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
               topRight: Radius.circular(0), topLeft: Radius.circular(30)),
         ),
         child: ListView.builder(
-          itemCount: pl.payments.length,
+          itemCount: paymentBox.length,
           itemBuilder: (context, index) {
+            final paymentItem = paymentBox.get(index);
             return Container(
               margin: new EdgeInsets.only(
                   left: 20.0, top: 0, right: 20.0, bottom: 0),
@@ -138,10 +132,10 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
                   children: <Widget>[
                     new ListTile(
                       leading: Checkbox(
-                          value: pl.payments[index].isChecked,
+                          value: paymentItem.isChecked,
                           onChanged: (bool value) {
                             setState(() {
-                              pl.payments[index].isChecked = value;
+                              paymentItem.isChecked = value;
                             });
                           }),
                       isThreeLine: false,
@@ -149,7 +143,7 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
                       //font change
                       contentPadding: EdgeInsets.all(1),
                       title: Text(
-                        pl.payments[index].title,
+                        paymentItem.title,
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
@@ -159,7 +153,7 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
                       ),
                       subtitle: Container(
                         child: Text(
-                          pl.payments[index].deadline
+                          paymentItem.deadline
                               .toString()
                               .substring(0, 10),
                           style: TextStyle(
@@ -173,7 +167,7 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
                       ),
 
                       trailing: Text(
-                        pl.payments[index].cost.toString() + " kr",
+                        paymentItem.cost.toString() + " kr",
                         style: TextStyle(
                             color: Colors.blue,
                             fontSize: 16,

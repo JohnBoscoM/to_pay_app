@@ -1,7 +1,7 @@
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
-import 'package:to_pay_app/models/paymentItem.dart';
+import 'package:to_pay_app/models/bill.dart';
 
 import 'package:flutter/material.dart';
 import 'package:to_pay_app/budget/payments/paymentList.dart';
