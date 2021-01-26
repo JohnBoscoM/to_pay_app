@@ -69,15 +69,15 @@ class ThemeProvider with ChangeNotifier {
         if (isLightTheme) ...[Color(0xff5F3193), Color(0xff372571)],
         if (!isLightTheme) ...[Color(0xff5F3193), Color(0xff372571)]
       ],
-         unpaidGradient: [
+      unpaidGradient: [
         if (isLightTheme) ...[Colors.blue, Colors.blue],
         if (!isLightTheme) ...[Color(0xffDABB5F), Color(0xffF2EDD2)]
       ],
-         paidGradient: [
+      paidGradient: [
         if (isLightTheme) ...[Colors.greenAccent[400], Colors.greenAccent[400]],
         if (!isLightTheme) ...[Color(0xffDABB5F), Color(0xffF2EDD2)]
       ],
-         missedGradient: [
+      missedGradient: [
         if (isLightTheme) ...[Colors.red, Colors.red],
         if (!isLightTheme) ...[Color(0xffDABB5F), Color(0xffF2EDD2)]
       ],
@@ -103,17 +103,107 @@ class ThemeProvider with ChangeNotifier {
               blurRadius: 10,
               offset: Offset(0, 5))
       ],
+      itemShadow: [
+        if (isLightTheme)
+          BoxShadow(
+              color: Colors.deepPurple.withOpacity(0.1),
+              blurRadius: 4,
+              spreadRadius: 1,
+              offset: Offset(-10, 10)),
+        if (!isLightTheme)
+          BoxShadow(
+              color: Colors.black.withOpacity(0.4),
+              blurRadius: 4,
+              spreadRadius: 1,
+              offset: Offset(-10, 10)),
+      ],
     );
+
+    
+
   }
+  CategoryIcon categoryIcon(String category) {
+  return CategoryIcon(
+    name: category,
+    color: getColor(category),
+    icon:  getIcon(category)
+  );
 }
+}
+
+Color getColor(String category) {
+  if (category == 'Household') {
+    return Colors.red[400];
+  }
+  if (category == 'Food') {
+    return Colors.greenAccent;
+  }
+  if (category == 'Fitness') {
+    return Colors.red[400];
+  }
+  if (category == 'Education') {
+    return Colors.brown[400];
+  }
+  if (category == 'Shopping') {
+    return Colors.purple[400];
+  }
+  if (category == 'Entertainment') {
+    return Colors.pink[400];
+  }
+  if (category == 'Car') {
+    return Colors.blue[400];
+  }
+  if (category == 'Other') {
+    return Colors.grey[400];
+  }
+
+   if (category == 'Broadband') {
+    return Colors.orange[400];
+  }
+  return Colors.red[400];
+}
+
+IconData getIcon(String category) {
+  if (category == 'Accomodation') {
+    return Icons.home_filled;
+  }
+  if (category == 'Food') {
+    return Icons.restaurant_menu_rounded;
+  }
+  if (category == 'Fitness') {
+    return Icons.fitness_center_rounded;
+  }
+  if (category == 'Education') {
+    return Icons.menu_book_rounded;
+  }
+  if (category == 'Shopping') {
+    return Icons.shopping_bag_rounded;
+  }
+  if (category == 'Entertainment') {
+    return Icons.computer_rounded;
+  } 
+  if (category == 'Car') {
+    return Icons.directions_car_rounded;
+  }
+  if (category == 'Other') {
+    return Icons.menu;
+  }
+
+    if (category == 'Broadband') {
+    return Icons.web;
+  }
+  return Icons.home_filled;
+}
+
+
 
 // A class to manage specify colors and styles in the app not supported by theme data
 class ThemeColor {
   List<Color> gradient;
   List<Color> backgroundGradient;
-   List<Color> unpaidGradient;
-    List<Color> paidGradient;
-     List<Color> missedGradient;
+  List<Color> unpaidGradient;
+  List<Color> paidGradient;
+  List<Color> missedGradient;
   Color backgroundColor;
   Color toggleButtonColor;
   Color toggleBackgroundColor;
@@ -121,6 +211,7 @@ class ThemeColor {
   Color color;
   Color appColor;
   Color blendBackgroundColor;
+  List<BoxShadow> itemShadow;
   List<BoxShadow> shadow;
 
   ThemeColor(
@@ -136,7 +227,16 @@ class ThemeColor {
       this.paidGradient,
       this.missedGradient,
       this.unpaidGradient,
+      this.itemShadow,
       this.color});
+}
+
+class CategoryIcon {
+  IconData icon;
+  String name;
+  Color color;
+
+  CategoryIcon({this.name, this.icon, this.color});
 }
 
 // Provider finished

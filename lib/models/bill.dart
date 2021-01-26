@@ -12,7 +12,7 @@ class BillDateStatus {
 
 class Category {
   List<String> categories = [
-    'Accomodation',
+    'Household',
     'Food',
     'Car',
     'Electricty',
@@ -20,6 +20,7 @@ class Category {
     'Education',
     'Shopping',
     'Entertainment',
+  //  'Broadband'
     'Other'
   ];
 }
