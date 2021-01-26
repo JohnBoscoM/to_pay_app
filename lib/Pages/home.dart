@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Box _userBox;
+  final paymentBox = Hive.box('paymentBox');
   //User user;
   final usernameController = TextEditingController();
   final incomeController = TextEditingController();
@@ -32,46 +32,45 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  Future _openBox() async {
-    var dir = await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-    _userBox = await Hive.openBox('userBox');
-    return;
-  }
-
-  String getUserName() {
-    return _userBox.get('username');
-  }
-
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final _width = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: themeProvider.themeMode().blendBackgroundColor,
+      //appBar: AppBar(
+      //   backgroundColor: themeProvider.themeMode().appColor,
+      //   elevation: 0,
+      //   leading: Container(
+      //       padding: EdgeInsets.only(top: 0, left: 10),
+      //       child: Icon(
+      //         Icons.menu_rounded,
+      //         size: 30,
+      //         color: Colors.white,
+      //       )),
+      //   actions: [
+      //     Icon(
+      //       Icons.notifications_none_rounded,
+      //       size: 30,
+      //       color: Colors.white,
+      //     )
+      //   ],
+      // ),
       body: Container(
-        padding: EdgeInsets.all(30),
+        //padding: EdgeInsets.only(bottom: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              "Overview",
-              style: TextStyle(
-                  fontSize: 21,
-                  fontWeight: FontWeight.w800,
-                  //color: Colors.white,
-                  fontFamily: 'avenir'),
-            ),
-            SizedBox(
-              height: 10,
-            ),
             Container(
               padding: EdgeInsets.all(30),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
+                //color: themeProvider.themeMode().appColor,
+
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(35),
+                    bottomRight: Radius.circular(35)),
                 gradient: LinearGradient(
-                    colors: themeProvider.themeMode().gradient,
+                    colors: themeProvider.themeMode().backgroundGradient,
                     begin: Alignment.bottomLeft,
                     end: Alignment.topRight),
                 //Color(0xfff1f3f6),
@@ -83,41 +82,70 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Container(
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Icon(
+                                Icons.menu_rounded,
+                                size: 40,
+                                color: Colors.white,
+                              ),
+                            ]),
+                      ),
+
+                      SizedBox(
+                        height: 70,
+                      ),
                       Text(
-                        "24,240",
+                        "Overview",
                         style: TextStyle(
-                            fontSize: 22,
+                            color: Colors.white,
+                            fontSize: 32,
                             fontWeight: FontWeight.w700,
-                            fontFamily: "ubuntu"),
+                            fontFamily: "avenir"),
                       ),
                       SizedBox(
-                        height: 6,
+                        height: 25,
                       ),
                       Text(
-                        "Current Balance",
+                        "Total Depth: 3000 kr",
                         style: TextStyle(
-                            fontSize: 16,
+                            color: Colors.amber,
+                            fontSize: 20,
                             fontWeight: FontWeight.w400,
                             fontFamily: "avenir"),
-                      )
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Paid: 1769 kr",
+                        style: TextStyle(
+                            color: Colors.amber,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: "avenir"),
+                      ),
+
+                      // SizedBox(
+                      //   height: 15,
+                      // ),
                     ],
                   ),
-                  Container(
-                    height: 60,
-                    width: 60,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                          colors: themeProvider.themeMode().gradient,
-                          begin: Alignment.bottomLeft,
-                          end: Alignment.topRight),
-                      //Color(0xffffac30)
+                  Expanded(
+                    child: Container(
+                      height: 250,
+                      width: 200,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image:
+                                AssetImage("assets/images/urban-overview.png"),
+                            alignment: Alignment.bottomRight,
+                            fit: BoxFit.scaleDown),
+                      ),
                     ),
-                    child: Icon(
-                      Icons.add,
-                      size: 30,
-                    ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -127,12 +155,15 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Status",
-                  style: TextStyle(
-                      fontSize: 21,
-                      fontWeight: FontWeight.w800,
-                      fontFamily: 'avenir'),
+                Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Text(
+                    "Status",
+                    style: TextStyle(
+                        fontSize: 21,
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'avenir'),
+                  ),
                 ),
                 Container(
                   height: 60,
@@ -145,8 +176,8 @@ class _HomePageState extends State<HomePage> {
                 )
               ],
             ),
-            Container(
-              //scrollDirection: Axis.horizontal,
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
                   // Container(
@@ -162,10 +193,13 @@ class _HomePageState extends State<HomePage> {
                   //     size: 40,
                   //   ),
                   // ),
-                  avatarWidget("upcoming_pay", "Upcoming Bills", themeProvider),
-                  avatarWidget("check_bill", "Payed Bills", themeProvider),
-                  avatarWidget(
-                      "missed-bills-color", "Missed Bills", themeProvider),
+                   avatarWidget("missed", "Missed", themeProvider,
+                      themeProvider.themeMode().missedGradient),
+                  avatarWidget("upcoming", "UnPaid", themeProvider,
+                      themeProvider.themeMode().unpaidGradient),
+                  avatarWidget("payed", "Paid", themeProvider,
+                      themeProvider.themeMode().paidGradient),
+                 
                 ],
               ),
             ),
@@ -175,48 +209,56 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Categories',
-                  style: TextStyle(
-                      fontSize: 21,
-                      fontWeight: FontWeight.w800,
-                      fontFamily: 'avenir'),
+                Padding(
+                  padding: EdgeInsets.only(left: 25),
+                  child: Text(
+                    'UnPaid Bills',
+                    style: TextStyle(
+                        fontSize: 21,
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'avenir'),
+                  ),
                 ),
                 Container(
                   height: 60,
                   width: 60,
-                  child: Icon(Icons.dialpad),
+                  child: Icon(Icons.list_rounded),
                 )
               ],
             ),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 3,
-                childAspectRatio: 0.72,
-                children: [
-                  serviceWidget("house", "House\n", themeProvider),
-                  serviceWidget("food_1", "Food\n", themeProvider),
-                  serviceWidget("train", "Transport\n", themeProvider),
-                  serviceWidget("education", "Education\n", themeProvider),
-                  serviceWidget("car", "Car\n", themeProvider),
-                  serviceWidget("bulb", "Electricity\n", themeProvider),
-                  serviceWidget("fitness", "Fitness\n", themeProvider),
-                  serviceWidget("piggy_bank", "Savings\n", themeProvider),
-                  serviceWidget("clothes", "Clothes\n", themeProvider),
-                  serviceWidget("fun", "Fun\n", themeProvider),
-                  serviceWidget(
-                      "entertainment", "Entertainment\n", themeProvider),
-                  serviceWidget("more_icon", "More\n", themeProvider),
-                ],
-              ),
-            )
+
+            buildList(themeProvider),
+
+            // child: GridView.count(
+            //   crossAxisCount: 3,
+            //   childAspectRatio: 0.72,
+            //   children: [
+            //     serviceWidget("house", "House\n", themeProvider),
+            //     serviceWidget("food_1", "Food\n", themeProvider),
+            //     serviceWidget("train", "Transport\n", themeProvider),
+            //     serviceWidget("education", "Education\n", themeProvider),
+            //     serviceWidget("car", "Car\n", themeProvider),
+            //     serviceWidget("bulb", "Electricity\n", themeProvider),
+            //     serviceWidget("fitness", "Fitness\n", themeProvider),
+            //     serviceWidget("piggy_bank", "Savings\n", themeProvider),
+            //     serviceWidget("clothes", "Clothes\n", themeProvider),
+            //     serviceWidget("fun", "Fun\n", themeProvider),
+            //     serviceWidget(
+            //         "entertainment", "Entertainment\n", themeProvider),
+            //     serviceWidget("more_icon", "More\n", themeProvider),
+            //   ],
+            // ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        backgroundColor: Colors.deepPurple[600],
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+          ),
         onPressed: () {
-      
+
         },
       ),
     );
@@ -264,26 +306,118 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Container avatarWidget(String img, String name, ThemeProvider themeProvider) {
+  Widget buildList(ThemeProvider themeProvider) {
+    return Expanded(
+      child: Container(
+        decoration: BoxDecoration(
+          color: themeProvider.themeMode().blendBackgroundColor,
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(30), topLeft: Radius.circular(30)),
+        ),
+        child: ListView.builder(
+          itemCount: paymentBox.length,
+          itemBuilder: (context, index) {
+            final paymentItem = paymentBox.get(index);
+            return Container(
+              margin: new EdgeInsets.only(
+                  left: 20.0, top: 0, right: 20.0, bottom: 15),
+              child: new Container(
+                decoration: BoxDecoration(
+                  color: themeProvider.themeMode().color,
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                ),
+                padding: new EdgeInsets.all(10),
+                child: Column(
+                  children: <Widget>[
+                    new ListTile(
+                      leading: Checkbox(
+                          value: paymentItem.isChecked,
+                          onChanged: (bool value) {
+                            setState(() {
+                              paymentItem.isChecked = value;
+                            });
+                          }),
+                      isThreeLine: false,
+                      dense: true,
+                      //font change
+                      contentPadding: EdgeInsets.all(1),
+                      title: Text(
+                        paymentItem.title,
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            fontFamily: "avenir",
+                            letterSpacing: 0.5),
+                        textAlign: TextAlign.left,
+                      ),
+                      subtitle: Container(
+                        child: Text(
+                          paymentItem.deadline.toString().substring(0, 10),
+                          style: TextStyle(
+                              fontSize: 13,
+                              fontFamily: "avenir",
+                              fontWeight: FontWeight.w600,
+                              
+                              letterSpacing: 0.5),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+
+                      trailing: Text(
+                        paymentItem.cost.toString() + " kr",
+                        style: TextStyle(
+                            color: Colors.amber,
+                            fontSize: 16,
+                            fontFamily: "avenir",
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.5),
+                      ),
+
+                      // onChanged: (bool val) {
+                      //   itemChange(val, index);
+                      // }
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Container avatarWidget(String img, String name, ThemeProvider themeProvider,
+      List<Color> statusColor) {
     return Container(
-      margin: EdgeInsets.only(right: 21),
-      height: 115,
-      width: 107.1,
+      margin: EdgeInsets.only(right: 10, left: 10),
+      height: 180,
+      width: 170,
       decoration: BoxDecoration(
+        color: themeProvider.themeMode().color,
+
+        //  gradient: LinearGradient(
+        //    colors:statusColor
+        //    ),
         borderRadius: BorderRadius.all(Radius.circular(15)),
-        gradient: LinearGradient(
-            colors: themeProvider.themeMode().gradient,
-            begin: Alignment.bottomLeft,
-            end: Alignment.topRight),
+
         // color: Colors.grey[900]
         //Color(0xfff1f3f6)
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          Text(
+            "Total 159 kr",
+            style: TextStyle(
+                color: Colors.amber[700],
+                fontSize: 15,
+                fontFamily: 'avenir',
+                fontWeight: FontWeight.w700),
+          ),
           Container(
-            height: 80,
-            width: 80,
+            height: 120,
+            width: 200,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
 
@@ -293,13 +427,22 @@ class _HomePageState extends State<HomePage> {
               //border: Border.all(color: Colors.grey[500], width: 2)
             ),
           ),
+          // Text(
+          //   name,
+          //   style: TextStyle(
+          //       fontSize: 13,
+          //       fontFamily: 'avenir',
+          //       fontWeight: FontWeight.w700),
+          // ),
+
           Text(
-            name,
+            'Total ' + name + '  5',
             style: TextStyle(
-                fontSize: 13,
+                color: themeProvider.themeMode().textColor,
+                fontSize: 15,
                 fontFamily: 'avenir',
                 fontWeight: FontWeight.w700),
-          )
+          ),
         ],
       ),
     );

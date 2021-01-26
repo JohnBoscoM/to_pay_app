@@ -62,14 +62,33 @@ class ThemeProvider with ChangeNotifier {
   ThemeColor themeMode() {
     return ThemeColor(
       gradient: [
-        if (isLightTheme) ...[Color(0xDDFF0080), Color(0xDDFF8C00)],
-        if (!isLightTheme) ...[Color(0xFF8983F7), Color(0xFFA3DAFB)]
+        if (isLightTheme) ...[Colors.orange[900], Colors.yellow[400]],
+        if (!isLightTheme) ...[Color(0xffDABB5F), Color(0xffF2EDD2)]
+      ],
+      backgroundGradient: [
+        if (isLightTheme) ...[Color(0xff5F3193), Color(0xff372571)],
+        if (!isLightTheme) ...[Color(0xff5F3193), Color(0xff372571)]
+      ],
+         unpaidGradient: [
+        if (isLightTheme) ...[Colors.blue, Colors.blue],
+        if (!isLightTheme) ...[Color(0xffDABB5F), Color(0xffF2EDD2)]
+      ],
+         paidGradient: [
+        if (isLightTheme) ...[Colors.greenAccent[400], Colors.greenAccent[400]],
+        if (!isLightTheme) ...[Color(0xffDABB5F), Color(0xffF2EDD2)]
+      ],
+         missedGradient: [
+        if (isLightTheme) ...[Colors.red, Colors.red],
+        if (!isLightTheme) ...[Color(0xffDABB5F), Color(0xffF2EDD2)]
       ],
       textColor: isLightTheme ? Color(0xFF000000) : Color(0xFFFFFFFF),
       toggleButtonColor: isLightTheme ? Color(0xFFFFFFFF) : Color(0xFf34323d),
       toggleBackgroundColor:
           isLightTheme ? Color(0xFFe7e7e8) : Color(0xFF222029),
-          color:  isLightTheme ? Colors.white : Colors.grey[900],
+      color: isLightTheme ? Colors.white : Color(0xff1C1B28),
+      appColor: isLightTheme ? Color(0xFF6C60E0) : Colors.deepPurple,
+      blendBackgroundColor:
+          isLightTheme ? Color(0xffEEEDF7) : Color(0xff28273A),
       shadow: [
         if (isLightTheme)
           BoxShadow(
@@ -83,7 +102,7 @@ class ThemeProvider with ChangeNotifier {
               spreadRadius: 5,
               blurRadius: 10,
               offset: Offset(0, 5))
-      ],  
+      ],
     );
   }
 }
@@ -91,22 +110,33 @@ class ThemeProvider with ChangeNotifier {
 // A class to manage specify colors and styles in the app not supported by theme data
 class ThemeColor {
   List<Color> gradient;
+  List<Color> backgroundGradient;
+   List<Color> unpaidGradient;
+    List<Color> paidGradient;
+     List<Color> missedGradient;
   Color backgroundColor;
   Color toggleButtonColor;
   Color toggleBackgroundColor;
   Color textColor;
   Color color;
+  Color appColor;
+  Color blendBackgroundColor;
   List<BoxShadow> shadow;
 
-  ThemeColor({
-    this.gradient,
-    this.backgroundColor,
-    this.toggleBackgroundColor,
-    this.toggleButtonColor,
-    this.textColor,
-    this.shadow,
-    this.color
-  });
+  ThemeColor(
+      {this.gradient,
+      this.backgroundColor,
+      this.toggleBackgroundColor,
+      this.toggleButtonColor,
+      this.textColor,
+      this.shadow,
+      this.appColor,
+      this.blendBackgroundColor,
+      this.backgroundGradient,
+      this.paidGradient,
+      this.missedGradient,
+      this.unpaidGradient,
+      this.color});
 }
 
 // Provider finished

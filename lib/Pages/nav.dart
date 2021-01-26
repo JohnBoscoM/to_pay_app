@@ -6,10 +6,12 @@ import 'package:to_pay_app/Pages/payedPayements.dart';
 import 'package:to_pay_app/Pages/paymentsTabbedView.dart';
 import 'package:to_pay_app/Pages/setThemePage.dart';
 import 'package:to_pay_app/Pages/upcomingPayments.dart';
+import 'package:provider/provider.dart';
 import 'package:to_pay_app/Pages/userPage.dart';
 import 'package:to_pay_app/budget/payments/addPayment_page.dart';
 import 'package:to_pay_app/Pages/allPayments.dart';
 import 'package:to_pay_app/calendar/calendar_page.dart';
+import 'package:to_pay_app/model_providers/theme_provider.dart';
 import 'package:to_pay_app/Pages/home.dart';
 import 'package:responsive_navigation_bar/responsive_navigation_bar.dart';
 import 'package:to_pay_app/nav/myhomepage.dart';
@@ -45,7 +47,9 @@ class _NavState extends State<NavPage> {
   //         .createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0));
   @override
   Widget build(BuildContext context) {
+       final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
+      backgroundColor: themeProvider.themeMode().color,
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
@@ -55,12 +59,13 @@ class _NavState extends State<NavPage> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
             child: GNav(
+              backgroundColor: themeProvider.themeMode().color,
                 gap: 8,
                 activeColor: Colors.white,
                 iconSize: 24,
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 duration: Duration(milliseconds: 800),
-                tabBackgroundColor: Colors.grey[800],
+                tabBackgroundColor: themeProvider.themeMode().blendBackgroundColor,
                 tabs: [
                   GButton(
                     icon: Icons.home_outlined,

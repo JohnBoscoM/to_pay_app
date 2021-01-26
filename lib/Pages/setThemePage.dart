@@ -38,8 +38,8 @@ class _SetThemePageState extends State<SetThemePage>
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
                           colors: themeProvider.themeMode().gradient,
-                          begin: Alignment.bottomLeft,
-                          end: Alignment.topRight),
+                          begin: Alignment.bottomRight,
+                          end: Alignment.topLeft),
                     ),
                   ),
                   // Transform.translate(
