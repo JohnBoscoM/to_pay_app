@@ -82,6 +82,7 @@ class ThemeProvider with ChangeNotifier {
         if (!isLightTheme) ...[Color(0xffDABB5F), Color(0xffF2EDD2)]
       ],
       textColor: isLightTheme ? Color(0xFF000000) : Color(0xFFFFFFFF),
+      selectedColor: isLightTheme ? Colors.deepPurple: Colors.deepPurple[800],
       toggleButtonColor: isLightTheme ? Color(0xFFFFFFFF) : Color(0xFf34323d),
       toggleBackgroundColor:
           isLightTheme ? Color(0xFFe7e7e8) : Color(0xFF222029),
@@ -119,6 +120,7 @@ class ThemeColor {
   Color toggleBackgroundColor;
   Color textColor;
   Color color;
+  Color selectedColor;
   Color appColor;
   Color blendBackgroundColor;
   List<BoxShadow> shadow;
@@ -136,7 +138,8 @@ class ThemeColor {
       this.paidGradient,
       this.missedGradient,
       this.unpaidGradient,
-      this.color});
+      this.color,
+      this.selectedColor,});
 }
 
 // Provider finished

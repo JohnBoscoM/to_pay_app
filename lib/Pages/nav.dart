@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:to_pay_app/Pages/userPage.dart';
 import 'package:to_pay_app/budget/payments/addPayment_page.dart';
 import 'package:to_pay_app/Pages/allPayments.dart';
-import 'package:to_pay_app/calendar/calendar_page.dart';
+import 'package:to_pay_app/Pages/calendar/calendar_page.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
 import 'package:to_pay_app/Pages/home.dart';
 import 'package:responsive_navigation_bar/responsive_navigation_bar.dart';
