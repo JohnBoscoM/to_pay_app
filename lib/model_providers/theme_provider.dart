@@ -122,12 +122,21 @@ class ThemeProvider with ChangeNotifier {
     
 
   }
-  CategoryIcon categoryIcon(String category) {
-  return CategoryIcon(
+  CategoryIcon categoryIcon([String category]) {
+    try{
+ return CategoryIcon(
     name: category,
     color: getColor(category),
     icon:  getIcon(category)
   );
+    }catch(e){
+return CategoryIcon(
+    name: '',
+    color: Colors.black,
+    icon:  Icons.hail
+  );
+    }
+ 
 }
 }
 
