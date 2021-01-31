@@ -22,6 +22,7 @@ class _SetThemePageState extends State<SetThemePage>
     final width = MediaQuery.of(context).size.width;
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
+      backgroundColor: themeProvider.themeMode().color,
       key: _scaffoldKey,
       body: SafeArea(
         child: Container(

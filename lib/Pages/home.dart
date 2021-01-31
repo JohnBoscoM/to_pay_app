@@ -65,7 +65,6 @@ class _HomePageState extends State<HomePage> {
               padding: EdgeInsets.all(30),
               decoration: BoxDecoration(
                 //color: themeProvider.themeMode().appColor,
-
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(35),
                     bottomRight: Radius.circular(35)),
