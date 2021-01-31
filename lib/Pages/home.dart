@@ -13,6 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final paymentBox = Hive.box('paymentBox');
+  final totalExpences = 0;
   //User user;
   final usernameController = TextEditingController();
   final incomeController = TextEditingController();
@@ -82,6 +83,7 @@ class _HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
+                        padding: EdgeInsets.only(top: 30),
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -92,10 +94,10 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ]),
                       ),
-
                       SizedBox(
-                        height: 70,
+                        height: 60,
                       ),
+
                       Text(
                         "Overview",
                         style: TextStyle(
@@ -108,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                         height: 25,
                       ),
                       Text(
-                        "Total Depth: 3000 kr",
+                        "Total Expenses: 3000 kr",
                         style: TextStyle(
                             color: Colors.amber,
                             fontSize: 20,
@@ -176,6 +178,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             SingleChildScrollView(
+              padding: EdgeInsets.all(15),
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
@@ -192,13 +195,12 @@ class _HomePageState extends State<HomePage> {
                   //     size: 40,
                   //   ),
                   // ),
-                   avatarWidget("missed", "Missed", themeProvider,
+                  avatarWidget("missed", "Missed", themeProvider,
                       themeProvider.themeMode().missedGradient),
                   avatarWidget("upcoming", "UnPaid", themeProvider,
                       themeProvider.themeMode().unpaidGradient),
                   avatarWidget("payed", "Paid", themeProvider,
                       themeProvider.themeMode().paidGradient),
-                 
                 ],
               ),
             ),
@@ -255,10 +257,8 @@ class _HomePageState extends State<HomePage> {
         child: Icon(
           Icons.add,
           color: Colors.white,
-          ),
-        onPressed: () {
-
-        },
+        ),
+        onPressed: () {},
       ),
     );
   }
@@ -329,13 +329,30 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   children: <Widget>[
                     new ListTile(
-                      leading: Checkbox(
-                          value: paymentItem.isChecked,
-                          onChanged: (bool value) {
-                            setState(() {
-                              paymentItem.isChecked = value;
-                            });
-                          }),
+                      onLongPress: () {},
+                      leading: Container(
+                        height: 70,
+                        width: 70,
+                        margin: EdgeInsets.only(right: 0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: themeProvider
+                              .categoryIcon(paymentItem.category)
+                              .color,
+                        ),
+                        child: Icon(
+                          themeProvider.categoryIcon(paymentItem.category).icon,
+                          size: 30,
+                        ),
+                      ),
+
+                      // Checkbox(
+                      //     value: paymentItem.isChecked,
+                      //     onChanged: (bool value) {
+                      //       setState(() {
+                      //         paymentItem.isChecked = value;
+                      //       });
+                      //     }),
                       isThreeLine: false,
                       dense: true,
                       //font change
@@ -356,7 +373,6 @@ class _HomePageState extends State<HomePage> {
                               fontSize: 13,
                               fontFamily: "avenir",
                               fontWeight: FontWeight.w600,
-                              
                               letterSpacing: 0.5),
                           textAlign: TextAlign.left,
                         ),
@@ -368,7 +384,7 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.amber,
                             fontSize: 16,
                             fontFamily: "avenir",
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w800,
                             letterSpacing: 0.5),
                       ),
 
@@ -394,7 +410,7 @@ class _HomePageState extends State<HomePage> {
       width: 170,
       decoration: BoxDecoration(
         color: themeProvider.themeMode().color,
-
+        boxShadow: themeProvider.themeMode().itemShadow,
         //  gradient: LinearGradient(
         //    colors:statusColor
         //    ),

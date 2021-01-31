@@ -52,7 +52,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
 
   List<Widget> list = [
     Tab(text: "All"),
-    Tab(text: "Payed"),
+    Tab(text: "Paid"),
     Tab(text: "Missed"),
   ];
 
@@ -105,7 +105,17 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
       length: 4,
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: themeProvider.themeMode().blendBackgroundColor,
+          elevation: 0,
+        
           bottom: TabBar(
+            unselectedLabelColor: Colors.black,
+            labelColor: Colors.white,
+            indicatorPadding: EdgeInsets.all(20),
+            indicator: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              color: themeProvider.themeMode().appColor,
+            ),
             onTap: (index) {
               // Should not used it as it only called when tab options are clicked,
               // not when user swapped
@@ -113,7 +123,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
             controller: _controller,
             tabs: list,
           ),
-          title: Text('Bills'),
+          title: Text('Expenses'),
         ),
         body: TabBarView(
           controller: _controller,
@@ -267,7 +277,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
         style: TextStyle(fontSize: 18),
         underline: Container(
           height: 2,
-          color: Colors.grey[200],
+         
         ),
         onChanged: (String newValue) {
           setState(() {

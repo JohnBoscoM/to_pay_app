@@ -61,22 +61,22 @@ class _NavState extends State<NavPage> {
             child: GNav(
               backgroundColor: themeProvider.themeMode().color,
                 gap: 8,
-                activeColor: Colors.white,
+                activeColor: themeProvider.themeMode().textColor,
                 iconSize: 24,
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                duration: Duration(milliseconds: 800),
+                duration: Duration(milliseconds: 500),
                 tabBackgroundColor: themeProvider.themeMode().blendBackgroundColor,
                 tabs: [
                   GButton(
-                    icon: Icons.home_outlined,
+                    icon: Icons.home_rounded,
                     text: 'Home',
                   ),
                   GButton(
-                    icon: Icons.account_balance_wallet_outlined,
+                    icon: Icons.account_balance_wallet_rounded,
                     text: 'Bills',
                   ),
                   GButton(
-                    icon: Icons.calendar_today_outlined,
+                    icon: Icons.calendar_today_rounded,
                     text: 'Calendar',
                   ),
                   //  GButton(
@@ -84,12 +84,12 @@ class _NavState extends State<NavPage> {
                   //   text: 'Analytics',
                   // ),
                   GButton(
-                    icon: Icons.brightness_medium_outlined,
+                    icon: Icons.brightness_medium_rounded,
                     text: 'Theme',
                   ),
                    GButton(
-                    icon: Icons.person_outline,
-                    text: 'My Profile',
+                    icon: Icons.analytics_rounded,
+                    text: 'Analytics',
                   ),
                 ],
                 selectedIndex: _selectedIndex,
