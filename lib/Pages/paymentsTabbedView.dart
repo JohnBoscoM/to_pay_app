@@ -2,8 +2,8 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:to_pay_app/Pages/allPayments.dart';
 import 'package:to_pay_app/Pages/missedPayments.dart';
-import 'package:to_pay_app/Pages/payedPayements.dart';
-import 'package:to_pay_app/Pages/upcomingPayments.dart';
+import 'package:to_pay_app/Pages/paidPayements.dart';
+import 'package:to_pay_app/Pages/unpaidPayments.dart';
 import 'package:to_pay_app/budget/payments/addPayment_page.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
 import 'package:to_pay_app/models/bill.dart';
@@ -52,6 +52,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
 
   List<Widget> list = [
     Tab(text: "All"),
+    Tab(text: "Unpaid"),
     Tab(text: "Paid"),
     Tab(text: "Missed"),
   ];
@@ -109,7 +110,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
           elevation: 0,
         
           bottom: TabBar(
-            unselectedLabelColor: Colors.black,
+            unselectedLabelColor: themeProvider.themeMode().textColor,
             labelColor: Colors.white,
             indicatorPadding: EdgeInsets.all(20),
             indicator: BoxDecoration(
@@ -129,7 +130,8 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
           controller: _controller,
           children: [
             AllPaymentsPage(),
-            PayedBillsPage(),
+            UnPaidPaymentsPage(),
+            PaidBillsPage(),
             MissedBillsPage(),
           ],
         ),

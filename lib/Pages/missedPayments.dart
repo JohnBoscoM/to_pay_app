@@ -34,6 +34,7 @@ class _MissedBillsPageState extends State<MissedBillsPage> {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
+      backgroundColor: themeProvider.themeMode().blendBackgroundColor,
       body: SafeArea(
         child: Container(
           decoration: BoxDecoration(
@@ -43,65 +44,33 @@ class _MissedBillsPageState extends State<MissedBillsPage> {
           child: Container(
             child: Column(
               children: <Widget>[
-                SizedBox(
-                  width: width,
-                  height: height * 0.2,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage("assets/images/hugo-Bills.png"),
-                          alignment: Alignment.centerRight),
-                      gradient: LinearGradient(
-                          colors: themeProvider.themeMode().gradient,
-                          begin: Alignment.bottomLeft,
-                          end: Alignment.topRight),
-                    ),
-                    child: Container(
-                      height: height * 0.2,
-                      width: width,
-                      alignment: Alignment.centerLeft,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text("Left To Pay:",
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  fontFamily: "avenir",
-                                  color: Colors.white),
-                              textAlign: TextAlign.left),
-                          Text(
-                            "6522 kr",
-                            style: TextStyle(
-                                fontSize: 30,
-                                fontFamily: "avenir",
-                                color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
                 //Padding(padding: new EdgeInsets.all(0)),
                 Column(
                   children: <Widget>[
                     Container(
-                      padding: EdgeInsets.only(left: 50, top: 30),
+                      padding: EdgeInsets.only(left: 10, top: 30),
                       width: width,
                       decoration: BoxDecoration(
+                        color: themeProvider.themeMode().blendBackgroundColor,
                         borderRadius: BorderRadius.only(
                           topRight: Radius.circular(20),
                           topLeft: Radius.circular(20),
                         ),
                       ),
-                      child: Text("Missed Bills",
-                          style: TextStyle(fontSize: 25, fontFamily: "avenir"),
-                          textAlign: TextAlign.left),
-                    ),
+                      /*
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 10, bottom: 20),
+                          child: Text("All Bills",
+                              style:
+                                  TextStyle(fontSize: 22, fontFamily: "avenir"),
+                              textAlign: TextAlign.center),
+                        ),
+
+                         */
+                    )
                   ],
                 ),
-                buildList(),
+                buildList(themeProvider,height,width),
               ],
             ),
           ),
@@ -110,33 +79,65 @@ class _MissedBillsPageState extends State<MissedBillsPage> {
     );
   }
 
-  Widget buildList() {
+  Widget buildList(ThemeProvider themeProvider, height, width) {
     return Expanded(
       child: Container(
         decoration: BoxDecoration(
+          color: themeProvider.themeMode().blendBackgroundColor,
           borderRadius: BorderRadius.only(
-              topRight: Radius.circular(0), topLeft: Radius.circular(30)),
+              topRight: Radius.circular(0), topLeft: Radius.circular(0)),
         ),
         child: ListView.builder(
           itemCount: paymentBox.length,
           itemBuilder: (context, index) {
             final paymentItem = paymentBox.get(index);
-            if (paymentItem.deadline.isBefore(new DateTime.now()) && paymentItem.isChecked == false) {
-              return Container(
-                margin: new EdgeInsets.only(
-                    left: 20.0, top: 0, right: 20.0, bottom: 0),
+            if (paymentItem.deadline.isBefore(new DateTime.now()) &&
+                paymentItem.isChecked == false) {
+              return Dismissible(
+                key: Key(paymentItem.toString()),
+                onDismissed: (direction) {
+                  paymentBox.delete(index);
+                  Scaffold.of(context).showSnackBar(new SnackBar(
+                    content: Text(paymentItem.title + " has been removed"),
+                  ));
+                },
                 child: new Container(
-                  padding: new EdgeInsets.all(15.0),
+                  padding: new EdgeInsets.all(15),
+                  //elevation: 0,
+                  decoration: BoxDecoration(
+                    color: themeProvider.themeMode().color,
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                  ),
+                  margin: new EdgeInsets.all(10),
                   child: Column(
                     children: <Widget>[
                       new ListTile(
-                        leading: Checkbox(
-                            value: paymentItem.isChecked,
-                            onChanged: (bool value) {
-                              setState(() {
-                                paymentItem.isChecked = value;
-                              });
-                            }),
+                        onLongPress: () {},
+                        leading: Container(
+                          height: 70,
+                          width: 70,
+                          margin: EdgeInsets.only(right: 0),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: themeProvider
+                                .categoryIcon(paymentItem.category)
+                                .color,
+                          ),
+                          child: Icon(
+                            themeProvider
+                                .categoryIcon(paymentItem.category)
+                                .icon,
+                            size: 30,
+                          ),
+                        ),
+
+                        // Checkbox(
+                        //     value: paymentItem.isChecked,
+                        //     onChanged: (bool value) {
+                        //       setState(() {
+                        //         paymentItem.isChecked = value;
+                        //       });
+                        //     }),
                         isThreeLine: false,
                         dense: true,
                         //font change
@@ -144,8 +145,8 @@ class _MissedBillsPageState extends State<MissedBillsPage> {
                         title: Text(
                           paymentItem.title,
                           style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w800,
                               fontFamily: "avenir",
                               letterSpacing: 0.5),
                           textAlign: TextAlign.left,
@@ -155,22 +156,39 @@ class _MissedBillsPageState extends State<MissedBillsPage> {
                             paymentItem.deadline.toString().substring(0, 10),
                             style: TextStyle(
                                 fontSize: 13,
-                                fontFamily: "ubuntu",
+                                fontFamily: "avenir",
                                 fontWeight: FontWeight.w600,
-                                fontStyle: FontStyle.italic,
                                 letterSpacing: 0.5),
                             textAlign: TextAlign.left,
                           ),
                         ),
 
-                        trailing: Text(
-                          paymentItem.cost.toString() + " kr",
-                          style: TextStyle(
-                              color: Colors.blue,
-                              fontSize: 16,
-                              fontFamily: "ubuntu",
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.5),
+                        trailing: Flexible(
+                          flex: 1,
+                          fit: FlexFit.loose,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.32,
+                            child: Row(
+                              children: [
+                                Text(
+                                  paymentItem.cost.toString() + " kr",
+                                  style: TextStyle(
+                                      color: Colors.amber,
+                                      fontSize: 15,
+                                      fontFamily: "avenir",
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 0.5),
+                                ),
+                                Checkbox(
+                                    value: paymentItem.isChecked,
+                                    onChanged: (bool value) {
+                                      setState(() {
+                                        paymentItem.isChecked = value;
+                                      });
+                                    }),
+                              ],
+                            ),
+                          ),
                         ),
 
                         // onChanged: (bool val) {
@@ -182,7 +200,12 @@ class _MissedBillsPageState extends State<MissedBillsPage> {
                 ),
               );
             }
-            return Container();
+            return Container(
+                child: Center(
+
+              child: Text("You have no missed bills, Keep it up!",
+              style: TextStyle(fontFamily: "avenir", fontSize: 16, fontWeight: FontWeight.bold),),
+            ));
           },
         ),
       ),

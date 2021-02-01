@@ -146,6 +146,21 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 child: Column(
                   children: <Widget>[
                     new ListTile(
+                      leading: Container(
+                        height: 70,
+                        width: 70,
+                        margin: EdgeInsets.only(right: 0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: themeProvider
+                              .categoryIcon(paymentItem.category)
+                              .color,
+                        ),
+                        child: Icon(
+                          themeProvider.categoryIcon(paymentItem.category).icon,
+                          size: 30,
+                        ),
+                      ),
                       isThreeLine: false,
                       dense: true,
                       //font change
