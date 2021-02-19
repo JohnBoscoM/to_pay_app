@@ -163,7 +163,7 @@ class _UnPaidPaymentsPageState extends State<UnPaidPaymentsPage> {
                             child: Row(
                               children: [
                                 Text(
-                                  paymentItem.cost.toString() + " kr",
+                                  paymentItem.cost.truncate().toString() + " kr",
                                   style: TextStyle(
                                       color: Colors.amber,
                                       fontSize: 15,

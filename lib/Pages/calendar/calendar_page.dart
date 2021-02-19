@@ -7,22 +7,26 @@ import 'package:to_pay_app/model_providers/theme_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:to_pay_app/budget/payments/paymentList.dart';
 import 'package:to_pay_app/Pages/allPayments.dart';
+import 'package:to_pay_app/models/bill.dart';
 
-class CalendarScreen extends StatefulWidget {
+class CalendarPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _CalendarScreenState();
+    return _CalendarPageState();
   }
 }
 
-class _CalendarScreenState extends State<CalendarScreen> {
+class _CalendarPageState extends State<CalendarPage> {
   final paymentBox = Hive.box('paymentBox');
+  final _selectedDay = DateTime.now();
   CalendarController _calendarController;
+  Map<DateTime, List> _events;
 
   @override
   void initState() {
     super.initState();
     _calendarController = CalendarController();
+    _events = fetchEvents(_selectedDay);
   }
 
   @override
@@ -30,7 +34,19 @@ class _CalendarScreenState extends State<CalendarScreen> {
     super.dispose();
     _calendarController.dispose();
   }
+  Map<DateTime, List> fetchEvents(DateTime selectedDate) {
+    var event = new Map<DateTime, List>();
+    List<dynamic> billItems = new List<dynamic>();
+    paymentBox.toMap().forEach((key, value) {
+      if (value.deadline == selectedDate)
+        billItems.add(value);
+    });
+    event = {
+      selectedDate:billItems
+    };
 
+    return event;
+  }
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -38,12 +54,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final _width = MediaQuery.of(context).size.width;
     TextStyle dayStyle(FontWeight fontWeight) {
       return TextStyle(
-          color: themeProvider.themeMode().textColor,
+          color: Colors.white,
           fontWeight: fontWeight,
           fontFamily: "avenir");
-    }
-
-    ;
+    };
     return Scaffold(
       backgroundColor: themeProvider.themeMode().color,
       body: Container(
@@ -67,12 +81,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 ),
                 daysOfWeekStyle: DaysOfWeekStyle(
                     weekdayStyle: TextStyle(
-                        color: themeProvider.themeMode().textColor,
+                        color: Colors.amber,
                         fontWeight: FontWeight.bold,
                         fontFamily: "avenir",
                         fontSize: 16),
                     weekendStyle: TextStyle(
-                        color: themeProvider.themeMode().textColor,
+                        color: Colors.amber,
                         fontWeight: FontWeight.bold,
                         fontFamily: "avenir",
                         fontSize: 16)),
@@ -84,6 +98,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       color: Colors.amber),
                 ),
                 calendarController: _calendarController,
+                events: _events,
               ),
               Container(
                 width: _width,
@@ -121,6 +136,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
       ),
     );
   }
+
+
 
   Widget buildList(ThemeProvider themeProvider) {
     return Expanded(

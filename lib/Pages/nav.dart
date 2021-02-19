@@ -35,9 +35,8 @@ class _NavState extends State<NavPage> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static final List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    
     PaymentsTabbedPage(),
-    CalendarScreen(),  
+    CalendarPage(),
     SetThemePage(),
     Text("Temp"),
     //MyHomePage(),

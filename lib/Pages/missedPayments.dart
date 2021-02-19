@@ -171,7 +171,7 @@ class _MissedBillsPageState extends State<MissedBillsPage> {
                             child: Row(
                               children: [
                                 Text(
-                                  paymentItem.cost.toString() + " kr",
+                                  paymentItem.cost.truncate().toString() + " kr",
                                   style: TextStyle(
                                       color: Colors.amber,
                                       fontSize: 15,

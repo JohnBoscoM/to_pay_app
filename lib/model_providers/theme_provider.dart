@@ -84,6 +84,7 @@ class ThemeProvider with ChangeNotifier {
       textColor: isLightTheme ? Color(0xFF000000) : Color(0xFFFFFFFF),
       selectedColor: isLightTheme ? Colors.deepPurple: Colors.deepPurple[800],
       toggleButtonColor: isLightTheme ? Color(0xFFFFFFFF) : Color(0xFf34323d),
+      nightOrDayImage: isLightTheme ? "assets/images/hugo-dogw.png" :'assets/images/hugo-cat-sleep.png',
       toggleBackgroundColor:
           isLightTheme ? Color(0xFFe7e7e8) : Color(0xFF222029),
       color: isLightTheme ? Colors.white : Color(0xff1C1B28),
@@ -214,6 +215,7 @@ class ThemeColor {
   List<Color> unpaidGradient;
   List<Color> paidGradient;
   List<Color> missedGradient;
+  String nightOrDayImage;
   Color backgroundColor;
   Color toggleButtonColor;
   Color toggleBackgroundColor;
@@ -240,7 +242,8 @@ class ThemeColor {
       this.unpaidGradient,
       this.itemShadow,
       this.selectedColor, 
-      this.color
+      this.color,
+      this.nightOrDayImage
      });
 }
 

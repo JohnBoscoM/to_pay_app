@@ -4,6 +4,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:to_pay_app/budget/payments/addPayment_page.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
+import 'package:to_pay_app/models/bill.dart';
 import 'package:to_pay_app/models/user.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,7 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final paymentBox = Hive.box('paymentBox');
-  final totalExpences = 0;
+
   //User user;
   final usernameController = TextEditingController();
   final incomeController = TextEditingController();
@@ -32,11 +33,118 @@ class _HomePageState extends State<HomePage> {
     incomeController.dispose();
     super.dispose();
   }
+  int totalAmount() {
+    double amount = 0;
+    paymentBox.toMap().forEach((key, value) {
+        amount+= value.cost;
+    });
+    return amount.truncate();
+  }
+  int totalUnPaidAmount() {
+    double amount = 0;
+    paymentBox.toMap().forEach((key, value) {
+      if (value.isChecked == false){
+        amount+= value.cost;
+      }
+
+    });
+    return amount.truncate();
+  }
+  int totalPaidAmount() {
+    double amount = 0;
+    paymentBox.toMap().forEach((key, value) {
+      if (value.isChecked == true){
+        amount+= value.cost;
+      }
+
+    });
+    return amount.truncate();
+  }
+
+  int totalMissedAmount() {
+    double amount = 0;
+    paymentBox.toMap().forEach((key, value) {
+      if (value.deadline.isBefore(new DateTime.now()) &&
+          value.isChecked == false){
+        amount = value.cost;
+      }
+    });
+    return amount.truncate();
+  }
+
+  int unpaidBillsCount() {
+    var count = 0;
+    paymentBox.toMap().forEach((key, value) {
+      if (value.isChecked == false){
+        count++;
+      }
+
+    });
+    return count;
+  }
+  int paidBillsCount() {
+    var count = 0;
+    paymentBox.toMap().forEach((key, value) {
+      if (value.isChecked == true){
+        count++;
+      }
+
+    });
+    return count;
+  }
+
+  int missedBillsCount() {
+    var count = 0;
+    paymentBox.toMap().forEach((key, value) {
+      if (value.deadline.isBefore(new DateTime.now()) &&
+          value.isChecked == false){
+        count++;
+      }
+    });
+    return count;
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final _width = MediaQuery.of(context).size.width;
+    Text status(String name) {
+      if(name == "Paid"){
+       return  Text(
+         'Total ' + name + " " + paidBillsCount().toString(),
+         style: TextStyle(
+             color: themeProvider.themeMode().textColor,
+             fontSize: 15,
+             fontFamily: 'avenir',
+             fontWeight: FontWeight.w700),
+
+       );
+      }
+      if(name == "UnPaid"){
+        return  Text(
+          'Total ' + name + " " + unpaidBillsCount().toString(),
+          style: TextStyle(
+              color: themeProvider.themeMode().textColor,
+              fontSize: 15,
+              fontFamily: 'avenir',
+              fontWeight: FontWeight.w700),
+        );
+      }
+      if(name == "Missed"){
+        return  Text(
+          'Total ' + name + " " + missedBillsCount().toString(),
+          style: TextStyle(
+              color: themeProvider.themeMode().textColor,
+              fontSize: 15,
+              fontFamily: 'avenir',
+              fontWeight: FontWeight.w700),
+        );
+      }
+      return Text("Status");
+    };
     return Scaffold(
       backgroundColor: themeProvider.themeMode().blendBackgroundColor,
       //appBar: AppBar(
@@ -110,7 +218,7 @@ class _HomePageState extends State<HomePage> {
                         height: 25,
                       ),
                       Text(
-                        "Total Expenses: 3000 kr",
+                        "Total Expenses: " + totalAmount().toString() + "kr",
                         style: TextStyle(
                             color: Colors.amber,
                             fontSize: 20,
@@ -121,7 +229,7 @@ class _HomePageState extends State<HomePage> {
                         height: 10,
                       ),
                       Text(
-                        "Paid: 1769 kr",
+                        "Paid: " + totalPaidAmount().toString() + "kr",
                         style: TextStyle(
                             color: Colors.amber,
                             fontSize: 20,
@@ -195,11 +303,11 @@ class _HomePageState extends State<HomePage> {
                   //     size: 40,
                   //   ),
                   // ),
-                  avatarWidget("missed", "Missed", themeProvider,
+                  avatarWidget("missed", status("Missed"), themeProvider,
                       themeProvider.themeMode().missedGradient),
-                  avatarWidget("upcoming", "UnPaid", themeProvider,
+                  avatarWidget("upcoming", status("UnPaid"), themeProvider,
                       themeProvider.themeMode().unpaidGradient),
-                  avatarWidget("payed", "Paid", themeProvider,
+                  avatarWidget("payed", status("Paid"), themeProvider,
                       themeProvider.themeMode().paidGradient),
                 ],
               ),
@@ -317,92 +425,99 @@ class _HomePageState extends State<HomePage> {
           itemCount: paymentBox.length,
           itemBuilder: (context, index) {
             final paymentItem = paymentBox.get(index);
-            return Container(
-              margin: new EdgeInsets.only(
-                  left: 20.0, top: 0, right: 20.0, bottom: 15),
-              child: new Container(
-                decoration: BoxDecoration(
-                  color: themeProvider.themeMode().color,
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
-                ),
-                padding: new EdgeInsets.all(10),
-                child: Column(
-                  children: <Widget>[
-                    new ListTile(
-                      onLongPress: () {},
-                      leading: Container(
-                        height: 70,
-                        width: 70,
-                        margin: EdgeInsets.only(right: 0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: themeProvider
-                              .categoryIcon(paymentItem.category)
-                              .color,
+            if (paymentItem.isChecked == false) {
+              return Container(
+                margin: new EdgeInsets.only(
+                    left: 20.0, top: 0, right: 20.0, bottom: 15),
+                child: new Container(
+                  decoration: BoxDecoration(
+                    color: themeProvider
+                        .themeMode()
+                        .color,
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                  ),
+                  padding: new EdgeInsets.all(10),
+                  child: Column(
+                    children: <Widget>[
+                      new ListTile(
+                        onLongPress: () {},
+                        leading: Container(
+                          height: 70,
+                          width: 70,
+                          margin: EdgeInsets.only(right: 0),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: themeProvider
+                                .categoryIcon(paymentItem.category)
+                                .color,
+                          ),
+                          child: Icon(
+                            themeProvider
+                                .categoryIcon(paymentItem.category)
+                                .icon,
+                            size: 30,
+                          ),
                         ),
-                        child: Icon(
-                          themeProvider.categoryIcon(paymentItem.category).icon,
-                          size: 30,
-                        ),
-                      ),
 
-                      // Checkbox(
-                      //     value: paymentItem.isChecked,
-                      //     onChanged: (bool value) {
-                      //       setState(() {
-                      //         paymentItem.isChecked = value;
-                      //       });
-                      //     }),
-                      isThreeLine: false,
-                      dense: true,
-                      //font change
-                      contentPadding: EdgeInsets.all(1),
-                      title: Text(
-                        paymentItem.title,
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800,
-                            fontFamily: "avenir",
-                            letterSpacing: 0.5),
-                        textAlign: TextAlign.left,
-                      ),
-                      subtitle: Container(
-                        child: Text(
-                          paymentItem.deadline.toString().substring(0, 10),
+                        // Checkbox(
+                        //     value: paymentItem.isChecked,
+                        //     onChanged: (bool value) {
+                        //       setState(() {
+                        //         paymentItem.isChecked = value;
+                        //       });
+                        //     }),
+                        isThreeLine: false,
+                        dense: true,
+                        //font change
+                        contentPadding: EdgeInsets.all(1),
+                        title: Text(
+                          paymentItem.title,
                           style: TextStyle(
-                              fontSize: 13,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
                               fontFamily: "avenir",
-                              fontWeight: FontWeight.w600,
                               letterSpacing: 0.5),
                           textAlign: TextAlign.left,
                         ),
-                      ),
+                        subtitle: Container(
+                          child: Text(
+                            paymentItem.deadline.toString().substring(0, 10),
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontFamily: "avenir",
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.5),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
 
-                      trailing: Text(
-                        paymentItem.cost.toString() + " kr",
-                        style: TextStyle(
-                            color: Colors.amber,
-                            fontSize: 16,
-                            fontFamily: "avenir",
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 0.5),
-                      ),
+                        trailing: Text(
+                          paymentItem.cost.truncate().toString() + " kr",
+                          style: TextStyle(
+                              color: Colors.amber,
+                              fontSize: 16,
+                              fontFamily: "avenir",
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.5),
+                        ),
 
-                      // onChanged: (bool val) {
-                      //   itemChange(val, index);
-                      // }
-                    ),
-                  ],
+                        // onChanged: (bool val) {
+                        //   itemChange(val, index);
+                        // }
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
+              );
+            }
+            return Container();
           },
         ),
       ),
     );
   }
 
-  Container avatarWidget(String img, String name, ThemeProvider themeProvider,
+  Container avatarWidget(String img, Text textWidget, ThemeProvider themeProvider,
       List<Color> statusColor) {
     return Container(
       margin: EdgeInsets.only(right: 10, left: 10),
@@ -422,14 +537,14 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(
-            "Total 159 kr",
-            style: TextStyle(
-                color: Colors.amber[700],
-                fontSize: 15,
-                fontFamily: 'avenir',
-                fontWeight: FontWeight.w700),
-          ),
+        Text(
+        "Total 159 kr",
+        style: TextStyle(
+            color: Colors.amber[700],
+            fontSize: 15,
+            fontFamily: 'avenir',
+            fontWeight: FontWeight.w700),
+      ),
           Container(
             height: 120,
             width: 200,
@@ -449,15 +564,7 @@ class _HomePageState extends State<HomePage> {
           //       fontFamily: 'avenir',
           //       fontWeight: FontWeight.w700),
           // ),
-
-          Text(
-            'Total ' + name + '  5',
-            style: TextStyle(
-                color: themeProvider.themeMode().textColor,
-                fontSize: 15,
-                fontFamily: 'avenir',
-                fontWeight: FontWeight.w700),
-          ),
+          textWidget,
         ],
       ),
     );

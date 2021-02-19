@@ -114,7 +114,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
             labelColor: Colors.white,
             indicatorPadding: EdgeInsets.all(20),
             indicator: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(20),
               color: themeProvider.themeMode().appColor,
             ),
             onTap: (index) {
