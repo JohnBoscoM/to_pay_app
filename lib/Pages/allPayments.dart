@@ -168,7 +168,7 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
                           child: Container(width: MediaQuery
                               .of(context)
                               .size
-                              .width * 0.32, child: Row(
+                              .width * 0.235, child: Row(
                             children: [
                               Text(
                                 paymentItem.cost.truncate().toString() + " kr",

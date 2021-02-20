@@ -77,7 +77,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   weekdayStyle: dayStyle(FontWeight.normal),
                   weekendStyle: dayStyle(FontWeight.normal),
                   selectedColor: Colors.deepPurpleAccent[100],
-                  todayColor: Colors.red[600],
+                  todayColor: Colors.deepPurple[900],
                 ),
                 daysOfWeekStyle: DaysOfWeekStyle(
                     weekdayStyle: TextStyle(
@@ -114,7 +114,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     Column(
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(top: 50, left: 0),
+                          padding: EdgeInsets.only(top: 30, left: 0),
                           child: Text(
                             "31 January",
                             style: TextStyle(
@@ -181,7 +181,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       isThreeLine: false,
                       dense: true,
                       //font change
-                      contentPadding: EdgeInsets.all(1),
+                      contentPadding: EdgeInsets.all(0),
                       title: Text(
                         paymentItem.title,
                         style: TextStyle(
@@ -207,10 +207,10 @@ class _CalendarPageState extends State<CalendarPage> {
                       trailing: Flexible(
                         flex: 1,
                       fit: FlexFit.loose,
-                      child:Container( width: MediaQuery.of(context).size.width * 0.32, child:Row(
+                      child:Container( width: MediaQuery.of(context).size.width * 0.235, child:Row(
                         children: [
                           Text(
-                            paymentItem.cost.toString() + " kr",
+                            paymentItem.cost.truncate().toString() + " kr",
                             style: TextStyle(
                                 color: Colors.amber,
                                 fontSize: 16,

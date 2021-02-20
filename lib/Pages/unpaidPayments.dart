@@ -159,7 +159,7 @@ class _UnPaidPaymentsPageState extends State<UnPaidPaymentsPage> {
                           flex: 1,
                           fit: FlexFit.loose,
                           child: Container(
-                            width: MediaQuery.of(context).size.width * 0.32,
+                            width: MediaQuery.of(context).size.width * 0.235,
                             child: Row(
                               children: [
                                 Text(
@@ -193,15 +193,16 @@ class _UnPaidPaymentsPageState extends State<UnPaidPaymentsPage> {
               );
             }
             return Container(
-                child: Center(
-                  child: Text(
-                    "You have no unpaid bills",
-                    style: TextStyle(
-                        fontFamily: "avenir",
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ));
+                // child: Center(
+                //   child: Text(
+                //     "You have no unpaid bills",
+                //     style: TextStyle(
+                //         fontFamily: "avenir",
+                //         fontSize: 16,
+                //         fontWeight: FontWeight.bold),
+                //   ),
+                // )
+            );
           },
         ),
       ),

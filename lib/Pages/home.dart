@@ -218,7 +218,7 @@ class _HomePageState extends State<HomePage> {
                         height: 25,
                       ),
                       Text(
-                        "Total Expenses: " + totalAmount().toString() + "kr",
+                        "Total Expenses: " + totalAmount().toString() + " kr",
                         style: TextStyle(
                             color: Colors.amber,
                             fontSize: 20,
@@ -229,7 +229,7 @@ class _HomePageState extends State<HomePage> {
                         height: 10,
                       ),
                       Text(
-                        "Paid: " + totalPaidAmount().toString() + "kr",
+                        "Paid: " + totalPaidAmount().toString() + " kr",
                         style: TextStyle(
                             color: Colors.amber,
                             fontSize: 20,
