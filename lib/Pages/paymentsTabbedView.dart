@@ -108,9 +108,9 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
         appBar: AppBar(
             backgroundColor: themeProvider.themeMode().blendBackgroundColor,
 
-            elevation: 0,
+            elevation: 3 ,
             bottom: buildSearchBar(themeProvider),
-            title: Padding(padding: EdgeInsets.only(top: 20), child:Text("Expenses",style: TextStyle(fontSize: 30, fontFamily: "avenir"),))
+            title: Padding(padding: EdgeInsets.only(top: 20), child:Text("Expenses",style: TextStyle(fontSize: 30, fontFamily: "avenir", fontWeight: FontWeight.w700),))
         ),
         body: TabBarView(
           controller: _controller,

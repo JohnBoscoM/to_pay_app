@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:to_pay_app/Pages/missedPayments.dart';
@@ -30,6 +32,14 @@ class _NavState extends State<NavPage> {
   void changeTab() {
     if (mounted) setState(() {});
   }
+  SnakeBarBehaviour snakeBarStyle = SnakeBarBehaviour.pinned;
+  SnakeShape snakeShape = SnakeShape.indicator;
+  bool showSelectedLabels = false;
+  bool showUnselectedLabels = false;
+  // ShapeBorder bottomBarShape = const RoundedRectangleBorder(
+  //   borderRadius: BorderRadius.all(Radius.circular(25)),
+  // );
+  EdgeInsets padding = const EdgeInsets.all(12);
 
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -48,57 +58,39 @@ class _NavState extends State<NavPage> {
   Widget build(BuildContext context) {
        final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
-      backgroundColor: themeProvider.themeMode().color,
+      backgroundColor: themeProvider.themeMode().blendBackgroundColor,
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      bottomNavigationBar: Container(
-      
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
-            child: GNav(
-              backgroundColor: themeProvider.themeMode().color,
-                gap: 8,
-                activeColor: themeProvider.themeMode().textColor,
-                iconSize: 24,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                duration: Duration(milliseconds: 500),
-                tabBackgroundColor: themeProvider.themeMode().blendBackgroundColor,
-                tabs: [
-                  GButton(
-                    icon: Icons.home_rounded,
-                    text: 'Home',
-                  ),
-                  GButton(
-                    icon: Icons.account_balance_wallet_rounded,
-                    text: 'Bills',
-                  ),
-                  GButton(
-                    icon: Icons.calendar_today_rounded,
-                    text: 'Calendar',
-                  ),
-                  //  GButton(
-                  //   icon: Icons.analytics_outlined,
-                  //   text: 'Analytics',
-                  // ),
-                  GButton(
-                    icon: Icons.brightness_medium_rounded,
-                    text: 'Theme',
-                  ),
-                   GButton(
-                    icon: Icons.analytics_rounded,
-                    text: 'Analytics',
-                  ),
-                ],
-                selectedIndex: _selectedIndex,
-                onTabChange: (index) {
-                  setState(() {
-                    _selectedIndex = index;
-                  });
-                }),
-          ),
-        ),
+      bottomNavigationBar: SnakeNavigationBar.color(
+        backgroundColor: themeProvider.themeMode().navBarColor,
+        behaviour: snakeBarStyle,
+        snakeShape: snakeShape,
+        //shape: bottomBarShape,
+        //  padding: padding,
+
+        ///configuration for SnakeNavigationBar.color
+        snakeViewColor: themeProvider.themeMode().navBarForeground,
+        selectedItemColor: snakeShape == SnakeShape.indicator ? themeProvider.themeMode().navBarForeground : null,
+        unselectedItemColor: themeProvider.themeMode().unselectedItemColor,
+
+        ///configuration for SnakeNavigationBar.gradient
+        //snakeViewGradient: selectedGradient,
+        //selectedItemGradient: snakeShape == SnakeShape.indicator ? selectedGradient : null,
+        //unselectedItemGradient: unselectedGradient,
+
+        showUnselectedLabels: showUnselectedLabels,
+        showSelectedLabels: showSelectedLabels,
+
+        currentIndex: _selectedIndex,
+        onTap: (index) => setState(() => _selectedIndex = index),
+        items: [
+          BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(CupertinoIcons.creditcard), label: 'Expenses'),
+          BottomNavigationBarItem(icon: Icon(CupertinoIcons.calendar_today), label: 'Calendar'),
+          BottomNavigationBarItem(icon: Icon(CupertinoIcons.paintbrush), label: 'Theme'),
+          BottomNavigationBarItem(icon: Icon(CupertinoIcons.chart_pie), label: 'Analytics')
+        ],
       ),
     );
   }

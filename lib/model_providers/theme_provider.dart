@@ -83,8 +83,10 @@ class ThemeProvider with ChangeNotifier {
       ],
       textColor: isLightTheme ? Color(0xFF000000) : Color(0xFFFFFFFF),
       selectedColor: isLightTheme ? Colors.deepPurple : Colors.deepPurple[800],
+      navBarForeground: isLightTheme ? Colors.deepPurple: Colors.deepPurpleAccent[100],
       toggleButtonColor: isLightTheme ? Color(0xFFFFFFFF) : Color(0xFf34323d),
-      searchBarColor: isLightTheme ? Colors.deepPurple[100] : Color.fromARGB(20, 240, 200, 255),
+      searchBarColor: isLightTheme ? Color.fromARGB(25, 30, 0, 255) : Color.fromARGB(15, 255, 250, 255),
+      unselectedItemColor: isLightTheme ? Colors.blueGrey[600] : Colors.blueGrey,
       nightOrDayImage: isLightTheme
           ? "assets/images/hugo-dogw.png"
           : 'assets/images/hugo-cat-sleep.png',
@@ -92,8 +94,8 @@ class ThemeProvider with ChangeNotifier {
           isLightTheme ? Color(0xFFe7e7e8) : Color(0xFF222029),
       color: isLightTheme ? Colors.white : Color(0xff1C1B28),
       appColor: isLightTheme ? Color(0xFF6C60E0) : Colors.deepPurple,
-      blendBackgroundColor:
-          isLightTheme ? Color(0xffEEEDF7) : Color(0xff28273A),
+      blendBackgroundColor: isLightTheme ? Color(0xffEEEDF7) : Color(0xff28273A),
+      navBarColor: isLightTheme ? Color(0xffe8e6f5) : Color(0xff201f2e),
       shadow: [
         if (isLightTheme)
           BoxShadow(
@@ -208,11 +210,14 @@ class ThemeColor {
   List<Color> missedGradient;
   String nightOrDayImage;
   Color backgroundColor;
+  Color navBarColor;
   Color searchBarColor;
+  Color unselectedItemColor;
   Color toggleButtonColor;
   Color toggleBackgroundColor;
   Color textColor;
   Color color;
+  Color navBarForeground;
   Color selectedColor;
   Color appColor;
   Color blendBackgroundColor;
@@ -225,10 +230,13 @@ class ThemeColor {
       this.toggleBackgroundColor,
       this.toggleButtonColor,
       this.textColor,
+        this.unselectedItemColor,
       this.shadow,
+        this.navBarColor,
       this.appColor,
       this.searchBarColor,
       this.blendBackgroundColor,
+        this.navBarForeground,
       this.backgroundGradient,
       this.paidGradient,
       this.missedGradient,
