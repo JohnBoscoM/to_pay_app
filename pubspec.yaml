@@ -16,6 +16,7 @@ dependencies:
   flutter_icons: ^1.1.0
   bottom_bar_with_sheet: ^0.5.4
   curved_navigation_bar: ^0.3.4
+  flutter_local_notifications: ^4.0.1
   google_fonts: ^1.1.1
   google_nav_bar: ^3.1.0
   responsive_navigation_bar: ^1.8.0

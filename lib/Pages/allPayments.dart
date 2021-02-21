@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
@@ -69,6 +70,7 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
                          */
                     )],
                 ),
+               // buildSearchBar(themeProvider),
                 buildList(themeProvider),
               ],
             ),
@@ -77,7 +79,34 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
       ),
     );
   }
-
+ Widget buildSearchBar(ThemeProvider themeProvider){
+    return Container(
+      margin: EdgeInsets.only(right: 30, left: 30, bottom: 30 ),
+      decoration: BoxDecoration(
+        color: themeProvider.themeMode().searchBarColor,
+        borderRadius: BorderRadius.all(Radius.circular(22.0)),
+      ),
+      child:Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex:1,
+            child: Padding(
+              padding: EdgeInsets.only(left:20),
+              child:TextFormField(
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Search',
+                hintStyle: TextStyle(color: themeProvider.themeMode().textColor),
+                icon: Icon(CupertinoIcons.search, color: themeProvider.themeMode().textColor)
+              ),
+            ),
+            )
+          ),
+        ],
+      ),
+    );
+ }
   Widget buildList(ThemeProvider themeProvider) {
     return Expanded(
       child: Container(
@@ -91,7 +120,13 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
           itemBuilder: (context, index) {
             final paymentItem = paymentBox.get(index);
               return Dismissible(
+                direction: DismissDirection.endToStart,
                 key: Key(paymentItem.toString()),
+                background: Container(
+                  padding: EdgeInsets.only(right: 30),
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: Icon(CupertinoIcons.delete, color: Colors.red,size: 27)
+                ),
                 onDismissed: (direction) {
                   paymentBox.delete(index);
                   Scaffold.of(context).showSnackBar(new SnackBar(
@@ -176,7 +211,7 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
                                     color: Colors.amber,
                                     fontSize: 15,
                                     fontFamily: "avenir",
-                                    fontWeight: FontWeight.w700,
+                                    fontWeight: FontWeight.w800,
                                     letterSpacing: 0.5),
                               ),
 

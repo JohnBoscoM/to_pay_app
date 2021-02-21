@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
@@ -63,6 +64,7 @@ class _UnPaidPaymentsPageState extends State<UnPaidPaymentsPage> {
                     )
                   ],
                 ),
+                //buildSearchBar(themeProvider),
                 buildList(themeProvider),
               ],
             ),
@@ -71,7 +73,34 @@ class _UnPaidPaymentsPageState extends State<UnPaidPaymentsPage> {
       ),
     );
   }
-
+  Widget buildSearchBar(ThemeProvider themeProvider){
+    return Container(
+      margin: EdgeInsets.only(right: 30, left: 30, bottom: 30 ),
+      decoration: BoxDecoration(
+        color: themeProvider.themeMode().searchBarColor,
+        borderRadius: BorderRadius.all(Radius.circular(22.0)),
+      ),
+      child:Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+              flex:1,
+              child: Padding(
+                padding: EdgeInsets.only(left:20),
+                child:TextFormField(
+                  decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Search',
+                      hintStyle: TextStyle(color: themeProvider.themeMode().textColor),
+                      icon: Icon(CupertinoIcons.search, color: themeProvider.themeMode().textColor)
+                  ),
+                ),
+              )
+          ),
+        ],
+      ),
+    );
+  }
   Widget buildList(ThemeProvider themeProvider) {
     return Expanded(
       child: Container(
@@ -168,7 +197,7 @@ class _UnPaidPaymentsPageState extends State<UnPaidPaymentsPage> {
                                       color: Colors.amber,
                                       fontSize: 15,
                                       fontFamily: "avenir",
-                                      fontWeight: FontWeight.w700,
+                                      fontWeight: FontWeight.w800,
                                       letterSpacing: 0.5),
                                 ),
                                 Checkbox(

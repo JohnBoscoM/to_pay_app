@@ -82,9 +82,12 @@ class ThemeProvider with ChangeNotifier {
         if (!isLightTheme) ...[Color(0xffDABB5F), Color(0xffF2EDD2)]
       ],
       textColor: isLightTheme ? Color(0xFF000000) : Color(0xFFFFFFFF),
-      selectedColor: isLightTheme ? Colors.deepPurple: Colors.deepPurple[800],
+      selectedColor: isLightTheme ? Colors.deepPurple : Colors.deepPurple[800],
       toggleButtonColor: isLightTheme ? Color(0xFFFFFFFF) : Color(0xFf34323d),
-      nightOrDayImage: isLightTheme ? "assets/images/hugo-dogw.png" :'assets/images/hugo-cat-sleep.png',
+      searchBarColor: isLightTheme ? Colors.deepPurple[100] : Color.fromARGB(20, 240, 200, 255),
+      nightOrDayImage: isLightTheme
+          ? "assets/images/hugo-dogw.png"
+          : 'assets/images/hugo-cat-sleep.png',
       toggleBackgroundColor:
           isLightTheme ? Color(0xFFe7e7e8) : Color(0xFF222029),
       color: isLightTheme ? Colors.white : Color(0xff1C1B28),
@@ -120,26 +123,16 @@ class ThemeProvider with ChangeNotifier {
               offset: Offset(-10, 10)),
       ],
     );
-
-    
-
   }
-  CategoryIcon categoryIcon([String category]) {
-    try{
- return CategoryIcon(
-    name: category,
-    color: getColor(category),
-    icon:  getIcon(category)
-  );
-    }catch(e){
-return CategoryIcon(
-    name: '',
-    color: Colors.black,
-    icon:  Icons.hail
-  );
+
+  CategoryIcon categoryIcon(String category) {
+    try {
+      return CategoryIcon(
+          name: category, color: getColor(category), icon: getIcon(category));
+    } catch (e) {
+      return CategoryIcon(name: '', color: Colors.black, icon: Icons.hail);
     }
- 
-}
+  }
 }
 
 Color getColor(String category) {
@@ -168,7 +161,7 @@ Color getColor(String category) {
     return Colors.grey[400];
   }
 
-   if (category == 'Broadband') {
+  if (category == 'Broadband') {
     return Colors.orange[400];
   }
   return Colors.red[400];
@@ -192,7 +185,7 @@ IconData getIcon(String category) {
   }
   if (category == 'Entertainment') {
     return Icons.computer_rounded;
-  } 
+  }
   if (category == 'Car') {
     return Icons.directions_car_rounded;
   }
@@ -200,13 +193,11 @@ IconData getIcon(String category) {
     return Icons.menu;
   }
 
-    if (category == 'Broadband') {
+  if (category == 'Broadband') {
     return Icons.web;
   }
   return Icons.home_filled;
 }
-
-
 
 // A class to manage specify colors and styles in the app not supported by theme data
 class ThemeColor {
@@ -217,6 +208,7 @@ class ThemeColor {
   List<Color> missedGradient;
   String nightOrDayImage;
   Color backgroundColor;
+  Color searchBarColor;
   Color toggleButtonColor;
   Color toggleBackgroundColor;
   Color textColor;
@@ -235,16 +227,16 @@ class ThemeColor {
       this.textColor,
       this.shadow,
       this.appColor,
+      this.searchBarColor,
       this.blendBackgroundColor,
       this.backgroundGradient,
       this.paidGradient,
       this.missedGradient,
       this.unpaidGradient,
       this.itemShadow,
-      this.selectedColor, 
+      this.selectedColor,
       this.color,
-      this.nightOrDayImage
-     });
+      this.nightOrDayImage});
 }
 
 class CategoryIcon {

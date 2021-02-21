@@ -305,9 +305,9 @@ class _HomePageState extends State<HomePage> {
                   // ),
                   avatarWidget("missed", status("Missed"), themeProvider,
                       themeProvider.themeMode().missedGradient),
-                  avatarWidget("upcoming", status("UnPaid"), themeProvider,
+                  avatarWidget("unpaid", status("UnPaid"), themeProvider,
                       themeProvider.themeMode().unpaidGradient),
-                  avatarWidget("payed", status("Paid"), themeProvider,
+                  avatarWidget("paid", status("Paid"), themeProvider,
                       themeProvider.themeMode().paidGradient),
                 ],
               ),
@@ -519,54 +519,170 @@ class _HomePageState extends State<HomePage> {
 
   Container avatarWidget(String img, Text textWidget, ThemeProvider themeProvider,
       List<Color> statusColor) {
-    return Container(
-      margin: EdgeInsets.only(right: 10, left: 10),
-      height: 180,
-      width: 170,
-      decoration: BoxDecoration(
-        color: themeProvider.themeMode().color,
-        boxShadow: themeProvider.themeMode().itemShadow,
-        //  gradient: LinearGradient(
-        //    colors:statusColor
-        //    ),
-        borderRadius: BorderRadius.all(Radius.circular(15)),
+    if(img == "paid") {
+      return Container(
+        margin: EdgeInsets.only(right: 10, left: 10),
+        height: 180,
+        width: 170,
+        decoration: BoxDecoration(
+          color: themeProvider
+              .themeMode()
+              .color,
+          boxShadow: themeProvider
+              .themeMode()
+              .itemShadow,
+          //  gradient: LinearGradient(
+          //    colors:statusColor
+          //    ),
+          borderRadius: BorderRadius.all(Radius.circular(15)),
 
-        // color: Colors.grey[900]
-        //Color(0xfff1f3f6)
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-        Text(
-        "Total 159 kr",
-        style: TextStyle(
-            color: Colors.amber[700],
-            fontSize: 15,
-            fontFamily: 'avenir',
-            fontWeight: FontWeight.w700),
-      ),
-          Container(
-            height: 120,
-            width: 200,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-
-              image: DecorationImage(
-                  image: AssetImage('assets/images/$img.png'),
-                  fit: BoxFit.contain),
-              //border: Border.all(color: Colors.grey[500], width: 2)
+          // color: Colors.grey[900]
+          //Color(0xfff1f3f6)
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              "Total "+ totalPaidAmount().toString() + " kr",
+              style: TextStyle(
+                  color: Colors.amber[700],
+                  fontSize: 15,
+                  fontFamily: 'avenir',
+                  fontWeight: FontWeight.w700),
             ),
-          ),
-          // Text(
-          //   name,
-          //   style: TextStyle(
-          //       fontSize: 13,
-          //       fontFamily: 'avenir',
-          //       fontWeight: FontWeight.w700),
-          // ),
-          textWidget,
-        ],
-      ),
-    );
+            Container(
+              height: 120,
+              width: 200,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+
+                image: DecorationImage(
+                    image: AssetImage('assets/images/$img.png'),
+                    fit: BoxFit.contain),
+                //border: Border.all(color: Colors.grey[500], width: 2)
+              ),
+            ),
+            // Text(
+            //   name,
+            //   style: TextStyle(
+            //       fontSize: 13,
+            //       fontFamily: 'avenir',
+            //       fontWeight: FontWeight.w700),
+            // ),
+            textWidget,
+          ],
+        ),
+      );
+    }
+    if(img == "missed") {
+      return Container(
+        margin: EdgeInsets.only(right: 10, left: 10),
+        height: 180,
+        width: 170,
+        decoration: BoxDecoration(
+          color: themeProvider
+              .themeMode()
+              .color,
+          boxShadow: themeProvider
+              .themeMode()
+              .itemShadow,
+          //  gradient: LinearGradient(
+          //    colors:statusColor
+          //    ),
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+
+          // color: Colors.grey[900]
+          //Color(0xfff1f3f6)
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              "Total "+ totalMissedAmount().toString() + " kr",
+              style: TextStyle(
+                  color: Colors.amber[700],
+                  fontSize: 15,
+                  fontFamily: 'avenir',
+                  fontWeight: FontWeight.w700),
+            ),
+            Container(
+              height: 120,
+              width: 200,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+
+                image: DecorationImage(
+                    image: AssetImage('assets/images/$img.png'),
+                    fit: BoxFit.contain),
+                //border: Border.all(color: Colors.grey[500], width: 2)
+              ),
+            ),
+            // Text(
+            //   name,
+            //   style: TextStyle(
+            //       fontSize: 13,
+            //       fontFamily: 'avenir',
+            //       fontWeight: FontWeight.w700),
+            // ),
+            textWidget,
+          ],
+        ),
+      );
+    }
+    if(img == "unpaid") {
+      return Container(
+        margin: EdgeInsets.only(right: 10, left: 10),
+        height: 180,
+        width: 170,
+        decoration: BoxDecoration(
+          color: themeProvider
+              .themeMode()
+              .color,
+          boxShadow: themeProvider
+              .themeMode()
+              .itemShadow,
+          //  gradient: LinearGradient(
+          //    colors:statusColor
+          //    ),
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+
+          // color: Colors.grey[900]
+          //Color(0xfff1f3f6)
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              "Total "+ totalUnPaidAmount().toString() + " kr",
+              style: TextStyle(
+                  color: Colors.amber[700],
+                  fontSize: 15,
+                  fontFamily: 'avenir',
+                  fontWeight: FontWeight.w700),
+            ),
+            Container(
+              height: 120,
+              width: 200,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+
+                image: DecorationImage(
+                    image: AssetImage('assets/images/$img.png'),
+                    fit: BoxFit.contain),
+                //border: Border.all(color: Colors.grey[500], width: 2)
+              ),
+            ),
+            // Text(
+            //   name,
+            //   style: TextStyle(
+            //       fontSize: 13,
+            //       fontFamily: 'avenir',
+            //       fontWeight: FontWeight.w700),
+            // ),
+            textWidget,
+          ],
+        ),
+      );
+    }
   }
 }
