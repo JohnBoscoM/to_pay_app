@@ -19,7 +19,7 @@ class CalendarPage extends StatefulWidget {
 
 class _CalendarPageState extends State<CalendarPage> {
   final paymentBox = Hive.box('paymentBox');
-  final _selectedDay = DateTime.now();
+  var _selectedDay = DateTime.now();
 
   CalendarController _calendarController;
   Map<DateTime, List> _datePaymentItemList;
@@ -58,7 +58,7 @@ class _CalendarPageState extends State<CalendarPage> {
     var paymentlist = new List<dynamic>();
     var items = paymentBox.values.toList();
     items.forEach((value) {
-      if (value.deadline.toString().substring(0,10) == selectedDate.toString().substring(0,10))
+      if (value.deadline.toString().substring(0,9) == selectedDate.toString().substring(0,9))
         paymentlist.add(value);
     });
     return paymentlist;
@@ -120,6 +120,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 calendarController: _calendarController,
                 //events: _datePaymentItemList,
                 onDaySelected: (date,  event, holiday){
+                  _selectedDay = date;
                   _onDaySelected(date);
                 },
               ),
