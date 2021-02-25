@@ -3,6 +3,7 @@ import 'package:flutter_clean_calendar/flutter_clean_calendar.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:to_pay_app/helpers/calendar.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:to_pay_app/budget/payments/paymentList.dart';
@@ -19,14 +20,19 @@ class CalendarPage extends StatefulWidget {
 class _CalendarPageState extends State<CalendarPage> {
   final paymentBox = Hive.box('paymentBox');
   final _selectedDay = DateTime.now();
+
   CalendarController _calendarController;
-  Map<DateTime, List> _events;
+  Map<DateTime, List> _datePaymentItemList;
+  List selectedPaymentItemList;
 
   @override
   void initState() {
     super.initState();
     _calendarController = CalendarController();
-    _events = fetchEvents(_selectedDay);
+    selectedPaymentItemList = getDateItemList(_selectedDay);
+
+    //_datePaymentItemList = getDateItemList(paymentBox,_selectedDay);
+
   }
 
   @override
@@ -47,6 +53,24 @@ class _CalendarPageState extends State<CalendarPage> {
 
     return event;
   }
+  List<dynamic> getDateItemList(DateTime selectedDate){
+    
+    var paymentlist = new List<dynamic>();
+    var items = paymentBox.values.toList();
+    items.forEach((value) {
+      if (value.deadline.toString().substring(0,10) == selectedDate.toString().substring(0,10))
+        paymentlist.add(value);
+    });
+    return paymentlist;
+  }
+  void _onDaySelected(DateTime day) {
+    print('CALLBACK: _onDaySelected');
+    setState(() {
+
+     selectedPaymentItemList = getDateItemList(day);
+
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -54,39 +78,35 @@ class _CalendarPageState extends State<CalendarPage> {
     final _width = MediaQuery.of(context).size.width;
     TextStyle dayStyle(FontWeight fontWeight) {
       return TextStyle(
-          color: Colors.white,
+          color: themeProvider.themeMode().textColor,
           fontWeight: fontWeight,
           fontFamily: "avenir");
     };
     return Scaffold(
-      backgroundColor: themeProvider.themeMode().color,
+      backgroundColor: themeProvider.themeMode().blendBackgroundColor,
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-              colors: themeProvider.themeMode().backgroundGradient,
-              begin: Alignment.bottomLeft,
-              end: Alignment.topRight),
-        ),
+       color: themeProvider.themeMode().color,
         child: SingleChildScrollView(
           child: Column(
             children: [
               SizedBox(height: _height * 0.03),
               TableCalendar(
+
                 startingDayOfWeek: StartingDayOfWeek.monday,
                 calendarStyle: CalendarStyle(
                   weekdayStyle: dayStyle(FontWeight.normal),
                   weekendStyle: dayStyle(FontWeight.normal),
-                  selectedColor: Colors.deepPurpleAccent[100],
-                  todayColor: Colors.deepPurple[900],
+                  selectedColor: Colors.deepPurple,
+                  todayColor: Colors.black,
                 ),
                 daysOfWeekStyle: DaysOfWeekStyle(
                     weekdayStyle: TextStyle(
-                        color: Colors.amber,
+                        color: Colors.amber[800],
                         fontWeight: FontWeight.bold,
                         fontFamily: "avenir",
                         fontSize: 16),
                     weekendStyle: TextStyle(
-                        color: Colors.amber,
+                        color: Colors.amber[800],
                         fontWeight: FontWeight.bold,
                         fontFamily: "avenir",
                         fontSize: 16)),
@@ -95,10 +115,13 @@ class _CalendarPageState extends State<CalendarPage> {
                       fontSize: 21,
                       fontFamily: "avenir",
                       fontWeight: FontWeight.bold,
-                      color: Colors.amber),
+                      color: themeProvider.themeMode().textColor),
                 ),
                 calendarController: _calendarController,
-                events: _events,
+                //events: _datePaymentItemList,
+                onDaySelected: (date,  event, holiday){
+                  _onDaySelected(date);
+                },
               ),
               Container(
                 width: _width,
@@ -116,7 +139,7 @@ class _CalendarPageState extends State<CalendarPage> {
                         Padding(
                           padding: EdgeInsets.only(top: 30, left: 0),
                           child: Text(
-                            "31 January",
+                            _selectedDay.day.toString() + " "+ monthName(_selectedDay.month),
                             style: TextStyle(
                                 color: themeProvider.themeMode().textColor,
                               fontSize: 27,
@@ -148,97 +171,106 @@ class _CalendarPageState extends State<CalendarPage> {
               topRight: Radius.circular(30), topLeft: Radius.circular(30)),
         ),
         child: ListView.builder(
-          itemCount: paymentBox.length,
+          itemCount: selectedPaymentItemList.length,
           itemBuilder: (context, index) {
-            final paymentItem = paymentBox.get(index);
-            return Container(
-              margin: new EdgeInsets.only(
-                  left: 20.0, top: 0, right: 20.0, bottom: 15),
-              child: new Container(
-                decoration: BoxDecoration(
-                  color: themeProvider.themeMode().color,
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
+            final paymentItem = selectedPaymentItemList[index];
+      return Container(
+        margin: new EdgeInsets.only(
+            left: 20.0, top: 0, right: 20.0, bottom: 15),
+        child: new Container(
+          decoration: BoxDecoration(
+            color: themeProvider
+                .themeMode()
+                .color,
+            borderRadius: BorderRadius.all(Radius.circular(30)),
+          ),
+          padding: new EdgeInsets.all(10),
+          child: Column(
+            children: <Widget>[
+              new ListTile(
+                leading: Container(
+                  height: 70,
+                  width: 70,
+                  margin: EdgeInsets.only(right: 0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: themeProvider
+                        .categoryIcon(paymentItem.category)
+                        .color,
+                  ),
+                  child: Icon(
+                    themeProvider
+                        .categoryIcon(paymentItem.category)
+                        .icon,
+                    size: 30,
+                  ),
                 ),
-                padding: new EdgeInsets.all(10),
-                child: Column(
-                  children: <Widget>[
-                    new ListTile(
-                      leading: Container(
-                        height: 70,
-                        width: 70,
-                        margin: EdgeInsets.only(right: 0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: themeProvider
-                              .categoryIcon(paymentItem.category)
-                              .color,
-                        ),
-                        child: Icon(
-                          themeProvider.categoryIcon(paymentItem.category).icon,
-                          size: 30,
-                        ),
-                      ),
-                      isThreeLine: false,
-                      dense: true,
-                      //font change
-                      contentPadding: EdgeInsets.all(0),
-                      title: Text(
-                        paymentItem.title,
+                isThreeLine: false,
+                dense: true,
+                //font change
+                contentPadding: EdgeInsets.all(0),
+                title: Text(
+                  paymentItem.title,
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: "avenir",
+                      letterSpacing: 0.5),
+                  textAlign: TextAlign.left,
+                ),
+                subtitle: Container(
+                  child: Text(
+                    paymentItem.deadline.toString().substring(0, 10),
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontFamily: "avenir",
+                        fontWeight: FontWeight.w600,
+
+                        letterSpacing: 0.5),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+
+                trailing: Flexible(
+                  flex: 1,
+                  fit: FlexFit.loose,
+                  child: Container(width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.235, child: Row(
+                    children: [
+                      Text(
+                        paymentItem.cost.truncate().toString() + " kr",
                         style: TextStyle(
+                            color: Colors.amber,
                             fontSize: 16,
-                            fontWeight: FontWeight.w800,
                             fontFamily: "avenir",
+                            fontWeight: FontWeight.w700,
                             letterSpacing: 0.5),
-                        textAlign: TextAlign.left,
-                      ),
-                      subtitle: Container(
-                        child: Text(
-                          paymentItem.deadline.toString().substring(0, 10),
-                          style: TextStyle(
-                              fontSize: 13,
-                              fontFamily: "avenir",
-                              fontWeight: FontWeight.w600,
-
-                              letterSpacing: 0.5),
-                          textAlign: TextAlign.left,
-                        ),
                       ),
 
-                      trailing: Flexible(
-                        flex: 1,
-                      fit: FlexFit.loose,
-                      child:Container( width: MediaQuery.of(context).size.width * 0.235, child:Row(
-                        children: [
-                          Text(
-                            paymentItem.cost.truncate().toString() + " kr",
-                            style: TextStyle(
-                                color: Colors.amber,
-                                fontSize: 16,
-                                fontFamily: "avenir",
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0.5),
-                          ),
-
-                          Checkbox(
-                              value: paymentItem.isChecked,
-                              onChanged: (bool value) {
-                                setState(() {
-                                  paymentItem.isChecked = value;
-                                });
-                              }),
-                        ],
-                      ),
-                      ),
-                      ),
-
-                      // onChanged: (bool val) {
-                      //   itemChange(val, index);
-                      // }
-                    ),
-                  ],
+                      Checkbox(
+                          value: paymentItem.isChecked,
+                          onChanged: (bool value) {
+                            setState(() {
+                              paymentItem.isChecked = value;
+                            });
+                          }),
+                    ],
+                  ),
+                  ),
                 ),
+
+                // onChanged: (bool val) {
+                //   itemChange(val, index);
+                // }
               ),
-            );
+            ],
+          ),
+        ),
+      );
+    return Container();
+
           },
         ),
       ),

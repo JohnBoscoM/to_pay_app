@@ -83,9 +83,10 @@ class ThemeProvider with ChangeNotifier {
       ],
       textColor: isLightTheme ? Color(0xFF000000) : Color(0xFFFFFFFF),
       selectedColor: isLightTheme ? Colors.deepPurple : Colors.deepPurple[800],
-      navBarForeground: isLightTheme ? Colors.deepPurple: Colors.deepPurpleAccent[100],
+      navBarForeground: isLightTheme ? Colors.deepPurple: Colors.deepPurple[400],
       toggleButtonColor: isLightTheme ? Color(0xFFFFFFFF) : Color(0xFf34323d),
       searchBarColor: isLightTheme ? Color.fromARGB(25, 30, 0, 255) : Color.fromARGB(15, 255, 250, 255),
+      formColor: isLightTheme ? Color.fromARGB(15, 60, 0, 255) : Color.fromARGB(50, 255, 250, 255),
       unselectedItemColor: isLightTheme ? Colors.blueGrey[600] : Colors.blueGrey,
       nightOrDayImage: isLightTheme
           ? "assets/images/hugo-dogw.png"
@@ -95,7 +96,7 @@ class ThemeProvider with ChangeNotifier {
       color: isLightTheme ? Colors.white : Color(0xff1C1B28),
       appColor: isLightTheme ? Color(0xFF6C60E0) : Colors.deepPurple,
       blendBackgroundColor: isLightTheme ? Color(0xffEEEDF7) : Color(0xff28273A),
-      navBarColor: isLightTheme ? Color(0xffe8e6f5) : Color(0xff201f2e),
+      navBarColor: isLightTheme ? Color(0xffdad5f5) : Color(0xff201f2e),
       shadow: [
         if (isLightTheme)
           BoxShadow(
@@ -145,7 +146,7 @@ Color getColor(String category) {
     return Colors.greenAccent;
   }
   if (category == 'Fitness') {
-    return Colors.red[400];
+    return Colors.lightBlueAccent;
   }
   if (category == 'Education') {
     return Colors.brown[400];
@@ -163,14 +164,14 @@ Color getColor(String category) {
     return Colors.grey[400];
   }
 
-  if (category == 'Broadband') {
+  if (category == 'Electricty') {
     return Colors.orange[400];
   }
   return Colors.red[400];
 }
 
 IconData getIcon(String category) {
-  if (category == 'Accomodation') {
+  if (category == 'Household') {
     return Icons.home_filled;
   }
   if (category == 'Food') {
@@ -190,6 +191,9 @@ IconData getIcon(String category) {
   }
   if (category == 'Car') {
     return Icons.directions_car_rounded;
+  }
+  if (category == 'Electricty') {
+    return Icons.bolt;
   }
   if (category == 'Other') {
     return Icons.menu;
@@ -212,6 +216,7 @@ class ThemeColor {
   Color backgroundColor;
   Color navBarColor;
   Color searchBarColor;
+  Color formColor;
   Color unselectedItemColor;
   Color toggleButtonColor;
   Color toggleBackgroundColor;
@@ -235,6 +240,7 @@ class ThemeColor {
         this.navBarColor,
       this.appColor,
       this.searchBarColor,
+        this.formColor,
       this.blendBackgroundColor,
         this.navBarForeground,
       this.backgroundGradient,
