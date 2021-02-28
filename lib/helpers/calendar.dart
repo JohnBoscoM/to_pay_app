@@ -18,16 +18,35 @@ String monthName(int monthValue){
     case 12: return "December";
     default: return "";
   }
+
+
+}
+List<dynamic> getDatePayments(List<dynamic> paymentList, DateTime date){
+  var datePayments = new List<dynamic>();
+    paymentList.forEach((payment) {
+      if(date.toString().substring(0,10) == payment.deadline.toString().substring(0, 10)) {
+        datePayments.add(payment);
+      }
+    });
+    return datePayments;
 }
 
 
+Map<DateTime, List<dynamic>>getEvent(List<dynamic>paymentList){
+  var dates = new List<DateTime>();
 
-// List<dynamic> getDateItemList(Box paymentBox, DateTime selectedDate){
-//   var paymentlist = new List<dynamic>();
-//   var event = new Map<DateTime,List<dynamic>>();
-//   paymentBox.toMap().forEach((key, value) {
-//     if (value.deadline == selectedDate)
-//       paymentlist.add(value);
-//   });
-//   return paymentlist;
-// }
+  var events = new Map<DateTime,List<dynamic>>();
+      paymentList.forEach((payment) {
+        dates.add(payment.deadline);
+      });
+      paymentList.forEach((payment) {
+        dates.forEach((date) {
+          if (date.toString().substring(0, 10) == payment.deadline.toString().substring(0, 10)) {
+            events.addAll({date: getDatePayments(paymentList,date)});
+          }
+        });
+      });
+      return events;
+}
+
+

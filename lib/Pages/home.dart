@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -176,7 +177,7 @@ class _HomePageState extends State<HomePage> {
                 //color: themeProvider.themeMode().appColor,
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(35),
-                    bottomRight: Radius.circular(35)),
+                    bottomRight: Radius.circular(0)),
                 gradient: LinearGradient(
                     colors: themeProvider.themeMode().backgroundGradient,
                     begin: Alignment.bottomLeft,
@@ -195,15 +196,15 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Icon(
-                                Icons.menu_rounded,
-                                size: 40,
-                                color: Colors.white,
-                              ),
+                              // Icon(
+                              //   CupertinoIcons.bell_fill,
+                              //   size: 40,
+                              //   color: Colors.white,
+                              // ),
                             ]),
                       ),
                       SizedBox(
-                        height: 60,
+                        height: 0,
                       ),
 
                       Text(
@@ -249,7 +250,7 @@ class _HomePageState extends State<HomePage> {
                       decoration: BoxDecoration(
                         image: DecorationImage(
                             image:
-                                AssetImage("assets/images/urban-overview.png"),
+                                AssetImage("assets/images/overview-clip.png"),
                             alignment: Alignment.bottomRight,
                             fit: BoxFit.scaleDown),
                       ),
@@ -359,14 +360,6 @@ class _HomePageState extends State<HomePage> {
             // ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.deepPurple[600],
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-        onPressed: () {},
       ),
     );
   }

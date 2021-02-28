@@ -15,7 +15,7 @@ class Category {
     'Household',
     'Food',
     'Car',
-    'Electricty',
+    'Electricity',
     'Fitness',
     'Education',
     'Shopping',

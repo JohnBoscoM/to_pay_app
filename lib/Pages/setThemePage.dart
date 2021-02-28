@@ -22,7 +22,7 @@ class _SetThemePageState extends State<SetThemePage>
     final width = MediaQuery.of(context).size.width;
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
-      backgroundColor: themeProvider.themeMode().color,
+      backgroundColor: themeProvider.themeMode().blendBackgroundColor,
       key: _scaffoldKey,
       body: SafeArea(
         child: Container(
@@ -168,15 +168,15 @@ class _SetThemePageState extends State<SetThemePage>
                 ),
               ),
 
-              Container(
-                alignment: Alignment.center,
-                width: width,
-                height:height* 0.2,
-                margin: EdgeInsets.all(0),
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(themeProvider.themeMode().nightOrDayImage))),
-              ),
+              // Container(
+              //   alignment: Alignment.center,
+              //   width: width,
+              //   height:height* 0.2,
+              //   margin: EdgeInsets.all(0),
+              //   decoration: BoxDecoration(
+              //       image: DecorationImage(
+              //           image: AssetImage(themeProvider.themeMode().nightOrDayImage))),
+              // ),
             ],
           ),
         ),

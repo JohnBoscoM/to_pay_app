@@ -66,12 +66,12 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
                                   TextStyle(fontSize: 22, fontFamily: "avenir"),
                               textAlign: TextAlign.center),
                         ),
-
                          */
                     )],
                 ),
                // buildSearchBar(themeProvider),
                 buildList(themeProvider),
+                SizedBox(height: 70),
               ],
             ),
           ),
@@ -120,12 +120,21 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
           itemBuilder: (context, index) {
             final paymentItem = paymentBox.get(index);
               return Dismissible(
-                direction: DismissDirection.endToStart,
+                direction: DismissDirection.startToEnd,
                 key: Key(paymentItem.toString()),
                 background: Container(
-                  padding: EdgeInsets.only(right: 30),
-                  alignment: AlignmentDirectional.centerEnd,
-                  child: Icon(CupertinoIcons.delete, color: Colors.red,size: 27)
+                  padding: EdgeInsets.only(left: 30),
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Icon(CupertinoIcons.delete_solid, size: 45, color: Colors.red),
+                ),
+                secondaryBackground: Container(
+                    padding: EdgeInsets.only(right: 30),
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: Text("Edit",  style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: "avenir",))
                 ),
                 onDismissed: (direction) {
                   paymentBox.delete(index);
@@ -140,6 +149,7 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
                     color: themeProvider
                         .themeMode()
                         .color,
+
                     borderRadius: BorderRadius.all(Radius.circular(30)),
                   ),
                   margin: new EdgeInsets.all(10),

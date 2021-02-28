@@ -22,17 +22,19 @@ class _CalendarPageState extends State<CalendarPage> {
   var _selectedDay = DateTime.now();
 
   CalendarController _calendarController;
-  Map<DateTime, List> _datePaymentItemList;
+  Map<DateTime, List> _event = new Map();
+
   List selectedPaymentItemList;
+
 
   @override
   void initState() {
     super.initState();
     _calendarController = CalendarController();
     selectedPaymentItemList = getDateItemList(_selectedDay);
+    _event = getEvent(paymentBox.values.toList());
 
     //_datePaymentItemList = getDateItemList(paymentBox,_selectedDay);
-
   }
 
   @override
@@ -40,37 +42,37 @@ class _CalendarPageState extends State<CalendarPage> {
     super.dispose();
     _calendarController.dispose();
   }
-  Map<DateTime, List> fetchEvents(DateTime selectedDate) {
-    var event = new Map<DateTime, List>();
-    List<dynamic> billItems = new List<dynamic>();
-    paymentBox.toMap().forEach((key, value) {
-      if (value.deadline == selectedDate)
-        billItems.add(value);
-    });
-    event = {
-      selectedDate:billItems
-    };
 
-    return event;
-  }
-  List<dynamic> getDateItemList(DateTime selectedDate){
-    
+  // Map<List<DateTime>, List> fetchEvents(DateTime selectedDate) {
+  //   var event = new Map<DateTime, List>();
+  //   List<dynamic> billItems = new List<dynamic>();
+  //   List<DateTime> dates = new List<DateTime>();
+  //   paymentBox.toMap().forEach((key, value) {
+  //     dates.add(value.deadline);
+  //       billItems.add(value);
+  //   });
+  //   event = {selectedDate: billItems};
+  //
+  //   return event;
+  // }
+
+  List<dynamic> getDateItemList(DateTime selectedDate) {
     var paymentlist = new List<dynamic>();
     var items = paymentBox.values.toList();
     items.forEach((value) {
-      if (value.deadline.toString().substring(0,9) == selectedDate.toString().substring(0,9))
-        paymentlist.add(value);
+      if (value.deadline.toString().substring(0, 10) ==
+          selectedDate.toString().substring(0, 10)) paymentlist.add(value);
     });
     return paymentlist;
   }
+
   void _onDaySelected(DateTime day) {
     print('CALLBACK: _onDaySelected');
     setState(() {
-
-     selectedPaymentItemList = getDateItemList(day);
-
+      selectedPaymentItemList = getDateItemList(day);
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -81,19 +83,24 @@ class _CalendarPageState extends State<CalendarPage> {
           color: themeProvider.themeMode().textColor,
           fontWeight: fontWeight,
           fontFamily: "avenir");
-    };
+    }
+
+    ;
     return Scaffold(
       backgroundColor: themeProvider.themeMode().blendBackgroundColor,
       body: Container(
-       color: themeProvider.themeMode().color,
+        color: themeProvider.themeMode().color,
         child: SingleChildScrollView(
           child: Column(
             children: [
               SizedBox(height: _height * 0.03),
               TableCalendar(
 
+                events: _event,
                 startingDayOfWeek: StartingDayOfWeek.monday,
                 calendarStyle: CalendarStyle(
+
+                  markersColor: Colors.red[600],
                   weekdayStyle: dayStyle(FontWeight.normal),
                   weekendStyle: dayStyle(FontWeight.normal),
                   selectedColor: Colors.deepPurple,
@@ -119,10 +126,27 @@ class _CalendarPageState extends State<CalendarPage> {
                 ),
                 calendarController: _calendarController,
                 //events: _datePaymentItemList,
-                onDaySelected: (date,  event, holiday){
+                onDaySelected: (date, event, holiday) {
                   _selectedDay = date;
                   _onDaySelected(date);
                 },
+                builders: CalendarBuilders(
+                    markersBuilder: (context, date, events, holidays) {
+                  final children = <Widget>[];
+
+                  if (_event.isNotEmpty) {
+                    children.add(
+                      Positioned(
+                        right: 1,
+                        bottom: 1,
+                        child: _buildEventsMarker(date, events),
+                      ),
+                    );
+                  }
+                  return children;
+                }
+
+                ),
               ),
               Container(
                 width: _width,
@@ -140,12 +164,13 @@ class _CalendarPageState extends State<CalendarPage> {
                         Padding(
                           padding: EdgeInsets.only(top: 30, left: 0),
                           child: Text(
-                            _selectedDay.day.toString() + " "+ monthName(_selectedDay.month),
+                            _selectedDay.day.toString() +
+                                " " +
+                                monthName(_selectedDay.month),
                             style: TextStyle(
                                 color: themeProvider.themeMode().textColor,
-                              fontSize: 27,
-                              fontWeight: FontWeight.bold
-                            ),
+                                fontSize: 27,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                         buildList(themeProvider)
@@ -161,7 +186,30 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-
+  Widget _buildEventsMarker(DateTime date, List events) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        color: _calendarController.isSelected(date)
+            ? Colors.red[600]
+            : _calendarController.isToday(date)
+                ? Colors.amber[600]
+                : Colors.red[400],
+      ),
+      width: 16.0,
+      height: 16.0,
+      child: Center(
+        child: Text(
+          '${events.length}',
+          style: TextStyle().copyWith(
+            color: Colors.white,
+            fontSize: 12.0,
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget buildList(ThemeProvider themeProvider) {
     return Expanded(
@@ -175,103 +223,95 @@ class _CalendarPageState extends State<CalendarPage> {
           itemCount: selectedPaymentItemList.length,
           itemBuilder: (context, index) {
             final paymentItem = selectedPaymentItemList[index];
-      return Container(
-        margin: new EdgeInsets.only(
-            left: 20.0, top: 0, right: 20.0, bottom: 15),
-        child: new Container(
-          decoration: BoxDecoration(
-            color: themeProvider
-                .themeMode()
-                .color,
-            borderRadius: BorderRadius.all(Radius.circular(30)),
-          ),
-          padding: new EdgeInsets.all(10),
-          child: Column(
-            children: <Widget>[
-              new ListTile(
-                leading: Container(
-                  height: 70,
-                  width: 70,
-                  margin: EdgeInsets.only(right: 0),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: themeProvider
-                        .categoryIcon(paymentItem.category)
-                        .color,
-                  ),
-                  child: Icon(
-                    themeProvider
-                        .categoryIcon(paymentItem.category)
-                        .icon,
-                    size: 30,
-                  ),
+            return Container(
+              margin: new EdgeInsets.only(
+                  left: 20.0, top: 0, right: 20.0, bottom: 15),
+              child: new Container(
+                decoration: BoxDecoration(
+                  color: themeProvider.themeMode().color,
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
                 ),
-                isThreeLine: false,
-                dense: true,
-                //font change
-                contentPadding: EdgeInsets.all(0),
-                title: Text(
-                  paymentItem.title,
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                      fontFamily: "avenir",
-                      letterSpacing: 0.5),
-                  textAlign: TextAlign.left,
-                ),
-                subtitle: Container(
-                  child: Text(
-                    paymentItem.deadline.toString().substring(0, 10),
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontFamily: "avenir",
-                        fontWeight: FontWeight.w600,
-
-                        letterSpacing: 0.5),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-
-                trailing: Flexible(
-                  flex: 1,
-                  fit: FlexFit.loose,
-                  child: Container(width: MediaQuery
-                      .of(context)
-                      .size
-                      .width * 0.235, child: Row(
-                    children: [
-                      Text(
-                        paymentItem.cost.truncate().toString() + " kr",
+                padding: new EdgeInsets.all(10),
+                child: Column(
+                  children: <Widget>[
+                    new ListTile(
+                      leading: Container(
+                        height: 70,
+                        width: 70,
+                        margin: EdgeInsets.only(right: 0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: themeProvider
+                              .categoryIcon(paymentItem.category)
+                              .color,
+                        ),
+                        child: Icon(
+                          themeProvider.categoryIcon(paymentItem.category).icon,
+                          size: 30,
+                        ),
+                      ),
+                      isThreeLine: false,
+                      dense: true,
+                      //font change
+                      contentPadding: EdgeInsets.all(0),
+                      title: Text(
+                        paymentItem.title,
                         style: TextStyle(
-                            color: Colors.amber,
                             fontSize: 16,
+                            fontWeight: FontWeight.w800,
                             fontFamily: "avenir",
-                            fontWeight: FontWeight.w700,
                             letterSpacing: 0.5),
+                        textAlign: TextAlign.left,
+                      ),
+                      subtitle: Container(
+                        child: Text(
+                          paymentItem.deadline.toString().substring(0, 10),
+                          style: TextStyle(
+                              fontSize: 13,
+                              fontFamily: "avenir",
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5),
+                          textAlign: TextAlign.left,
+                        ),
                       ),
 
-                      Checkbox(
-                          value: paymentItem.isChecked,
-                          onChanged: (bool value) {
-                            setState(() {
-                              paymentItem.isChecked = value;
-                            });
-                          }),
-                    ],
-                  ),
-                  ),
+                      trailing: Flexible(
+                        flex: 1,
+                        fit: FlexFit.loose,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.235,
+                          child: Row(
+                            children: [
+                              Text(
+                                paymentItem.cost.truncate().toString() + " kr",
+                                style: TextStyle(
+                                    color: Colors.amber,
+                                    fontSize: 16,
+                                    fontFamily: "avenir",
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 0.5),
+                              ),
+                              Checkbox(
+                                  value: paymentItem.isChecked,
+                                  onChanged: (bool value) {
+                                    setState(() {
+                                      paymentItem.isChecked = value;
+                                    });
+                                  }),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // onChanged: (bool val) {
+                      //   itemChange(val, index);
+                      // }
+                    ),
+                  ],
                 ),
-
-                // onChanged: (bool val) {
-                //   itemChange(val, index);
-                // }
               ),
-            ],
-          ),
-        ),
-      );
-    return Container();
-
+            );
+            return Container();
           },
         ),
       ),

@@ -22,7 +22,7 @@ class PaymentsTabbedPage extends StatefulWidget {
 
 class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
     with SingleTickerProviderStateMixin {
-  final Box paymentBox = Hive.box('paymentBox');
+  final paymentBox = Hive.box('paymentBox');
   final titleController = TextEditingController();
   final costController = TextEditingController();
   final deadlineController = TextEditingController();
@@ -39,7 +39,6 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
         initialDate: _date,
         firstDate: DateTime(1900),
         lastDate: DateTime(3000));
-
     if (datePicker != null && datePicker != _date) {
       setState(() {
         _date = datePicker;
@@ -49,7 +48,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
 
   TabController _controller;
   int _selectedIndex = 0;
-  String dropdownValue = 'Other';
+  String dropdownValue = 'Household';
 
   List<Widget> list = [
     Tab(text: "All"),
@@ -108,9 +107,9 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
         appBar: AppBar(
             backgroundColor: themeProvider.themeMode().blendBackgroundColor,
 
-            elevation: 3 ,
+            elevation: 1 ,
             bottom: buildSearchBar(themeProvider),
-            title: Padding(padding: EdgeInsets.only(top: 20), child:Text("Expenses",style: TextStyle(fontSize: 30, fontFamily: "avenir", fontWeight: FontWeight.w700),))
+            title: Center( widthFactor: width,child:Padding(padding: EdgeInsets.only(top: 15), child:Text("Expenses",style: TextStyle(fontSize: 20, fontFamily: "avenir", fontWeight: FontWeight.w700),)))
         ),
         body: TabBarView(
           controller: _controller,
@@ -174,6 +173,8 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
             autofocus: true,
             controller: titleController,
             decoration: InputDecoration(
+              filled: true,
+              fillColor: themeProvider.themeMode().searchBarColor,
               prefixIcon: Icon(Icons.title_outlined),
               hintStyle: TextStyle(color: Colors.grey, fontSize: 20),
               border: OutlineInputBorder(
