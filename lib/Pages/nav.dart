@@ -1,29 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hive/hive.dart';
-import 'package:to_pay_app/Pages/AddPayment.dart';
-
-import 'package:to_pay_app/Pages/missedPayments.dart';
-import 'package:to_pay_app/Pages/paidPayements.dart';
-import 'package:to_pay_app/Pages/paymentsTabbedView.dart';
+import 'package:to_pay_app/Pages/Payment/AddPaymentPage.dart';
+import 'file:///C:/Users/John%20Bosco%20Matanda/Documents/App%20Development/to_pay_app/lib/Pages/payment/paymentsTabbedView.dart';
 import 'package:to_pay_app/Pages/setThemePage.dart';
-import 'package:to_pay_app/Pages/unpaidPayments.dart';
 import 'package:provider/provider.dart';
-import 'package:to_pay_app/Pages/userPage.dart';
-import 'package:to_pay_app/budget/payments/addPayment_page.dart';
-import 'package:to_pay_app/Pages/allPayments.dart';
 import 'package:to_pay_app/Pages/calendar/calendar_page.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
 import 'package:to_pay_app/Pages/home.dart';
-import 'package:responsive_navigation_bar/responsive_navigation_bar.dart';
 import 'package:to_pay_app/models/bill.dart';
-import 'package:to_pay_app/nav/myhomepage.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:to_pay_app/nav/nm_box.dart';
-//selectedIndex: _selectedIndex,
+
+
 
 class NavPage extends StatefulWidget {
   @override
@@ -92,10 +80,12 @@ class _NavState extends State<NavPage> {
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: SnakeNavigationBar.color(
+        selectedLabelStyle: TextStyle(fontFamily: 'avenir'),
         backgroundColor: themeProvider.themeMode().navBarColor,
         behaviour: snakeBarStyle,
         snakeShape: snakeShape,
         shape: bottomBarShape,
+
         padding: padding,
 
         ///configuration for SnakeNavigationBar.color
@@ -118,7 +108,7 @@ class _NavState extends State<NavPage> {
           BottomNavigationBarItem(icon: Icon(CupertinoIcons.creditcard), label: 'Expenses'),
           BottomNavigationBarItem(icon: Icon(CupertinoIcons.add_circled_solid,size: 45,), label: 'Analytics'),
           BottomNavigationBarItem(icon: Icon(CupertinoIcons.calendar_today), label: 'Calendar'),
-          BottomNavigationBarItem(icon: Icon(CupertinoIcons.settings_solid), label: 'Settings'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings_outlined), label: 'Settings'),
 
         ],
       ),

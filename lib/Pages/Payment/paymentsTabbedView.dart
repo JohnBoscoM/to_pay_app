@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+
 import 'package:provider/provider.dart';
-import 'package:to_pay_app/Pages/allPayments.dart';
-import 'package:to_pay_app/Pages/missedPayments.dart';
-import 'package:to_pay_app/Pages/paidPayements.dart';
-import 'package:to_pay_app/Pages/unpaidPayments.dart';
-import 'package:to_pay_app/budget/payments/addPayment_page.dart';
+import 'package:to_pay_app/Pages/CustomWidgets/CustomTabIndicator.dart';
+import 'file:///C:/Users/John%20Bosco%20Matanda/Documents/App%20Development/to_pay_app/lib/Pages/payment/allPayments.dart';
+import 'file:///C:/Users/John%20Bosco%20Matanda/Documents/App%20Development/to_pay_app/lib/Pages/payment/missedPayments.dart';
+import 'file:///C:/Users/John%20Bosco%20Matanda/Documents/App%20Development/to_pay_app/lib/Pages/payment/paidPayements.dart';
+import 'file:///C:/Users/John%20Bosco%20Matanda/Documents/App%20Development/to_pay_app/lib/Pages/payment/unpaidPayments.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
 import 'package:to_pay_app/models/bill.dart';
 import 'package:hive/hive.dart';
@@ -104,13 +104,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
     return DefaultTabController(
       length: 4,
       child: Scaffold(
-        appBar: AppBar(
-            backgroundColor: themeProvider.themeMode().blendBackgroundColor,
 
-            elevation: 1 ,
-            bottom: buildSearchBar(themeProvider),
-            title: Center( widthFactor: width,child:Padding(padding: EdgeInsets.only(top: 15), child:Text("Expenses",style: TextStyle(fontSize: 20, fontFamily: "avenir", fontWeight: FontWeight.w700),)))
-        ),
         body: TabBarView(
           controller: _controller,
           children: [
@@ -138,8 +132,10 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
         backgroundColor: Colors.transparent,
         context: context,
         builder: (context) {
-          return Container(
-              height: height,
+          return Expanded(
+            flex: 2,
+            child:Container(
+             // height: height,
               // padding: mediaQuery.viewInsets,
               decoration: BoxDecoration(
                 color: themeProvider.themeMode().color,
@@ -148,7 +144,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
                   topRight: Radius.circular(20),
                 ),
               ),
-              child: _inputField(themeProvider));
+              child: _inputField(themeProvider)));
         });
   }
 
@@ -254,7 +250,24 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
       ],
     );
   }
-
+ Widget buildTabBar(ThemeProvider themeProvider){
+   return TabBar(
+     indicatorSize: TabBarIndicatorSize.label,
+     unselectedLabelColor: themeProvider.themeMode().secondaryTextColor,
+     labelColor:themeProvider.themeMode().textColor,
+     indicatorColor:  Colors.deepPurple,
+     labelStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w800,
+         fontFamily: "avenir"),
+     indicatorPadding: EdgeInsets.all(0),
+     //indicator: CustomTabIndicator(),
+     onTap: (index) {
+       // Should not used it as it only called when tab options are clicked,
+       // not when user swapped
+     },
+     controller: _controller,
+     tabs: list,
+   );
+ }
   Widget buildSearchBar(ThemeProvider themeProvider) {
     return PreferredSize(
       preferredSize: Size(0,150),
@@ -265,7 +278,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
       margin: EdgeInsets.only(right: 10, left: 10, bottom: 20, top: 0),
       decoration: BoxDecoration(
         color: themeProvider.themeMode().searchBarColor,
-        borderRadius: BorderRadius.all(Radius.circular(22.0)),
+        borderRadius: BorderRadius.all(Radius.circular(12.0)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -287,22 +300,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
         ],
       ),
     ),
-          TabBar(
-            unselectedLabelColor: themeProvider.themeMode().textColor,
-            labelColor:themeProvider.themeMode().textColor,
-            indicatorColor:  Colors.deepPurple,
-            // indicatorPadding: EdgeInsets.all(20),
-            // indicator: BoxDecoration(
-            //   borderRadius: BorderRadius.circular(20),
-            //   color: themeProvider.themeMode().appColor,
-            // ),
-            onTap: (index) {
-              // Should not used it as it only called when tab options are clicked,
-              // not when user swapped
-            },
-            controller: _controller,
-            tabs: list,
-          ),
+
     ],
     ),
     );
