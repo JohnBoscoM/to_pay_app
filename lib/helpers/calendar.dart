@@ -18,11 +18,9 @@ String monthName(int monthValue){
     case 12: return "December";
     default: return "";
   }
-
-
 }
 List<dynamic> getDatePayments(List<dynamic> paymentList, DateTime date){
-  var datePayments = new List<dynamic>();
+  var datePayments = [];
     paymentList.forEach((payment) {
       if(date.toString().substring(0,10) == payment.deadline.toString().substring(0, 10)) {
         datePayments.add(payment);

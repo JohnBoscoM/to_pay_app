@@ -7,13 +7,12 @@ import 'package:to_pay_app/Pages/calendar/calendar_page.dart';
 import 'package:to_pay_app/Pages/userPage.dart';
 import 'package:to_pay_app/models/bill.dart';
 
-import 'Pages/paymentsTabbedView.dart';
+import 'Pages/payment/paymentsTabbedView.dart';
 import 'Pages/setThemePage.dart';
 import 'Pages/home.dart';
 import 'Pages/userPage.dart';
 import 'model_providers/theme_provider.dart';
 import 'Pages/nav.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 import 'package:path_provider/path_provider.dart' as pathProvider;
 

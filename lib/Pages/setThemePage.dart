@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:to_pay_app/customs/z_animated_toggle.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -21,174 +23,67 @@ class _SetThemePageState extends State<SetThemePage>
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final themeProvider = Provider.of<ThemeProvider>(context);
+    bool darkMode = false;
     return Scaffold(
       backgroundColor: themeProvider.themeMode().blendBackgroundColor,
       key: _scaffoldKey,
+      appBar: AppBar(
+        elevation: 1,
+        backgroundColor: themeProvider.themeMode().blendBackgroundColor,
+        title: Text('Settings', style: GoogleFonts.quicksand(fontWeight: FontWeight.bold, fontSize: 30),
+        ),
+      ),
       body: SafeArea(
-        child: Container(
-          alignment: Alignment.center,
-          margin: EdgeInsets.only(top: height * 0.1),
+
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
           child: Column(
             children: [
               Stack(
                 children: [
-                  Container(
-                    width: width * 0.35,
-                    height: width * 0.35,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                          colors: themeProvider.themeMode().gradient,
-                          begin: Alignment.bottomRight,
-                          end: Alignment.topLeft),
-                    ),
-                  ),
-                  // Transform.translate(
-                  //   offset: Offset(40, 0),
-                  //   child: ScaleTransition(
-                  //     scale: _animationController.drive(
-                  //       Tween<double>(begin: 0.0, end: 1.0).chain(
-                  //         CurveTween(curve: Curves.decelerate),
-                  //       ),
-                  //     ),
-                  //     alignment: Alignment.topRight,
-                  //     child: Container(
-                  //       width: width * .26,
-                  //       height: width * .26,
-                  //       decoration: BoxDecoration(
-                  //           shape: BoxShape.circle,
-                  //           color: themeProvider.isLightTheme
-                  //               ? Colors.white
-                  //               : Color(0xFF26242e)),
-                  //     ),
-                  //   ),
-                  // )
-                ],
-              ),
-              SizedBox(height: height * 0.1),
-              Text(
-                'Choose a style',
-                style: TextStyle(
-                    fontSize: width * .06, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: height * 0.03),
-              Container(
-                width: width * .6,
-                child: Text(
-                  'Day or night. Customize your interface',
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              SizedBox(height: height * 0.1),
-              ZAnimatedToggle(
-                values: ['Light', 'Dark'],
-                onToggleCallback: (v) async {
-                  await themeProvider.toggleThemeData();
-                  setState(() {});
-                  changeThemeMode(themeProvider.isLightTheme);
-                },
-              ),
-              SizedBox(
-                height: height * .05,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  buildDot(
-                    width: width * 0.022,
-                    height: width * 0.022,
-                    color: const Color(0xFFd9d9d9),
-                  ),
-                  buildDot(
-                    width: width * 0.055,
-                    height: width * 0.022,
-                    color: themeProvider.isLightTheme
-                        ? Color(0xFF26242e)
-                        : Colors.white,
-                  ),
-                  buildDot(
-                    width: width * 0.022,
-                    height: width * 0.022,
-                    color: const Color(0xFFd9d9d9),
-                  ),
-                ],
-              ),
-              // skip & next
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.symmetric(
-                      vertical: height * 0.02, horizontal: width * 0.04),
-                  alignment: Alignment.bottomCenter,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    // children: <Widget>[
-                    //   Padding(
-                    //     padding:
-                    //         EdgeInsets.symmetric(horizontal: width * 0.025),
-                    //     child: Text(
-                    //       'Skip',
-                    //       style: TextStyle(
-                    //         fontSize: width * 0.045,
-                    //         color: const Color(0xFF7c7b7e),
-                    //         fontFamily: 'Rubik',
-                    //       ),
-                    //     ),
-                    //   ),
-                    //   RaisedButton(
-                    //     onPressed: () {
-                    //       _scaffoldKey.currentState.showSnackBar(
-                    //         SnackBar(
-                    //           content: Text(
-                    //             'Loved it? Give a star on Github',
-                    //             textAlign: TextAlign.center,
-                    //             style: TextStyle(
-                    //               fontFamily: 'Rubik',
-                    //               fontSize: width * 0.045,
-                    //             ),
-                    //           ),
-                    //         ),
-                    //       );
-                    //     },
-                    //     shape: CircleBorder(),
-                    //     color: themeProvider.isLightTheme
-                    //         ? const Color(0xFFFFFFFF)
-                    //         : const Color(0xFF35303f),
-                    //     child: Padding(
-                    //       padding: EdgeInsets.all(width * 0.05),
-                    //       child: Icon(
-                    //         Icons.arrow_forward,
-                    //         color: themeProvider.isLightTheme
-                    //             ? const Color(0xFF000000)
-                    //             : const Color(0xFFFFFFFF),
-                    //       ),
-                    //     ),
-                    //   )
-                    // ],
-                  ),
+          Container(
+            margin: EdgeInsets.all(0),
+            padding: EdgeInsets.all(3),
+            decoration:
+            BoxDecoration(
+              color: themeProvider.themeMode().blendBackgroundColor,
+              border: Border(
+                bottom: BorderSide(
+                  color: themeProvider.themeMode().navBarColor
                 ),
               ),
 
-              // Container(
-              //   alignment: Alignment.center,
-              //   width: width,
-              //   height:height* 0.2,
-              //   margin: EdgeInsets.all(0),
-              //   decoration: BoxDecoration(
-              //       image: DecorationImage(
-              //           image: AssetImage(themeProvider.themeMode().nightOrDayImage))),
-              // ),
+            ),
+            child: ListTile(
+              title: Text('Dark Mode', style: TextStyle(fontFamily:'avenir', fontSize: 20, fontWeight: FontWeight.w700)),
+              trailing: CupertinoSwitch(
+                value: darkMode,
+                onChanged: (bool value) {
+                  setState(() {
+                    darkMode = value;
+                     changeThemeMode(darkMode, themeProvider);
+                  }
+                  );
+                  },
+              ),
+            ),
+          ),
+
+                ],
+              ),
             ],
           ),
         ),
       ),
-    );
+      );
+
   }
 // function to toggle circle animation
-  changeThemeMode(bool theme) {
+  changeThemeMode(bool theme, ThemeProvider themeProvider) {
     if (!theme) {
-      _animationController.forward(from: 0.0);
+      themeProvider.toggleThemeData();
     } else {
-      _animationController.reverse(from: 1.0);
+      themeProvider.toggleThemeData();
     }
   }
   Container buildDot({double width, double height, Color color}) {

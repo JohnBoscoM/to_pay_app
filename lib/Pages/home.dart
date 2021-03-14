@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:to_pay_app/budget/payments/addPayment_page.dart';
+import 'package:to_pay_app/domain/Payment/Payments.dart';
+import 'package:to_pay_app/helpers/calendar.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
-import 'package:to_pay_app/models/bill.dart';
-import 'package:to_pay_app/models/user.dart';
+import 'package:to_pay_app/Pages/Clippers/Clippers.dart';
+
+import 'Payment/AddPaymentPage.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -15,7 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final paymentBox = Hive.box('paymentBox');
-
+  final month = DateTime.now().month;
   //User user;
   final usernameController = TextEditingController();
   final incomeController = TextEditingController();
@@ -34,30 +36,31 @@ class _HomePageState extends State<HomePage> {
     incomeController.dispose();
     super.dispose();
   }
+
   int totalAmount() {
     double amount = 0;
     paymentBox.toMap().forEach((key, value) {
-        amount+= value.cost;
+      amount += value.cost;
     });
     return amount.truncate();
   }
+
   int totalUnPaidAmount() {
     double amount = 0;
     paymentBox.toMap().forEach((key, value) {
-      if (value.isChecked == false){
-        amount+= value.cost;
+      if (value.isChecked == false) {
+        amount += value.cost;
       }
-
     });
     return amount.truncate();
   }
+
   int totalPaidAmount() {
     double amount = 0;
     paymentBox.toMap().forEach((key, value) {
-      if (value.isChecked == true){
-        amount+= value.cost;
+      if (value.isChecked == true) {
+        amount += value.cost;
       }
-
     });
     return amount.truncate();
   }
@@ -66,7 +69,7 @@ class _HomePageState extends State<HomePage> {
     double amount = 0;
     paymentBox.toMap().forEach((key, value) {
       if (value.deadline.isBefore(new DateTime.now()) &&
-          value.isChecked == false){
+          value.isChecked == false) {
         amount = value.cost;
       }
     });
@@ -76,20 +79,19 @@ class _HomePageState extends State<HomePage> {
   int unpaidBillsCount() {
     var count = 0;
     paymentBox.toMap().forEach((key, value) {
-      if (value.isChecked == false){
+      if (value.isChecked == false) {
         count++;
       }
-
     });
     return count;
   }
+
   int paidBillsCount() {
     var count = 0;
     paymentBox.toMap().forEach((key, value) {
-      if (value.isChecked == true){
+      if (value.isChecked == true) {
         count++;
       }
-
     });
     return count;
   }
@@ -98,272 +100,511 @@ class _HomePageState extends State<HomePage> {
     var count = 0;
     paymentBox.toMap().forEach((key, value) {
       if (value.deadline.isBefore(new DateTime.now()) &&
-          value.isChecked == false){
+          value.isChecked == false) {
         count++;
       }
     });
     return count;
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final _width = MediaQuery.of(context).size.width;
+    final _height = MediaQuery.of(context).size.height;
     Text status(String name) {
-      if(name == "Paid"){
-       return  Text(
-         'Total ' + name + " " + paidBillsCount().toString(),
-         style: TextStyle(
-             color: themeProvider.themeMode().textColor,
-             fontSize: 15,
-             fontFamily: 'avenir',
-             fontWeight: FontWeight.w700),
-
-       );
-      }
-      if(name == "UnPaid"){
-        return  Text(
-          'Total ' + name + " " + unpaidBillsCount().toString(),
+      if (name == "Paid") {
+        return Text(
+          'Total ' + name + " " + paidBillsCount().toString(),
           style: TextStyle(
-              color: themeProvider.themeMode().textColor,
-              fontSize: 15,
+              color: Colors.white,
+              fontSize: 17,
               fontFamily: 'avenir',
-              fontWeight: FontWeight.w700),
+              fontWeight: FontWeight.w800),
         );
       }
-      if(name == "Missed"){
-        return  Text(
+      if (name == "UnPaid") {
+        return Text(
+          'Total ' + name + " " + unpaidBillsCount().toString(),
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 17,
+              fontFamily: 'avenir',
+              fontWeight: FontWeight.w800),
+        );
+      }
+      if (name == "Missed") {
+        return Text(
           'Total ' + name + " " + missedBillsCount().toString(),
           style: TextStyle(
-              color: themeProvider.themeMode().textColor,
-              fontSize: 15,
+              color: Colors.white,
+              fontSize: 17,
               fontFamily: 'avenir',
-              fontWeight: FontWeight.w700),
+              fontWeight: FontWeight.w800),
         );
       }
       return Text("Status");
-    };
-    return Scaffold(
-      backgroundColor: themeProvider.themeMode().blendBackgroundColor,
-      //appBar: AppBar(
-      //   backgroundColor: themeProvider.themeMode().appColor,
-      //   elevation: 0,
-      //   leading: Container(
-      //       padding: EdgeInsets.only(top: 0, left: 10),
-      //       child: Icon(
-      //         Icons.menu_rounded,
-      //         size: 30,
-      //         color: Colors.white,
-      //       )),
-      //   actions: [
-      //     Icon(
-      //       Icons.notifications_none_rounded,
-      //       size: 30,
-      //       color: Colors.white,
-      //     )
-      //   ],
-      // ),
-      body: Container(
-        //padding: EdgeInsets.only(bottom: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.all(30),
-              decoration: BoxDecoration(
-                //color: themeProvider.themeMode().appColor,
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(35),
-                    bottomRight: Radius.circular(0)),
-                gradient: LinearGradient(
-                    colors: themeProvider.themeMode().backgroundGradient,
-                    begin: Alignment.bottomLeft,
-                    end: Alignment.topRight),
-                //Color(0xfff1f3f6),
+    }
+
+    return SafeArea(
+      child: CupertinoPageScaffold(
+        backgroundColor: themeProvider.themeMode().blendBackgroundColor,
+        child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              CupertinoSliverNavigationBar(
+                backgroundColor: themeProvider.themeMode().blendBackgroundColor,
+                largeTitle: Text(
+                  "Hem",
+                  style: TextStyle(
+                      color: themeProvider.themeMode().textColor,
+                      fontFamily: 'avenir',
+                      fontWeight: FontWeight.w800),
+                ),
+
+
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ];
+          },
+          body: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsets.all(0),
+            child: Container(
+              //padding: EdgeInsets.only(bottom: 10),
+              // child: SingleChildScrollView(
+
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+
+                  buildSearchBar(themeProvider),
+                  Padding(
+                    padding: EdgeInsets.only(left: 10,right: 10),
+                 child: Row(
                     children: [
-                      Container(
-                        padding: EdgeInsets.only(top: 30),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // Icon(
-                              //   CupertinoIcons.bell_fill,
-                              //   size: 40,
-                              //   color: Colors.white,
-                              // ),
-                            ]),
+                      Chip(
+                        backgroundColor: themeProvider.themeMode().textColor,
+                        label: Text("Min Översikt"),
+                        labelStyle: TextStyle(color: themeProvider.themeMode().color, fontFamily: "avenir", fontSize: 15, fontWeight: FontWeight.w700),
                       ),
                       SizedBox(
-                        height: 0,
+                        width: 20,
                       ),
-
-                      Text(
-                        "Overview",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 32,
-                            fontWeight: FontWeight.w700,
-                            fontFamily: "avenir"),
+                      Chip(
+                        backgroundColor: themeProvider.themeMode().textColor,
+                        label: Text("Min Statistik"),
+                        labelStyle: TextStyle(color: themeProvider.themeMode().color, fontFamily: "avenir", fontSize: 15, fontWeight: FontWeight.w700),
                       ),
                       SizedBox(
-                        height: 25,
+                        width: 20,
                       ),
-                      Text(
-                        "Total Expenses: " + totalAmount().toString() + " kr",
-                        style: TextStyle(
-                            color: Colors.amber,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: "avenir"),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "Paid: " + totalPaidAmount().toString() + " kr",
-                        style: TextStyle(
-                            color: Colors.amber,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: "avenir"),
-                      ),
-
-                      // SizedBox(
-                      //   height: 15,
-                      // ),
                     ],
                   ),
-                  Expanded(
-                    child: Container(
-                      height: 250,
-                      width: 200,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image:
-                                AssetImage("assets/images/overview-clip.png"),
-                            alignment: Alignment.bottomRight,
-                            fit: BoxFit.scaleDown),
-                      ),
+                  ),
+
+                   SizedBox(height: 10,),
+                   Container(
+                    height: _height * 0.27,
+                    padding:
+                        EdgeInsets.only(top: 10, bottom: 0, left: 0, right: 0),
+                    margin: EdgeInsets.only(
+                        top: 25, bottom: 10, left: 10, right: 10),
+                    decoration: BoxDecoration(
+                      boxShadow: themeProvider.themeMode().mainItemShadow,
+                      color: themeProvider.themeMode().appColor,
+                      borderRadius: BorderRadius.all(Radius.circular(35)),
+
+                      // gradient: LinearGradient(
+                      //     colors: themeProvider.themeMode().backgroundGradient,
+                      //     begin: Alignment.bottomRight,
+                      //     end: Alignment.topLeft),
+                      //Color(0xfff1f3f6),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(top: 20),
+                              child: Row(
+                                  // mainAxisAlignment:
+                                  // MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    // Icon(
+                                    //   CupertinoIcons.bell_fill,
+                                    //   size: 40,
+                                    //   color: Colors.white,
+                                    // ),
+                                  ]),
+                            ),
+                            SizedBox(
+                              height: 0,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(
+                                  top: 8, bottom: 8, right: 15, left: 50),
+                              decoration: BoxDecoration(
+                                color: themeProvider.themeMode().mainCardSecondaryColor,
+                                borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(30),
+                                    topRight: Radius.circular(30),
+                                    topLeft: Radius.circular(0)),
+                              ),
+                              child: Text(
+                                "Översikt",
+                                style: GoogleFonts.ubuntu(
+                                  color: themeProvider.themeMode().appColor,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(
+                              height: 35,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 20),
+                              child: Text(
+                                "Totala Utgifter: " +
+                                    totalAmount().toString() +
+                                    " SEK",
+                                style: GoogleFonts.quicksand(
+                                  color: themeProvider.themeMode().mainCardSecondaryColor,
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w700,
+                                  //fontFamily: "avenir"
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 20),
+                              child: Text(
+                                "Betalat: " + totalPaidAmount().toString() + " SEK",
+                                style: GoogleFonts.quicksand(
+                                  color:  themeProvider.themeMode().mainCardSecondaryColor,
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w700,
+                                  //fontFamily: "avenir"
+                                ),
+                              ),
+                            ),
+
+                            // SizedBox(
+                            //   height: 15,
+                            // ),
+                          ],
+                        ),
+                        Expanded(
+                          child: Container(
+                            height: 450,
+                            width: 450,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage(
+                                      "assets/images/overview-clip-2.png"),
+                                  alignment: Alignment.bottomRight,
+                                  fit: BoxFit.scaleDown),
+                            ),
+                          ),
+                        ),
+
+
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 20),
-                  child: Text(
-                    "Status",
-                    style: TextStyle(
-                        fontSize: 21,
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'avenir'),
-                  ),
-                ),
-                Container(
-                  height: 60,
-                  width: 60,
-                  decoration: BoxDecoration(
-                      // image: DecorationImage(
-                      //   image: AssetImage('asset/images/scanqr.png')
-                      // )
-                      ),
-                )
-              ],
-            ),
-            SingleChildScrollView(
-              padding: EdgeInsets.all(15),
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
+
                   // Container(
-                  //   height: 70,
-                  //   width: 70,
-                  //   margin: EdgeInsets.only(right: 20),
-                  //   decoration: BoxDecoration(
-                  //     shape: BoxShape.circle,
-                  //     color: Color(0xffffac30),
+                  //   margin: EdgeInsets.all(10),
+                  //   padding: EdgeInsets.all(10),
+                  //   decoration:
+                  //   BoxDecoration(
+                  //     color: themeProvider.themeMode().color,
+                  //     borderRadius: BorderRadius.all(Radius.circular(20)),
+                  //     border: Border.all(color: Colors.grey[300]),
+                  //     // boxShadow: themeProvider.themeMode().itemShadow
                   //   ),
-                  //   child: Icon(
-                  //     Icons.add,
-                  //     size: 40,
+                  //   child: ListTile(
+                  //     leading: Container(
+                  //       height: 70,
+                  //       width: 60,
+                  //       margin: EdgeInsets.only(right: 0),
+                  //       decoration: BoxDecoration(
+                  //           shape: BoxShape.circle,
+                  //           //borderRadius: BorderRadius.all(Radius.circular(20)),
+                  //           color: Colors.deepPurple[300]
+                  //       ),
+                  //       child: Icon(
+                  //         CupertinoIcons.creditcard_fill,
+                  //         color: Colors.deepPurple[900],
+                  //         size: 32,
+                  //       ),
+                  //     ),
+                  //     title: Text('Nuvarande Saldo', style: TextStyle(fontFamily:'avenir', fontSize: 17, fontWeight: FontWeight.w700)),
+                  //     subtitle: Text("Länsförsäkringar", style: TextStyle(fontFamily:'avenir', fontSize: 13, fontWeight: FontWeight.w700)),
+                  //     trailing: Text( '26743' + ' SEK', style: TextStyle(fontFamily:'avenir', fontSize: 20, fontWeight: FontWeight.w700),),
                   //   ),
                   // ),
-                  avatarWidget("missed", status("Missed"), themeProvider,
-                      themeProvider.themeMode().missedGradient),
-                  avatarWidget("unpaid", status("UnPaid"), themeProvider,
-                      themeProvider.themeMode().unpaidGradient),
-                  avatarWidget("paid", status("Paid"), themeProvider,
-                      themeProvider.themeMode().paidGradient),
+                  Container(
+                    height: _height * 0.27,
+                    padding:
+                    EdgeInsets.only(top: 10, bottom: 0, left: 0, right: 0),
+                    margin: EdgeInsets.only(
+                        top: 25, bottom: 10, left: 10, right: 10),
+                    decoration: BoxDecoration(
+                      boxShadow: themeProvider.themeMode().mainItemShadow,
+                      color: Color(0xff8167e0),
+                      borderRadius: BorderRadius.all(Radius.circular(35)),
+
+                      // gradient: LinearGradient(
+                      //     colors: themeProvider.themeMode().backgroundGradient,
+                      //     begin: Alignment.bottomRight,
+                      //     end: Alignment.topLeft),
+                      //Color(0xfff1f3f6),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(
+                                  top: 8, bottom: 8, right: 15, left: 50),
+                              decoration: BoxDecoration(
+                                color: Colors.deepPurple[900],
+                                borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(30),
+                                    topRight: Radius.circular(30),
+                                    topLeft: Radius.circular(0)),
+                              ),
+                              child: Text(
+                                "Status",
+                                style: GoogleFonts.ubuntu(
+                                  color: Color(0xff8167e0),
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(
+                              height: 35,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 20),
+                              child: Text(
+                                "Unpaid Payments: " +
+                                    totalMissedAmount().toString() +
+                                    " SEK",
+                                style: GoogleFonts.quicksand(
+                                  color: Color(0xffFF2D251E),
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w700,
+                                  //fontFamily: "avenir"
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 20),
+                              child: Text(
+                                "Missed: " + totalPaidAmount().toString() ,
+                                style: GoogleFonts.quicksand(
+                                  color: Color(0xffFF2D251E),
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w700,
+                                  //fontFamily: "avenir"
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 20),
+                              child: Text(
+                                "Unpaid: " + totalPaidAmount().toString() ,
+                                style: GoogleFonts.quicksand(
+                                  color: Color(0xffFF2D251E),
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w700,
+                                  //fontFamily: "avenir"
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+
+                  //
+                            SizedBox(
+                              height: 15,
+                            ),
+                          ],
+                        ),
+                        Expanded(
+                          child: Container(
+                            height: 650,
+                            width: 550,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage(
+                                      "assets/images/Chart_front.png"),
+                                  alignment: Alignment.centerRight,
+                                  fit: BoxFit.scaleDown),
+                            ),
+                          ),
+                        ),
+
+
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(
+                    height: 20,
+                  ),
+                  // Container(
+
+
+
+
+                  //
+                  // SingleChildScrollView(
+                  //   padding: EdgeInsets.all(15),
+                  //   scrollDirection: Axis.horizontal,
+                  //   child: Row(
+                  //     children: [
+                  //       // Container(
+                  //       //   height: 70,
+                  //       //   width: 70,
+                  //       //   margin: EdgeInsets.only(right: 20),
+                  //       //   decoration: BoxDecoration(
+                  //       //     shape: BoxShape.circle,
+                  //       //     color: Color(0xffffac30),
+                  //       //   ),
+                  //       //   child: Icon(
+                  //       //     Icons.add,
+                  //       //     size: 40,
+                  //       //   ),
+                  //       // ),
+                  //       avatarWidget("missed", status("Missed"), themeProvider,
+                  //           themeProvider.themeMode().missedGradient),
+                  //       avatarWidget("unpaid", status("UnPaid"), themeProvider,
+                  //           themeProvider.themeMode().unpaidGradient),
+                  //       avatarWidget("paid", status("Paid"), themeProvider,
+                  //           themeProvider.themeMode().paidGradient),
+                  //     ],
+                  //   ),
+                  // ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 25),
+                        child: Text(
+                          'Betalningar för ' +
+                              monthName(DateTime.now().month),
+                          style: TextStyle(
+                              fontSize: 23,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'avenir'),
+                        ),
+                      ),
+                      Container(
+                        height: 60,
+                        width: 60,
+                        child: Icon(Icons.list_rounded),
+                      )
+                    ],
+                  ),
+                  buildList(themeProvider),
+                 //Column( children: currentMonthPayments(paymentBox.values.toList(), context)),
+
+                  // child: GridView.count(
+                  //   crossAxisCount: 3,
+                  //   childAspectRatio: 0.72,
+                  //   children: [
+                  //     serviceWidget("house", "House\n", themeProvider),
+                  //     serviceWidget("food_1", "Food\n", themeProvider),
+                  //     serviceWidget("train", "Transport\n", themeProvider),
+                  //     serviceWidget("education", "Education\n", themeProvider),
+                  //     serviceWidget("car", "Car\n", themeProvider),
+                  //     serviceWidget("bulb", "Electricity\n", themeProvider),
+                  //     serviceWidget("fitness", "Fitness\n", themeProvider),
+                  //     serviceWidget("piggy_bank", "Savings\n", themeProvider),
+                  //     serviceWidget("clothes", "Clothes\n", themeProvider),
+                  //     serviceWidget("fun", "Fun\n", themeProvider),
+                  //     serviceWidget(
+                  //         "entertainment", "Entertainment\n", themeProvider),
+                  //     serviceWidget("more_icon", "More\n", themeProvider),
+                  //   ],
+                  // ),
                 ],
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 25),
-                  child: Text(
-                    'UnPaid Bills',
-                    style: TextStyle(
-                        fontSize: 21,
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'avenir'),
-                  ),
-                ),
-                Container(
-                  height: 60,
-                  width: 60,
-                  child: Icon(Icons.list_rounded),
-                )
-              ],
-            ),
+              // ),
 
-            buildList(themeProvider),
-
-            // child: GridView.count(
-            //   crossAxisCount: 3,
-            //   childAspectRatio: 0.72,
-            //   children: [
-            //     serviceWidget("house", "House\n", themeProvider),
-            //     serviceWidget("food_1", "Food\n", themeProvider),
-            //     serviceWidget("train", "Transport\n", themeProvider),
-            //     serviceWidget("education", "Education\n", themeProvider),
-            //     serviceWidget("car", "Car\n", themeProvider),
-            //     serviceWidget("bulb", "Electricity\n", themeProvider),
-            //     serviceWidget("fitness", "Fitness\n", themeProvider),
-            //     serviceWidget("piggy_bank", "Savings\n", themeProvider),
-            //     serviceWidget("clothes", "Clothes\n", themeProvider),
-            //     serviceWidget("fun", "Fun\n", themeProvider),
-            //     serviceWidget(
-            //         "entertainment", "Entertainment\n", themeProvider),
-            //     serviceWidget("more_icon", "More\n", themeProvider),
-            //   ],
-            // ),
-          ],
+            ),
+          ),
+        ),
         ),
       ),
     );
   }
+  Widget buildSearchBar(ThemeProvider themeProvider) {
+    return PreferredSize(
+      preferredSize: Size(0,150),
+      child: Column(
+        children: [
+          SizedBox(height: 30,),
+          Container(
+            margin: EdgeInsets.only(right: 10, left: 10, bottom: 20, top: 0),
+            decoration: BoxDecoration(
+              color: themeProvider.themeMode().navBarColor,
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 20),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Snabbsök betalningar',
+                            hintStyle:
+                            TextStyle(color: Colors.grey[600],fontWeight: FontWeight.bold, fontFamily: 'avenir'),
+                            icon: Icon(CupertinoIcons.search,
+                                color: Colors.grey[600])),
+                      ),
+                    )),
+              ],
+            ),
+          ),
 
+        ],
+      ),
+    );
+  }
   Column serviceWidget(String img, String name, ThemeProvider themeProvider) {
     return Column(
       children: [
@@ -407,126 +648,157 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildList(ThemeProvider themeProvider) {
-    return Expanded(
-      child: Container(
+    return  Container(
         decoration: BoxDecoration(
           color: themeProvider.themeMode().blendBackgroundColor,
           borderRadius: BorderRadius.only(
               topRight: Radius.circular(30), topLeft: Radius.circular(30)),
         ),
         child: ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
           itemCount: paymentBox.length,
           itemBuilder: (context, index) {
             final paymentItem = paymentBox.get(index);
-            if (paymentItem.isChecked == false) {
-              return Container(
-                margin: new EdgeInsets.only(
-                    left: 20.0, top: 0, right: 20.0, bottom: 15),
-                child: new Container(
-                  decoration: BoxDecoration(
-                    color: themeProvider
-                        .themeMode()
-                        .color,
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
+            if (paymentItem != null) {
+              if (paymentItem.isChecked == false && paymentItem.deadline.month == month) {
+                return Container(
+                  margin: new EdgeInsets.only(
+                      left: 20.0, top: 0, right: 20.0, bottom: 15),
+                  child: new Container(
+                    decoration:   BoxDecoration(
+                      //color: themeProvider.themeMode().color,
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      border: Border.all(color: Colors.grey[300]),
+                      // boxShadow: themeProvider.themeMode().itemShadow
+                    ),
+                    padding: new EdgeInsets.all(10),
+                    child: Column(
+                      children: <Widget>[
+                        new ListTile(
+                          onLongPress: () {},
+                          leading: Container(
+                            height: 70,
+                            width: 70,
+                            margin: EdgeInsets.only(right: 0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: themeProvider
+                                  .categoryIcon(paymentItem.category)
+                                  .color,
+                            ),
+                            child: Icon(
+                              themeProvider
+                                  .categoryIcon(paymentItem.category)
+                                  .icon,
+                              size: 30,
+                            ),
+                          ),
+
+                          // Checkbox(
+                          //     value: paymentItem.isChecked,
+                          //     onChanged: (bool value) {
+                          //       setState(() {
+                          //         paymentItem.isChecked = value;
+                          //       });
+                          //     }),
+                          isThreeLine: false,
+                          dense: true,
+                          //font change
+                          contentPadding: EdgeInsets.all(1),
+                          title: Text(paymentItem.title, style: TextStyle(fontFamily:'avenir', fontSize: 17, fontWeight: FontWeight.w700)),
+                          subtitle: Container(
+                            child: Text(paymentItem.deadline.toString(), style: TextStyle(fontFamily:'avenir', fontSize: 13, fontWeight: FontWeight.w700)),
+                          ),
+
+                          trailing: Text( paymentItem.cost.truncate().toString() + ' SEK ', style: TextStyle(fontFamily:'avenir', fontSize: 20, fontWeight: FontWeight.w700),),
+
+                          // onChanged: (bool val) {
+                          //   itemChange(val, index);
+                          // }
+                        ),
+                      ],
+                    ),
                   ),
-                  padding: new EdgeInsets.all(10),
-                  child: Column(
-                    children: <Widget>[
-                      new ListTile(
-                        onLongPress: () {},
-                        leading: Container(
-                          height: 70,
-                          width: 70,
-                          margin: EdgeInsets.only(right: 0),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: themeProvider
-                                .categoryIcon(paymentItem.category)
-                                .color,
-                          ),
-                          child: Icon(
-                            themeProvider
-                                .categoryIcon(paymentItem.category)
-                                .icon,
-                            size: 30,
-                          ),
-                        ),
-
-                        // Checkbox(
-                        //     value: paymentItem.isChecked,
-                        //     onChanged: (bool value) {
-                        //       setState(() {
-                        //         paymentItem.isChecked = value;
-                        //       });
-                        //     }),
-                        isThreeLine: false,
-                        dense: true,
-                        //font change
-                        contentPadding: EdgeInsets.all(1),
-                        title: Text(
-                          paymentItem.title,
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w800,
-                              fontFamily: "avenir",
-                              letterSpacing: 0.5),
-                          textAlign: TextAlign.left,
-                        ),
-                        subtitle: Container(
-                          child: Text(
-                            paymentItem.deadline.toString().substring(0, 10),
-                            style: TextStyle(
-                                fontSize: 13,
-                                fontFamily: "avenir",
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-
-                        trailing: Text(
-                          paymentItem.cost.truncate().toString() + " kr",
-                          style: TextStyle(
-                              color: Colors.amber,
-                              fontSize: 16,
-                              fontFamily: "avenir",
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 0.5),
-                        ),
-
-                        // onChanged: (bool val) {
-                        //   itemChange(val, index);
-                        // }
-                      ),
-                    ],
-                  ),
-                ),
-              );
+                );
+              }
             }
+
             return Container();
           },
         ),
-      ),
     );
   }
 
-  Container avatarWidget(String img, Text textWidget, ThemeProvider themeProvider,
-      List<Color> statusColor) {
-    if(img == "paid") {
+  Container avatarWidget(String img, Text textWidget,
+      ThemeProvider themeProvider, List<Color> statusColor) {
+    var _width = MediaQuery.of(context).size.width;
+    var _height = MediaQuery.of(context).size.height;
+
+    if (img == "paid") {
       return Container(
-        margin: EdgeInsets.only(right: 10, left: 10),
-        height: 180,
-        width: 170,
+        margin: EdgeInsets.only(right: 20, left: 10),
+        height: _height * 0.2,
+        width: _width * 0.5,
+
         decoration: BoxDecoration(
-          color: themeProvider
-              .themeMode()
-              .color,
-          boxShadow: themeProvider
-              .themeMode()
-              .itemShadow,
-          //  gradient: LinearGradient(
-          //    colors:statusColor
-          //    ),
+          color: themeProvider.themeMode().appColor,
+          boxShadow: themeProvider.themeMode().mainItemShadow,
+          // gradient: LinearGradient(
+          //     colors: themeProvider.themeMode().backgroundGradient),
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+
+          // color: Colors.grey[900]
+          //Color(0xfff1f3f6)
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+
+            Text(
+              "Total " + totalPaidAmount().toString(),
+              style: TextStyle(
+                  color: Colors.amber[700],
+                  fontSize: 20,
+                  fontFamily: 'avenir',
+                  fontWeight: FontWeight.w800),
+            ),
+            // Container(
+            //   height: 120,
+            //   width: 200,
+            //   decoration: BoxDecoration(
+            //     shape: BoxShape.circle,
+            //
+            //     //border: Border.all(color: Colors.grey[500], width: 2)
+            //   ),
+            //   child: Icon(
+            //     CupertinoIcons.checkmark_alt_circle,
+            //     color: Colors.white,
+            //     size: 100,
+            //   ),
+           // ),
+            // Text(
+            //   name,
+            //   style: TextStyle(
+            //       fontSize: 13,
+            //       fontFamily: 'avenir',
+            //       fontWeight: FontWeight.w700),
+            // ),
+            textWidget,
+          ],
+        ),
+      );
+    }
+    if (img == "missed") {
+      return Container(
+        margin: EdgeInsets.only(right: 20, left: 10),
+        height: _height * 0.2,
+        width: _width * 0.3,
+        decoration: BoxDecoration(
+          color: themeProvider.themeMode().appColor,
+          //  boxShadow: themeProvider.themeMode().mainItemShadow,
+          // gradient: LinearGradient(
+          //     colors: themeProvider.themeMode().backgroundGradient),
           borderRadius: BorderRadius.all(Radius.circular(15)),
 
           // color: Colors.grey[900]
@@ -536,23 +808,24 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Text(
-              "Total "+ totalPaidAmount().toString() + " kr",
+              "Total " + totalMissedAmount().toString(),
               style: TextStyle(
                   color: Colors.amber[700],
-                  fontSize: 15,
+                  fontSize: 20,
                   fontFamily: 'avenir',
-                  fontWeight: FontWeight.w700),
+                  fontWeight: FontWeight.w800),
             ),
             Container(
               height: 120,
               width: 200,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-
-                image: DecorationImage(
-                    image: AssetImage('assets/images/$img.png'),
-                    fit: BoxFit.contain),
                 //border: Border.all(color: Colors.grey[500], width: 2)
+              ),
+              child: Icon(
+                CupertinoIcons.clock,
+                color: Colors.white,
+                size: 100,
               ),
             ),
             // Text(
@@ -567,21 +840,16 @@ class _HomePageState extends State<HomePage> {
         ),
       );
     }
-    if(img == "missed") {
+    if (img == "unpaid") {
       return Container(
-        margin: EdgeInsets.only(right: 10, left: 10),
-        height: 180,
-        width: 170,
+        margin: EdgeInsets.only(right: 20, left: 10),
+        height: _height * 0.2,
+        width: _width * 0.3,
         decoration: BoxDecoration(
-          color: themeProvider
-              .themeMode()
-              .color,
-          boxShadow: themeProvider
-              .themeMode()
-              .itemShadow,
-          //  gradient: LinearGradient(
-          //    colors:statusColor
-          //    ),
+          color: themeProvider.themeMode().color,
+          //boxShadow: themeProvider.themeMode().mainItemShadow,
+          // gradient: LinearGradient(
+          //     colors: themeProvider.themeMode().backgroundGradient),
           borderRadius: BorderRadius.all(Radius.circular(15)),
 
           // color: Colors.grey[900]
@@ -591,78 +859,24 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Text(
-              "Total "+ totalMissedAmount().toString() + " kr",
+              "Total " + totalUnPaidAmount().toString(),
               style: TextStyle(
                   color: Colors.amber[700],
-                  fontSize: 15,
+                  fontSize: 14,
                   fontFamily: 'avenir',
-                  fontWeight: FontWeight.w700),
+                  fontWeight: FontWeight.w800),
             ),
             Container(
               height: 120,
               width: 200,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-
-                image: DecorationImage(
-                    image: AssetImage('assets/images/$img.png'),
-                    fit: BoxFit.contain),
                 //border: Border.all(color: Colors.grey[500], width: 2)
               ),
-            ),
-            // Text(
-            //   name,
-            //   style: TextStyle(
-            //       fontSize: 13,
-            //       fontFamily: 'avenir',
-            //       fontWeight: FontWeight.w700),
-            // ),
-            textWidget,
-          ],
-        ),
-      );
-    }
-    if(img == "unpaid") {
-      return Container(
-        margin: EdgeInsets.only(right: 10, left: 10),
-        height: 180,
-        width: 170,
-        decoration: BoxDecoration(
-          color: themeProvider
-              .themeMode()
-              .color,
-          boxShadow: themeProvider
-              .themeMode()
-              .itemShadow,
-          //  gradient: LinearGradient(
-          //    colors:statusColor
-          //    ),
-          borderRadius: BorderRadius.all(Radius.circular(15)),
-
-          // color: Colors.grey[900]
-          //Color(0xfff1f3f6)
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text(
-              "Total "+ totalUnPaidAmount().toString() + " kr",
-              style: TextStyle(
-                  color: Colors.amber[700],
-                  fontSize: 15,
-                  fontFamily: 'avenir',
-                  fontWeight: FontWeight.w700),
-            ),
-            Container(
-              height: 120,
-              width: 200,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-
-                image: DecorationImage(
-                    image: AssetImage('assets/images/$img.png'),
-                    fit: BoxFit.contain),
-                //border: Border.all(color: Colors.grey[500], width: 2)
+              child: Icon(
+                CupertinoIcons.calendar,
+                color: Colors.white,
+                size: 29,
               ),
             ),
             // Text(

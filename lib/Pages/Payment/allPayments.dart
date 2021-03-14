@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+
 import 'package:provider/provider.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
 import 'package:to_pay_app/models/bill.dart';
@@ -11,12 +11,14 @@ import 'package:to_pay_app/models/bill.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:to_pay_app/models/user.dart';
 
-class PaidBillsPage extends StatefulWidget {
+import 'EditPaymentPage.dart';
+
+class AllPaymentsPage extends StatefulWidget {
   @override
-  _PaidBillsPageState createState() => _PaidBillsPageState();
+  _AllPaymentsPageState createState() => _AllPaymentsPageState();
 }
 
-class _PaidBillsPageState extends State<PaidBillsPage> {
+class _AllPaymentsPageState extends State<AllPaymentsPage> {
   final paymentBox = Hive.box('paymentBox');
 
   @override
@@ -42,47 +44,14 @@ class _PaidBillsPageState extends State<PaidBillsPage> {
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           ),
-          child: Container(
-            child: Column(
-              children: <Widget>[
-                //Padding(padding: new EdgeInsets.all(0)),
-                Column(
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(left: 10, top: 30),
-                      width: width,
-                      decoration: BoxDecoration(
-                        color: themeProvider.themeMode().blendBackgroundColor,
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(20),
-                          topLeft: Radius.circular(20),
-                        ),
-                      ),
-                      /*
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 10, bottom: 20),
-                          child: Text("All Bills",
-                              style:
-                                  TextStyle(fontSize: 22, fontFamily: "avenir"),
-                              textAlign: TextAlign.center),
-                        ),
-
-                         */
-                    )
-                  ],
-                ),
-                //buildSearchBar(themeProvider),
-                buildList(themeProvider),
-              ],
-            ),
-          ),
+          child: buildList(themeProvider),
         ),
       ),
     );
   }
-  Widget buildSearchBar(ThemeProvider themeProvider){
+ Widget buildSearchBar(ThemeProvider themeProvider){
     return Container(
-      margin: EdgeInsets.only(right: 30, left: 30, bottom: 40 ),
+      margin: EdgeInsets.only(right: 30, left: 30, bottom: 30 ),
       decoration: BoxDecoration(
         color: themeProvider.themeMode().searchBarColor,
         borderRadius: BorderRadius.all(Radius.circular(22.0)),
@@ -91,28 +60,29 @@ class _PaidBillsPageState extends State<PaidBillsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-              flex:1,
-              child: Padding(
-                padding: EdgeInsets.only(left:20),
-                child:TextFormField(
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Search',
-                      hintStyle: TextStyle(color: themeProvider.themeMode().textColor),
-                      icon: Icon(CupertinoIcons.search, color: themeProvider.themeMode().textColor)
-                  ),
-                ),
-              )
+            flex:1,
+            child: Padding(
+              padding: EdgeInsets.only(left:20),
+              child:TextFormField(
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Search',
+                hintStyle: TextStyle(color: themeProvider.themeMode().textColor),
+                icon: Icon(CupertinoIcons.search, color: themeProvider.themeMode().textColor)
+              ),
+            ),
+            )
           ),
         ],
       ),
     );
-  }
+ }
   Widget buildList(ThemeProvider themeProvider) {
     return Expanded(
       child: Container(
         decoration: BoxDecoration(
           color: themeProvider.themeMode().blendBackgroundColor,
+          boxShadow: themeProvider.themeMode().mainItemShadow,
           borderRadius: BorderRadius.only(
               topRight: Radius.circular(0), topLeft: Radius.circular(0)),
         ),
@@ -120,9 +90,25 @@ class _PaidBillsPageState extends State<PaidBillsPage> {
           itemCount: paymentBox.length,
           itemBuilder: (context, index) {
             final paymentItem = paymentBox.get(index);
-            if (paymentItem.isChecked == true) {
+            if(paymentItem!= null) {
               return Dismissible(
+                direction: DismissDirection.startToEnd,
                 key: Key(paymentItem.toString()),
+                background: Container(
+                  padding: EdgeInsets.only(left: 30),
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Icon(
+                      CupertinoIcons.delete_solid, size: 32, color: Colors.red),
+                ),
+                secondaryBackground: Container(
+                    padding: EdgeInsets.only(right: 30),
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: Text("Edit", style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: "avenir",))
+                ),
                 onDismissed: (direction) {
                   paymentBox.delete(index);
                   Scaffold.of(context).showSnackBar(new SnackBar(
@@ -133,14 +119,22 @@ class _PaidBillsPageState extends State<PaidBillsPage> {
                   padding: new EdgeInsets.all(15),
                   //elevation: 0,
                   decoration: BoxDecoration(
-                    color: themeProvider.themeMode().color,
+                    color: themeProvider
+                        .themeMode()
+                        .color,
+
                     borderRadius: BorderRadius.all(Radius.circular(30)),
                   ),
                   margin: new EdgeInsets.all(10),
                   child: Column(
                     children: <Widget>[
                       new ListTile(
-                        onLongPress: () {},
+                        onLongPress: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => EditPaymentPage()),
+                          );
+                        },
                         leading: Container(
                           height: 70,
                           width: 70,
@@ -194,30 +188,33 @@ class _PaidBillsPageState extends State<PaidBillsPage> {
                         trailing: Flexible(
                           flex: 1,
                           fit: FlexFit.loose,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.235,
-                            child: Row(
-                              children: [
-                                Text(
-                                  paymentItem.cost.truncate().toString() + " kr",
-                                  style: TextStyle(
-                                      color: Colors.amber,
-                                      fontSize: 15,
-                                      fontFamily: "avenir",
-                                      fontWeight: FontWeight.w800,
-                                      letterSpacing: 0.5),
-                                ),
-                                Checkbox(
-                                    value: paymentItem.isChecked,
-                                    onChanged: (bool value) {
-                                      setState(() {
-                                        paymentItem.isChecked = value;
-                                      });
-                                    }),
-                              ],
-                            ),
+                          child: Container(width: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.235, child: Row(
+                            children: [
+                              Text(
+                                paymentItem.cost.truncate().toString() + " kr",
+                                style: TextStyle(
+                                    color: Colors.amber,
+                                    fontSize: 15,
+                                    fontFamily: "avenir",
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 0.5),
+                              ),
+
+                              Checkbox(
+                                  value: paymentItem.isChecked,
+                                  onChanged: (bool value) {
+                                    setState(() {
+                                      paymentItem.isChecked = value;
+                                    });
+                                  }),
+                            ],
+                          ),
                           ),
                         ),
+
 
                         // onChanged: (bool val) {
                         //   itemChange(val, index);
@@ -228,18 +225,9 @@ class _PaidBillsPageState extends State<PaidBillsPage> {
                 ),
               );
             }
-            return Container(
-            //     child: Center(
-            //   child: Text(
-            //     "You have no paid bills, Either you got no bills\n or you gotta get to work!",
-            //     style: TextStyle(
-            //         fontFamily: "avenir",
-            //         fontSize: 16,
-            //         fontWeight: FontWeight.bold),
-            //   ),
-            // )
-            );
-          },
+            return Container();
+            }
+
         ),
       ),
     );

@@ -3,11 +3,12 @@ import 'package:flutter_clean_calendar/flutter_clean_calendar.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:to_pay_app/Pages/Payment/EditPaymentPage.dart';
 import 'package:to_pay_app/helpers/calendar.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:to_pay_app/budget/payments/paymentList.dart';
-import 'package:to_pay_app/Pages/allPayments.dart';
+import 'file:///C:/Users/John%20Bosco%20Matanda/Documents/App%20Development/to_pay_app/lib/Pages/payment/allPayments.dart';
 import 'package:to_pay_app/models/bill.dart';
 
 class CalendarPage extends StatefulWidget {
@@ -88,6 +89,29 @@ class _CalendarPageState extends State<CalendarPage> {
     ;
     return Scaffold(
       backgroundColor: themeProvider.themeMode().blendBackgroundColor,
+      // appBar: AppBar(
+      //   backgroundColor: themeProvider.themeMode().color,
+      //   elevation: 0,
+      //   leadingWidth: _width,
+      //   leading: Container(
+      //       width: _width,
+      //       padding: EdgeInsets.only(top: 20, left: 20),
+      //       child: Text(
+      //         "Calendar",
+      //         style: TextStyle(
+      //             color: themeProvider.themeMode().textColor,
+      //             fontSize: 25,
+      //             fontWeight: FontWeight.w800,
+      //             fontFamily: "avenir"),
+      //       )),
+      //   // actions: [
+      //   //   Icon(
+      //   //     Icons.notifications_none_rounded,
+      //   //     size: 30,
+      //   //     color:  themeProvider.themeMode().textColor,
+      //   //   )
+      //   // ],
+      // ),
       body: Container(
         color: themeProvider.themeMode().color,
         child: SingleChildScrollView(
@@ -192,10 +216,10 @@ class _CalendarPageState extends State<CalendarPage> {
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         color: _calendarController.isSelected(date)
-            ? Colors.red[600]
+            ? Colors.red[900]
             : _calendarController.isToday(date)
                 ? Colors.amber[600]
-                : Colors.red[400],
+                : Colors.red[900],
       ),
       width: 16.0,
       height: 16.0,
@@ -235,6 +259,12 @@ class _CalendarPageState extends State<CalendarPage> {
                 child: Column(
                   children: <Widget>[
                     new ListTile(
+                      onLongPress: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => EditPaymentPage()),
+                        );
+                      },
                       leading: Container(
                         height: 70,
                         width: 70,
