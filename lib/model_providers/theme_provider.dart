@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -62,12 +63,12 @@ class ThemeProvider with ChangeNotifier {
   ThemeColor themeMode() {
     return ThemeColor(
       gradient: [
-        if (isLightTheme) ...[Colors.orange[900], Colors.yellow[400]],
+        if (isLightTheme) ...[Color(0xFFFFA081), Color(0xFFFAB3AA)],
         if (!isLightTheme) ...[Color(0xffDABB5F), Color(0xffF2EDD2)]
       ],
       backgroundGradient: [
-        if (isLightTheme) ...[Color(0xff5F3193), Color(0xff372571)],
-        if (!isLightTheme) ...[Color(0xff5F3193), Color(0xff372571)]
+        if (isLightTheme) ...[Color(0xff000000), Color(0xff383838)],
+        if (!isLightTheme) ...[Color(0xff000000), Color(0xff383838)]
       ],
       unpaidGradient: [
         if (isLightTheme) ...[Colors.blue, Colors.blue],
@@ -81,21 +82,28 @@ class ThemeProvider with ChangeNotifier {
         if (isLightTheme) ...[Colors.red, Colors.red],
         if (!isLightTheme) ...[Color(0xffDABB5F), Color(0xffF2EDD2)]
       ],
-      textColor: isLightTheme ? Color(0xFF000000) : Color(0xFFFFFFFF),
+      textColor: isLightTheme ? Color(0xff494949) : Color(0xFFFFFFFF),
+      chipColor: isLightTheme ? Colors.grey[800] : Color.fromARGB(15, 255, 250, 255),
+      borderColor: isLightTheme ? Colors.grey[300] : Color(0xFF212121),
+      statusCardColor:  isLightTheme ? Color(0xff8167e0): Colors.deepPurple[800],
+      statusTextCardColor:isLightTheme ? Colors.deepPurple[900]: Color(0xff8167e0),
+      secondaryTextColor: isLightTheme ? Colors.blueGrey : Color(0xFFFFFFFF),
       selectedColor: isLightTheme ? Colors.deepPurple : Colors.deepPurple[800],
       navBarForeground: isLightTheme ? Colors.deepPurple: Colors.deepPurple[400],
       toggleButtonColor: isLightTheme ? Color(0xFFFFFFFF) : Color(0xFf34323d),
-      searchBarColor: isLightTheme ? Color.fromARGB(25, 30, 0, 255) : Color.fromARGB(15, 255, 250, 255),
+      searchBarColor: isLightTheme ? Color.fromARGB(125, 206, 206, 206) : Color.fromARGB(15, 255, 250, 255),
       formColor: isLightTheme ? Color.fromARGB(15, 60, 0, 255) : Color.fromARGB(50, 255, 250, 255),
       unselectedItemColor: isLightTheme ? Colors.blueGrey[600] : Colors.blueGrey,
       nightOrDayImage: isLightTheme
           ? "assets/images/hugo-dogw.png"
           : 'assets/images/hugo-cat-sleep.png',
+        //FFA081  FFED5221
       toggleBackgroundColor:
           isLightTheme ? Color(0xFFe7e7e8) : Color(0xFF222029),
-      color: isLightTheme ? Colors.white : Color(0xff1C1B28),
-      appColor: isLightTheme ? Color(0xFF6C60E0) : Colors.deepPurple,
-      blendBackgroundColor: isLightTheme ? Color(0xffEEEDF7) : Color(0xff28273A),
+      color: isLightTheme ? Colors.white : Color(0xff1c1c1c),
+      appColor: isLightTheme ? Color(0xFFFFA081) : Color(0xffb84e30),
+      mainCardSecondaryColor:  isLightTheme ? Color(0xffb84e30) : Color(0xFFFFA081),
+      blendBackgroundColor: isLightTheme ? Color(0xffffffff) : Color(0xff111111),
       navBarColor: isLightTheme ? Color(0xffdad5f5) : Color(0xff201f2e),
       shadow: [
         if (isLightTheme)
@@ -124,6 +132,20 @@ class ThemeProvider with ChangeNotifier {
               blurRadius: 4,
               spreadRadius: 1,
               offset: Offset(-10, 10)),
+      ],
+      mainItemShadow: [
+        if (isLightTheme)
+          BoxShadow(
+              color: Colors.deepPurple.withOpacity(0.1),
+              blurRadius: 2,
+              spreadRadius: 0,
+              offset: Offset(-10, 10)),
+        if (!isLightTheme)
+          BoxShadow(
+              color: Color(0xce211e26),
+              blurRadius: 0,
+              spreadRadius: 0,
+              offset: Offset(0, 0)),
       ],
     );
   }
@@ -172,7 +194,7 @@ Color getColor(String category) {
 
 IconData getIcon(String category) {
   if (category == 'Household') {
-    return Icons.home_filled;
+    return Icons.home_rounded;
   }
   if (category == 'Food') {
     return Icons.restaurant_menu_rounded;
@@ -196,7 +218,7 @@ IconData getIcon(String category) {
     return Icons.bolt;
   }
   if (category == 'Other') {
-    return Icons.menu;
+    return CupertinoIcons.cube;
   }
 
   if (category == 'Broadband') {
@@ -220,21 +242,34 @@ class ThemeColor {
   Color unselectedItemColor;
   Color toggleButtonColor;
   Color toggleBackgroundColor;
+  Color chipColor;
   Color textColor;
+  Color borderColor;
+  Color statusCardColor;
+  Color statusTextCardColor;
+  Color secondaryTextColor;
   Color color;
+  Color mainCardSecondaryColor;
   Color navBarForeground;
   Color selectedColor;
   Color appColor;
   Color blendBackgroundColor;
   List<BoxShadow> itemShadow;
+  List<BoxShadow> mainItemShadow;
   List<BoxShadow> shadow;
 
   ThemeColor(
       {this.gradient,
       this.backgroundColor,
+        this.mainItemShadow,
       this.toggleBackgroundColor,
       this.toggleButtonColor,
+        this.chipColor,
+        this.statusTextCardColor,
+        this.statusCardColor,
       this.textColor,
+        this.borderColor,
+        this.secondaryTextColor,
         this.unselectedItemColor,
       this.shadow,
         this.navBarColor,
@@ -247,6 +282,7 @@ class ThemeColor {
       this.paidGradient,
       this.missedGradient,
       this.unpaidGradient,
+        this.mainCardSecondaryColor,
       this.itemShadow,
       this.selectedColor,
       this.color,

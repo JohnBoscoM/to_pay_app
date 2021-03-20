@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +12,9 @@ class AddPaymentPage extends StatefulWidget {
   @override
   _AddPaymentPageState createState() => _AddPaymentPageState();
 }
-class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProviderStateMixin {
+
+class _AddPaymentPageState extends State<AddPaymentPage>
+    with SingleTickerProviderStateMixin {
   final paymentBox = Hive.box('paymentBox');
   final titleController = TextEditingController();
   final costController = TextEditingController();
@@ -32,6 +35,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProvid
       });
     }
   }
+
   void createPayment(
       String title, double cost, DateTime deadline, String category) async {
     String title = titleController.text;
@@ -40,6 +44,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProvid
         title, cost, _date, false, 'PaymentDateStatus', false, category);
     paymentBox.add(paymentItem);
   }
+
   @override
   Widget build(BuildContext context) {
     var scrWidth = MediaQuery.of(context).size.width;
@@ -47,29 +52,47 @@ class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProvid
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: themeProvider.themeMode().blendBackgroundColor,
-        body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Stack(
-            children: [
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: themeProvider.themeMode().blendBackgroundColor)
-                  ),
-                  width: scrWidth,
-                  child: Row(
-                    children: [
-                    Text("Dark Mode", style: TextStyle( fontFamily: 'avenir', fontSize: 16),)
-
-
-                    ],
-
-                  ),
+      child: CupertinoPageScaffold(
+        child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              CupertinoSliverNavigationBar(
+                backgroundColor: themeProvider.themeMode().blendBackgroundColor,
+                largeTitle: Text(
+                  "Home",
+                  style: TextStyle(
+                      color: themeProvider.themeMode().textColor,
+                      fontFamily: 'avenir',
+                      fontWeight: FontWeight.w800),
                 ),
-              )
-           ],
+              ),
+            ];
+          },
+          // backgroundColor: themeProvider.themeMode().blendBackgroundColor,
+          body: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Stack(
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                            color: themeProvider
+                                .themeMode()
+                                .blendBackgroundColor)),
+                    width: scrWidth,
+                    child: Row(
+                      children: [
+                        Text(
+                          "Dark Mode",
+                          style: TextStyle(fontFamily: 'avenir', fontSize: 16),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -81,17 +104,19 @@ class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProvid
       width: _width * 0.825,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(20)),
-        border:  Border.all(color: Colors.grey),
+        border: Border.all(color: Colors.grey),
       ),
       padding: EdgeInsets.only(top: 12, left: 15, right: 12, bottom: 10),
       child: DropdownButton<String>(
-
         value: dropdownValue,
         icon: Icon(Icons.arrow_downward),
         iconSize: 0,
         focusColor: Colors.deepPurple,
         elevation: 16,
-        style: TextStyle(fontSize: 18, fontFamily: 'avenir', color: themeProvider.themeMode().textColor),
+        style: TextStyle(
+            fontSize: 18,
+            fontFamily: 'avenir',
+            color: themeProvider.themeMode().textColor),
         underline: Container(
           height: 5,
         ),
@@ -101,7 +126,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProvid
           });
         },
         items:
-        category.categories.map<DropdownMenuItem<String>>((String value) {
+            category.categories.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(value),
@@ -149,6 +174,3 @@ class Neu_button extends StatelessWidget {
     );
   }
 }
-
-
-

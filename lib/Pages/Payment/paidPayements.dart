@@ -117,12 +117,29 @@ class _PaidBillsPageState extends State<PaidBillsPage> {
               topRight: Radius.circular(0), topLeft: Radius.circular(0)),
         ),
         child: ListView.builder(
+          shrinkWrap: true,
           itemCount: paymentBox.length,
           itemBuilder: (context, index) {
             final paymentItem = paymentBox.get(index);
           if(paymentItem != null) {
             if (paymentItem.isChecked == true) {
               return Dismissible(
+                direction: DismissDirection.startToEnd,
+                background: Container(
+                  padding: EdgeInsets.only(left: 25),
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Container(
+                    height: 70,
+                    width: 70,
+                    margin: EdgeInsets.only(right: 0),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.red
+                    ),
+                    child: Icon(
+                        CupertinoIcons.delete_solid, size: 32, color: Colors.black38),
+                  ),
+                ),
                 key: Key(paymentItem.toString()),
                 onDismissed: (direction) {
                   paymentBox.delete(index);

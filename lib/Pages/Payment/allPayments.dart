@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 import 'package:provider/provider.dart';
+import 'package:to_pay_app/helpers/calendar.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
 import 'package:to_pay_app/models/bill.dart';
 import 'package:hive/hive.dart';
@@ -38,13 +39,11 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: themeProvider.themeMode().blendBackgroundColor,
+      appBar: AppBar(
+        leading: Text("Search"),
+      ),
       body: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-          ),
-          child: buildList(themeProvider),
+        child: Stack(children:[buildList(themeProvider),buildSearchBar(themeProvider)]
         ),
       ),
     );
@@ -82,11 +81,12 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
       child: Container(
         decoration: BoxDecoration(
           color: themeProvider.themeMode().blendBackgroundColor,
-          boxShadow: themeProvider.themeMode().mainItemShadow,
+         // boxShadow: themeProvider.themeMode().mainItemShadow,
           borderRadius: BorderRadius.only(
               topRight: Radius.circular(0), topLeft: Radius.circular(0)),
         ),
         child: ListView.builder(
+          shrinkWrap: true,
           itemCount: paymentBox.length,
           itemBuilder: (context, index) {
             final paymentItem = paymentBox.get(index);
@@ -95,10 +95,19 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
                 direction: DismissDirection.startToEnd,
                 key: Key(paymentItem.toString()),
                 background: Container(
-                  padding: EdgeInsets.only(left: 30),
+                  padding: EdgeInsets.only(left: 25),
                   alignment: AlignmentDirectional.centerStart,
-                  child: Icon(
-                      CupertinoIcons.delete_solid, size: 32, color: Colors.red),
+                  child: Container(
+                    height: 70,
+                    width: 70,
+                    margin: EdgeInsets.only(right: 0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.red
+                    ),
+                    child: Icon(
+                        CupertinoIcons.delete_solid, size: 32, color: Colors.black38),
+                  ),
                 ),
                 secondaryBackground: Container(
                     padding: EdgeInsets.only(right: 30),
@@ -110,7 +119,7 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
                       fontFamily: "avenir",))
                 ),
                 onDismissed: (direction) {
-                  paymentBox.delete(index);
+                  paymentBox.deleteAt(index);
                   Scaffold.of(context).showSnackBar(new SnackBar(
                     content: Text(paymentItem.title + " has been removed"),
                   ));
@@ -118,12 +127,11 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
                 child: new Container(
                   padding: new EdgeInsets.all(15),
                   //elevation: 0,
-                  decoration: BoxDecoration(
-                    color: themeProvider
-                        .themeMode()
-                        .color,
-
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                  decoration:   BoxDecoration(
+                    //color: themeProvider.themeMode().color,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  //  border: Border.all(color: themeProvider.themeMode().borderColor),
+                    // boxShadow: themeProvider.themeMode().itemShadow
                   ),
                   margin: new EdgeInsets.all(10),
                   child: Column(
@@ -164,56 +172,12 @@ class _AllPaymentsPageState extends State<AllPaymentsPage> {
                         dense: true,
                         //font change
                         contentPadding: EdgeInsets.all(1),
-                        title: Text(
-                          paymentItem.title,
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w800,
-                              fontFamily: "avenir",
-                              letterSpacing: 0.5),
-                          textAlign: TextAlign.left,
-                        ),
+                        title: Text(paymentItem.title, style: TextStyle(fontFamily:'avenir', fontSize: 17, fontWeight: FontWeight.w800)),
                         subtitle: Container(
-                          child: Text(
-                            paymentItem.deadline.toString().substring(0, 10),
-                            style: TextStyle(
-                                fontSize: 13,
-                                fontFamily: "avenir",
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5),
-                            textAlign: TextAlign.left,
-                          ),
+                          child: Text(paymentItem.deadline.day.toString() + ' ' +monthName(paymentItem.deadline.month), style: TextStyle(fontFamily:'avenir', fontSize: 13, fontWeight: FontWeight.w700)),
                         ),
 
-                        trailing: Flexible(
-                          flex: 1,
-                          fit: FlexFit.loose,
-                          child: Container(width: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.235, child: Row(
-                            children: [
-                              Text(
-                                paymentItem.cost.truncate().toString() + " kr",
-                                style: TextStyle(
-                                    color: Colors.amber,
-                                    fontSize: 15,
-                                    fontFamily: "avenir",
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: 0.5),
-                              ),
-
-                              Checkbox(
-                                  value: paymentItem.isChecked,
-                                  onChanged: (bool value) {
-                                    setState(() {
-                                      paymentItem.isChecked = value;
-                                    });
-                                  }),
-                            ],
-                          ),
-                          ),
-                        ),
+                        trailing: Text( paymentItem.cost.truncate().toString() + ' SEK ', style: TextStyle(fontFamily:'avenir', fontSize: 20, fontWeight: FontWeight.w700),),
 
 
                         // onChanged: (bool val) {

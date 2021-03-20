@@ -1,11 +1,14 @@
-import 'package:flutter/cupertino.dart';
 
+
+
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:to_pay_app/Pages/CustomWidgets/CustomTabIndicator.dart';
-import 'file:///C:/Users/John%20Bosco%20Matanda/Documents/App%20Development/to_pay_app/lib/Pages/payment/allPayments.dart';
-import 'file:///C:/Users/John%20Bosco%20Matanda/Documents/App%20Development/to_pay_app/lib/Pages/payment/missedPayments.dart';
-import 'file:///C:/Users/John%20Bosco%20Matanda/Documents/App%20Development/to_pay_app/lib/Pages/payment/paidPayements.dart';
-import 'file:///C:/Users/John%20Bosco%20Matanda/Documents/App%20Development/to_pay_app/lib/Pages/payment/unpaidPayments.dart';
+import 'package:to_pay_app/Pages/Payment/paidPayements.dart';
+import 'package:to_pay_app/Pages/Payment/unpaidPayments.dart';
+import 'package:to_pay_app/Pages/Payment/allPayments.dart';
+import 'package:to_pay_app/Pages/Payment/missedPayments.dart';
+import 'package:to_pay_app/budget/payments/addPayment_page.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
 import 'package:to_pay_app/models/bill.dart';
 import 'package:hive/hive.dart';
@@ -15,6 +18,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:to_pay_app/budget/payments/paymentList.dart';
 
+
 class PaymentsTabbedPage extends StatefulWidget {
   @override
   _PaymentsTabbedPageState createState() => _PaymentsTabbedPageState();
@@ -22,11 +26,11 @@ class PaymentsTabbedPage extends StatefulWidget {
 
 class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
     with SingleTickerProviderStateMixin {
-  final paymentBox = Hive.box('paymentBox');
+  final Box paymentBox = Hive.box('paymentBox');
   final titleController = TextEditingController();
   final costController = TextEditingController();
   final deadlineController = TextEditingController();
-
+  int _sliding = 1;
   AllPaymentsList pl = new AllPaymentsList();
   Category category = new Category();
   bool checkBoxValue = false;
@@ -39,6 +43,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
         initialDate: _date,
         firstDate: DateTime(1900),
         lastDate: DateTime(3000));
+
     if (datePicker != null && datePicker != _date) {
       setState(() {
         _date = datePicker;
@@ -48,17 +53,17 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
 
   TabController _controller;
   int _selectedIndex = 0;
-  String dropdownValue = 'Household';
+  String dropdownValue = 'Other';
 
-  List<Widget> list = [
-    Tab(text: "All"),
-    Tab(text: "Unpaid"),
-    Tab(text: "Paid"),
-    Tab(text: "Missed"),
-  ];
+   var  paymentStatusPages = [
+     UnPaidPaymentsPage(),
+     PaidBillsPage(),
+     MissedBillsPage()
+   ];
 
   void createPayment(
       String title, double cost, DateTime deadline, String category) async {
+
     String title = titleController.text;
     double cost = double.parse(costController.text);
     var paymentItem = new BillItem(
@@ -71,7 +76,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
     // TODO: implement initState
     super.initState();
     // Create TabController for getting the index of current tab
-    _controller = TabController(length: list.length, vsync: this);
+    _controller = TabController(length: paymentStatusPages.length, vsync: this);
     _controller.addListener(() {
       setState(() {
         _selectedIndex = _controller.index;
@@ -97,26 +102,66 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
 
   @override
   Widget build(BuildContext context) {
+
     final themeProvider = Provider.of<ThemeProvider>(context);
     var mediaQuery = MediaQuery.of(context);
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-    return DefaultTabController(
-      length: 4,
+    return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: themeProvider.themeMode().blendBackgroundColor,
+          elevation: 0,
 
-        body: TabBarView(
-          controller: _controller,
-          children: [
-            AllPaymentsPage(),
-            UnPaidPaymentsPage(),
-            PaidBillsPage(),
-            MissedBillsPage(),
-          ],
+          bottom: PreferredSize(
+            preferredSize: Size(double.infinity, 45.0),
+            child: Padding(
+              padding: EdgeInsets.only(top: 15, bottom: 10),
+              child: Row(
+                children: [
+                  SizedBox(width: 15),
+                  Expanded(
+                    child: CupertinoSlidingSegmentedControl(
+                        children: {
+                          //0: Text('All', style: TextStyle(fontFamily: 'avenir', fontWeight: FontWeight.w600),),
+                          0: Text('UnPaid', style: TextStyle( fontFamily: 'avenir', fontWeight: FontWeight.w600),),
+                          1: Text('Paid', style: TextStyle( fontFamily: 'avenir', fontWeight: FontWeight.w600),),
+                          2: Text('Missed', style: TextStyle( fontFamily: 'avenir', fontWeight: FontWeight.w600),),
+                        },
+                        groupValue: _sliding,
+                        onValueChanged: (newValue) {
+                          setState(() {
+                            _sliding = newValue;
+                          });
+                        }
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                ],
+              ),
+            ),
+          ),
+          //TabBar(
+          //   unselectedLabelColor: themeProvider.themeMode().textColor,
+          //   labelColor: Colors.white,
+          //   physics: BouncingScrollPhysics(),
+          //   indicatorPadding: EdgeInsets.all(0),
+          //   //indicatorSize: TabBarIndicatorSize.label,
+          //   indicator: CustomTabIndicator(),
+          //   //indicatorColor: Colors.grey[800],
+          //   onTap: (index) {
+          //     // Should not used it as it only called when tab options are clicked,
+          //     // not when user swapped
+          //   },
+          //   controller: _controller,
+          //   tabs: list,
+          // ),
+          title: Center(child: Padding(padding: EdgeInsets.only(top: 20), child: Text('Payments', style: TextStyle(fontSize: 26, fontFamily: 'avenir', fontWeight: FontWeight.w700),))),
         ),
+        body:
+          paymentStatusPages[_sliding],
+
         floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.deepPurple,
-          foregroundColor: Colors.white,
           child: Icon(Icons.add),
           onPressed: () {
             _buildModal(themeProvider, mediaQuery, height);
@@ -126,16 +171,16 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
     );
   }
 
+
+
   Widget _buildModal(
       ThemeProvider themeProvider, MediaQueryData mediaQuery, double height) {
     showModalBottomSheet(
         backgroundColor: Colors.transparent,
         context: context,
         builder: (context) {
-          return Expanded(
-            flex: 2,
-            child:Container(
-             // height: height,
+          return Container(
+              height: height,
               // padding: mediaQuery.viewInsets,
               decoration: BoxDecoration(
                 color: themeProvider.themeMode().color,
@@ -144,7 +189,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
                   topRight: Radius.circular(20),
                 ),
               ),
-              child: _inputField(themeProvider)));
+              child: _inputField(themeProvider));
         });
   }
 
@@ -169,8 +214,6 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
             autofocus: true,
             controller: titleController,
             decoration: InputDecoration(
-              filled: true,
-              fillColor: themeProvider.themeMode().searchBarColor,
               prefixIcon: Icon(Icons.title_outlined),
               hintStyle: TextStyle(color: Colors.grey, fontSize: 20),
               border: OutlineInputBorder(
@@ -250,88 +293,6 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
       ],
     );
   }
- Widget buildTabBar(ThemeProvider themeProvider){
-   return TabBar(
-     indicatorSize: TabBarIndicatorSize.label,
-     unselectedLabelColor: themeProvider.themeMode().secondaryTextColor,
-     labelColor:themeProvider.themeMode().textColor,
-     indicatorColor:  Colors.deepPurple,
-     labelStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w800,
-         fontFamily: "avenir"),
-     indicatorPadding: EdgeInsets.all(0),
-     //indicator: CustomTabIndicator(),
-     onTap: (index) {
-       // Should not used it as it only called when tab options are clicked,
-       // not when user swapped
-     },
-     controller: _controller,
-     tabs: list,
-   );
- }
-  Widget buildSearchBar(ThemeProvider themeProvider) {
-    return PreferredSize(
-      preferredSize: Size(0,150),
-      child: Column(
-        children: [
-
-      Container(
-      margin: EdgeInsets.only(right: 10, left: 10, bottom: 20, top: 0),
-      decoration: BoxDecoration(
-        color: themeProvider.themeMode().searchBarColor,
-        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-              flex: 1,
-              child: Padding(
-                padding: EdgeInsets.only(left: 20),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Search',
-                      hintStyle:
-                      TextStyle(color: themeProvider.themeMode().textColor),
-                      icon: Icon(CupertinoIcons.search,
-                          color: themeProvider.themeMode().textColor)),
-                ),
-              )),
-        ],
-      ),
-    ),
-
-    ],
-    ),
-    );
-
-      Container(
-      margin: EdgeInsets.only(right: 0, left: 0, bottom: 40, top: 40),
-      decoration: BoxDecoration(
-        color: themeProvider.themeMode().searchBarColor,
-        borderRadius: BorderRadius.all(Radius.circular(22.0)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-              flex: 1,
-              child: Padding(
-                padding: EdgeInsets.only(left: 20),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Search',
-                      hintStyle:
-                          TextStyle(color: themeProvider.themeMode().textColor),
-                      icon: Icon(CupertinoIcons.search,
-                          color: themeProvider.themeMode().textColor)),
-                ),
-              )),
-        ],
-      ),
-    );
-  }
 
   Widget buildDropDownList() {
     return Container(
@@ -344,6 +305,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
         style: TextStyle(fontSize: 18),
         underline: Container(
           height: 2,
+
         ),
         onChanged: (String newValue) {
           setState(() {
@@ -351,7 +313,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
           });
         },
         items:
-            category.categories.map<DropdownMenuItem<String>>((String value) {
+        category.categories.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(value),
@@ -370,3 +332,4 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
     });
   }
 }
+

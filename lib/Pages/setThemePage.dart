@@ -24,17 +24,23 @@ class _SetThemePageState extends State<SetThemePage>
     final width = MediaQuery.of(context).size.width;
     final themeProvider = Provider.of<ThemeProvider>(context);
     bool darkMode = false;
-    return Scaffold(
-      backgroundColor: themeProvider.themeMode().blendBackgroundColor,
-      key: _scaffoldKey,
-      appBar: AppBar(
-        elevation: 1,
-        backgroundColor: themeProvider.themeMode().blendBackgroundColor,
-        title: Text('Settings', style: GoogleFonts.quicksand(fontWeight: FontWeight.bold, fontSize: 30),
+    return CupertinoPageScaffold(
+        child: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+      return <Widget>[
+        CupertinoSliverNavigationBar(
+          backgroundColor: themeProvider.themeMode().blendBackgroundColor,
+          largeTitle: Text(
+            "Settings",
+            style: TextStyle(
+                color: themeProvider.themeMode().textColor,
+                fontFamily: 'avenir',
+                fontWeight: FontWeight.w800),
+          ),
         ),
-      ),
+      ];
+    },
       body: SafeArea(
-
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
           child: Column(
@@ -52,7 +58,6 @@ class _SetThemePageState extends State<SetThemePage>
                   color: themeProvider.themeMode().navBarColor
                 ),
               ),
-
             ),
             child: ListTile(
               title: Text('Dark Mode', style: TextStyle(fontFamily:'avenir', fontSize: 20, fontWeight: FontWeight.w700)),
@@ -75,7 +80,8 @@ class _SetThemePageState extends State<SetThemePage>
           ),
         ),
       ),
-      );
+      ),
+    );
 
   }
 // function to toggle circle animation

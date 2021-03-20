@@ -106,6 +106,14 @@ class _HomePageState extends State<HomePage> {
     });
     return count;
   }
+  int totalBillsCount() {
+    var count = 0;
+    paymentBox.toMap().forEach((key, value) {
+        count++;
+      }
+    );
+    return count;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,9 +161,9 @@ class _HomePageState extends State<HomePage> {
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               CupertinoSliverNavigationBar(
-                backgroundColor: themeProvider.themeMode().blendBackgroundColor,
+                backgroundColor: Colors.transparent,
                 largeTitle: Text(
-                  "Hem",
+                  "Home",
                   style: TextStyle(
                       color: themeProvider.themeMode().textColor,
                       fontFamily: 'avenir',
@@ -179,22 +187,23 @@ class _HomePageState extends State<HomePage> {
                 children: [
 
                   buildSearchBar(themeProvider),
+
                   Padding(
                     padding: EdgeInsets.only(left: 10,right: 10),
                  child: Row(
                     children: [
                       Chip(
-                        backgroundColor: themeProvider.themeMode().textColor,
-                        label: Text("Min Översikt"),
-                        labelStyle: TextStyle(color: themeProvider.themeMode().color, fontFamily: "avenir", fontSize: 15, fontWeight: FontWeight.w700),
+                        backgroundColor: themeProvider.themeMode().chipColor,
+                        label: Text("Overview"),
+                        labelStyle: TextStyle(color: Colors.white, fontFamily: "avenir", fontSize: 15, fontWeight: FontWeight.w700),
                       ),
                       SizedBox(
                         width: 20,
                       ),
                       Chip(
-                        backgroundColor: themeProvider.themeMode().textColor,
-                        label: Text("Min Statistik"),
-                        labelStyle: TextStyle(color: themeProvider.themeMode().color, fontFamily: "avenir", fontSize: 15, fontWeight: FontWeight.w700),
+                        backgroundColor: themeProvider.themeMode().chipColor,
+                        label: Text("Statistics"),
+                        labelStyle: TextStyle(color: Colors.white, fontFamily: "avenir", fontSize: 15, fontWeight: FontWeight.w700),
                       ),
                       SizedBox(
                         width: 20,
@@ -255,7 +264,7 @@ class _HomePageState extends State<HomePage> {
                                     topLeft: Radius.circular(0)),
                               ),
                               child: Text(
-                                "Översikt",
+                                "Overview",
                                 style: GoogleFonts.ubuntu(
                                   color: themeProvider.themeMode().appColor,
                                   fontSize: 22,
@@ -270,7 +279,7 @@ class _HomePageState extends State<HomePage> {
                             Padding(
                               padding: EdgeInsets.only(left: 20),
                               child: Text(
-                                "Totala Utgifter: " +
+                                "Total Payments: " +
                                     totalAmount().toString() +
                                     " SEK",
                                 style: GoogleFonts.quicksand(
@@ -287,7 +296,7 @@ class _HomePageState extends State<HomePage> {
                             Padding(
                               padding: EdgeInsets.only(left: 20),
                               child: Text(
-                                "Betalat: " + totalPaidAmount().toString() + " SEK",
+                                "Paid: " + totalPaidAmount().toString() + " SEK",
                                 style: GoogleFonts.quicksand(
                                   color:  themeProvider.themeMode().mainCardSecondaryColor,
                                   fontSize: 19,
@@ -297,9 +306,22 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
 
-                            // SizedBox(
-                            //   height: 15,
-                            // ),
+                            SizedBox(
+                              height: 15,
+                            ),
+
+                            Padding(
+                              padding: EdgeInsets.only(left: 20),
+                              child: Text(
+                                "Total: " + totalBillsCount().toString(),
+                                style: GoogleFonts.quicksand(
+                                  color:  themeProvider.themeMode().mainCardSecondaryColor,
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w700,
+                                  //fontFamily: "avenir"
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                         Expanded(
@@ -360,7 +382,7 @@ class _HomePageState extends State<HomePage> {
                         top: 25, bottom: 10, left: 10, right: 10),
                     decoration: BoxDecoration(
                       boxShadow: themeProvider.themeMode().mainItemShadow,
-                      color: Color(0xff8167e0),
+                      color: themeProvider.themeMode().statusCardColor,
                       borderRadius: BorderRadius.all(Radius.circular(35)),
 
                       // gradient: LinearGradient(
@@ -383,7 +405,7 @@ class _HomePageState extends State<HomePage> {
                               padding: EdgeInsets.only(
                                   top: 8, bottom: 8, right: 15, left: 50),
                               decoration: BoxDecoration(
-                                color: Colors.deepPurple[900],
+                                color: themeProvider.themeMode().statusTextCardColor,
                                 borderRadius: BorderRadius.only(
                                     bottomRight: Radius.circular(30),
                                     topRight: Radius.circular(30),
@@ -392,7 +414,7 @@ class _HomePageState extends State<HomePage> {
                               child: Text(
                                 "Status",
                                 style: GoogleFonts.ubuntu(
-                                  color: Color(0xff8167e0),
+                                  color: themeProvider.themeMode().statusCardColor,
                                   fontSize: 22,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -406,10 +428,10 @@ class _HomePageState extends State<HomePage> {
                               padding: EdgeInsets.only(left: 20),
                               child: Text(
                                 "Unpaid Payments: " +
-                                    totalMissedAmount().toString() +
+                                    totalUnPaidAmount().toString() +
                                     " SEK",
                                 style: GoogleFonts.quicksand(
-                                  color: Color(0xffFF2D251E),
+                                  color: themeProvider.themeMode().statusTextCardColor,
                                   fontSize: 19,
                                   fontWeight: FontWeight.w700,
                                   //fontFamily: "avenir"
@@ -422,9 +444,9 @@ class _HomePageState extends State<HomePage> {
                             Padding(
                               padding: EdgeInsets.only(left: 20),
                               child: Text(
-                                "Missed: " + totalPaidAmount().toString() ,
+                                "Missed: " + missedBillsCount().toString() ,
                                 style: GoogleFonts.quicksand(
-                                  color: Color(0xffFF2D251E),
+                                  color:themeProvider.themeMode().statusTextCardColor,
                                   fontSize: 19,
                                   fontWeight: FontWeight.w700,
                                   //fontFamily: "avenir"
@@ -437,9 +459,9 @@ class _HomePageState extends State<HomePage> {
                             Padding(
                               padding: EdgeInsets.only(left: 20),
                               child: Text(
-                                "Unpaid: " + totalPaidAmount().toString() ,
+                                "Unpaid: " + unpaidBillsCount().toString() ,
                                 style: GoogleFonts.quicksand(
-                                  color: Color(0xffFF2D251E),
+                                  color: themeProvider.themeMode().statusTextCardColor,
                                   fontSize: 19,
                                   fontWeight: FontWeight.w700,
                                   //fontFamily: "avenir"
@@ -463,7 +485,7 @@ class _HomePageState extends State<HomePage> {
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage(
-                                      "assets/images/Chart_front.png"),
+                                      "assets/images/status2.png"),
                                   alignment: Alignment.centerRight,
                                   fit: BoxFit.scaleDown),
                             ),
@@ -520,7 +542,7 @@ class _HomePageState extends State<HomePage> {
                       Padding(
                         padding: EdgeInsets.only(left: 25),
                         child: Text(
-                          'Betalningar för ' +
+                          'To Pay for ' +
                               monthName(DateTime.now().month),
                           style: TextStyle(
                               fontSize: 23,
@@ -590,7 +612,7 @@ class _HomePageState extends State<HomePage> {
                       child: TextFormField(
                         decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: 'Snabbsök betalningar',
+                            hintText: 'Quick Search Payments',
                             hintStyle:
                             TextStyle(color: Colors.grey[600],fontWeight: FontWeight.bold, fontFamily: 'avenir'),
                             icon: Icon(CupertinoIcons.search,
@@ -669,7 +691,7 @@ class _HomePageState extends State<HomePage> {
                     decoration:   BoxDecoration(
                       //color: themeProvider.themeMode().color,
                       borderRadius: BorderRadius.all(Radius.circular(20)),
-                      border: Border.all(color: Colors.grey[300]),
+                      border: Border.all(color: themeProvider.themeMode().borderColor),
                       // boxShadow: themeProvider.themeMode().itemShadow
                     ),
                     padding: new EdgeInsets.all(10),
@@ -708,7 +730,7 @@ class _HomePageState extends State<HomePage> {
                           contentPadding: EdgeInsets.all(1),
                           title: Text(paymentItem.title, style: TextStyle(fontFamily:'avenir', fontSize: 17, fontWeight: FontWeight.w700)),
                           subtitle: Container(
-                            child: Text(paymentItem.deadline.toString(), style: TextStyle(fontFamily:'avenir', fontSize: 13, fontWeight: FontWeight.w700)),
+                            child: Text(paymentItem.deadline.day.toString() + ' ' +monthName(paymentItem.deadline.month), style: TextStyle(fontFamily:'avenir', fontSize: 13, fontWeight: FontWeight.w700)),
                           ),
 
                           trailing: Text( paymentItem.cost.truncate().toString() + ' SEK ', style: TextStyle(fontFamily:'avenir', fontSize: 20, fontWeight: FontWeight.w700),),

@@ -121,9 +121,25 @@ class _MissedBillsPageState extends State<MissedBillsPage> {
           itemBuilder: (context, index) {
             final paymentItem = paymentBox.get(index);
     if(paymentItem != null) {
-      if (paymentItem.deadline.isBefore(new DateTime.now().day) &&
+      if (paymentItem.deadline.isBefore(new DateTime.now()) &&
           paymentItem.isChecked == false) {
         return Dismissible(
+          direction: DismissDirection.startToEnd,
+          background: Container(
+            padding: EdgeInsets.only(left: 30),
+            alignment: AlignmentDirectional.centerStart,
+            child: Container(
+              height: 70,
+              width: 70,
+              margin: EdgeInsets.only(right: 0),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.red[600]
+              ),
+              child: Icon(
+                  CupertinoIcons.delete_solid, size: 32, color: Colors.white),
+            ),
+          ),
           key: Key(paymentItem.toString()),
           onDismissed: (direction) {
             paymentBox.delete(index);
@@ -177,7 +193,7 @@ class _MissedBillsPageState extends State<MissedBillsPage> {
                   title: Text(
                     paymentItem.title,
                     style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 17,
                         fontWeight: FontWeight.w800,
                         fontFamily: "avenir",
                         letterSpacing: 0.5),

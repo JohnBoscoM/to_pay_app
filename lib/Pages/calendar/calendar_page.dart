@@ -81,7 +81,7 @@ class _CalendarPageState extends State<CalendarPage> {
     final _width = MediaQuery.of(context).size.width;
     TextStyle dayStyle(FontWeight fontWeight) {
       return TextStyle(
-          color: themeProvider.themeMode().textColor,
+          color: themeProvider.themeMode().statusTextCardColor,
           fontWeight: fontWeight,
           fontFamily: "avenir");
     }
@@ -113,7 +113,7 @@ class _CalendarPageState extends State<CalendarPage> {
       //   // ],
       // ),
       body: Container(
-        color: themeProvider.themeMode().color,
+        color: themeProvider.themeMode().statusCardColor,
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -132,12 +132,12 @@ class _CalendarPageState extends State<CalendarPage> {
                 ),
                 daysOfWeekStyle: DaysOfWeekStyle(
                     weekdayStyle: TextStyle(
-                        color: Colors.amber[800],
+                        color: Color(0xFFFFA081),
                         fontWeight: FontWeight.bold,
                         fontFamily: "avenir",
                         fontSize: 16),
                     weekendStyle: TextStyle(
-                        color: Colors.amber[800],
+                        color: Color(0xFFFFA081),
                         fontWeight: FontWeight.bold,
                         fontFamily: "avenir",
                         fontSize: 16)),
@@ -146,7 +146,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       fontSize: 21,
                       fontFamily: "avenir",
                       fontWeight: FontWeight.bold,
-                      color: themeProvider.themeMode().textColor),
+                      color: Color(0xFFFFA081)),
                 ),
                 calendarController: _calendarController,
                 //events: _datePaymentItemList,
