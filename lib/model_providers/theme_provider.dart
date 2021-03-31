@@ -63,8 +63,8 @@ class ThemeProvider with ChangeNotifier {
   ThemeColor themeMode() {
     return ThemeColor(
       gradient: [
-        if (isLightTheme) ...[Color(0xFFFFA081), Color(0xFFFAB3AA)],
-        if (!isLightTheme) ...[Color(0xffDABB5F), Color(0xffF2EDD2)]
+        if (isLightTheme) ...[Colors.blueGrey[900], Colors.blueGrey[600]],
+        if (!isLightTheme) ...[Colors.blueGrey[900], Colors.blueGrey[600]]
       ],
       backgroundGradient: [
         if (isLightTheme) ...[Color(0xff000000), Color(0xff383838)],
@@ -83,17 +83,19 @@ class ThemeProvider with ChangeNotifier {
         if (!isLightTheme) ...[Color(0xffDABB5F), Color(0xffF2EDD2)]
       ],
       textColor: isLightTheme ? Color(0xff494949) : Color(0xFFFFFFFF),
-      chipColor: isLightTheme ? Colors.grey[800] : Color.fromARGB(15, 255, 250, 255),
-      borderColor: isLightTheme ? Colors.grey[300] : Color(0xFF212121),
-      statusCardColor:  isLightTheme ? Color(0xff8167e0): Colors.deepPurple[800],
-      statusTextCardColor:isLightTheme ? Colors.deepPurple[900]: Color(0xff8167e0),
+      appBarColor: isLightTheme ? Colors.white54: Colors.transparent,
+      chipColor: isLightTheme ? Colors.blueAccent[700] : Colors.blueAccent[700],
+      borderColor: isLightTheme ? Colors.grey[300] : Color(0xFF383838),
+      statusCardColor:  isLightTheme ? Colors.deepPurple[300]: Color(0xff4c2eac),
+      statusTextCardColor:isLightTheme ? Colors.deepPurple[800] : Color(0xff8167e0),
       secondaryTextColor: isLightTheme ? Colors.blueGrey : Color(0xFFFFFFFF),
       selectedColor: isLightTheme ? Colors.deepPurple : Colors.deepPurple[800],
-      navBarForeground: isLightTheme ? Colors.deepPurple: Colors.deepPurple[400],
+      navBarForeground: isLightTheme ?  Colors.blueGrey[700] : Colors.blueGrey,
       toggleButtonColor: isLightTheme ? Color(0xFFFFFFFF) : Color(0xFf34323d),
       searchBarColor: isLightTheme ? Color.fromARGB(125, 206, 206, 206) : Color.fromARGB(15, 255, 250, 255),
       formColor: isLightTheme ? Color.fromARGB(15, 60, 0, 255) : Color.fromARGB(50, 255, 250, 255),
       unselectedItemColor: isLightTheme ? Colors.blueGrey[600] : Colors.blueGrey,
+      tileColor: isLightTheme ? Colors.grey[100] : Color(0xff1c1c1c),
       nightOrDayImage: isLightTheme
           ? "assets/images/hugo-dogw.png"
           : 'assets/images/hugo-cat-sleep.png',
@@ -101,10 +103,10 @@ class ThemeProvider with ChangeNotifier {
       toggleBackgroundColor:
           isLightTheme ? Color(0xFFe7e7e8) : Color(0xFF222029),
       color: isLightTheme ? Colors.white : Color(0xff1c1c1c),
-      appColor: isLightTheme ? Color(0xFFFFA081) : Color(0xffb84e30),
-      mainCardSecondaryColor:  isLightTheme ? Color(0xffb84e30) : Color(0xFFFFA081),
+      appColor: isLightTheme ? Color(0xFF262626) : Color(0xffaf5b41),
+      mainCardSecondaryColor:  isLightTheme ? Color(0xffeaeaea) : Color(0xffeaeaea),
       blendBackgroundColor: isLightTheme ? Color(0xffffffff) : Color(0xff111111),
-      navBarColor: isLightTheme ? Color(0xffdad5f5) : Color(0xff201f2e),
+      navBarColor: isLightTheme ? Color(0xffeae9ec) : Color(0xff1a1a21),
       shadow: [
         if (isLightTheme)
           BoxShadow(
@@ -162,34 +164,34 @@ class ThemeProvider with ChangeNotifier {
 
 Color getColor(String category) {
   if (category == 'Household') {
-    return Colors.red[400];
+    return Colors.blueGrey[300];
   }
   if (category == 'Food') {
-    return Colors.greenAccent;
+    return Colors.blueGrey[300];
   }
   if (category == 'Fitness') {
-    return Colors.lightBlueAccent;
+    return Colors.blueGrey[400];
   }
   if (category == 'Education') {
-    return Colors.brown[400];
+    return Colors.blueGrey[400];
   }
   if (category == 'Shopping') {
-    return Colors.purple[400];
+    return Colors.blueGrey[400];
   }
   if (category == 'Entertainment') {
-    return Colors.pink[400];
+    return Colors.blueGrey[400];
   }
   if (category == 'Car') {
-    return Colors.blue[400];
+    return Colors.blueGrey[400];
   }
   if (category == 'Other') {
-    return Colors.grey[400];
+    return Colors.blueGrey[400];
   }
 
   if (category == 'Electricty') {
-    return Colors.orange[400];
+    return Colors.blueGrey[400];
   }
-  return Colors.red[400];
+  return Colors.blueGrey[300];
 }
 
 IconData getIcon(String category) {
@@ -224,7 +226,7 @@ IconData getIcon(String category) {
   if (category == 'Broadband') {
     return Icons.web;
   }
-  return Icons.home_filled;
+  return CupertinoIcons.cube;
 }
 
 // A class to manage specify colors and styles in the app not supported by theme data
@@ -253,6 +255,8 @@ class ThemeColor {
   Color navBarForeground;
   Color selectedColor;
   Color appColor;
+  Color appBarColor;
+  Color tileColor;
   Color blendBackgroundColor;
   List<BoxShadow> itemShadow;
   List<BoxShadow> mainItemShadow;
@@ -261,6 +265,8 @@ class ThemeColor {
   ThemeColor(
       {this.gradient,
       this.backgroundColor,
+        this.appBarColor,
+        this.tileColor,
         this.mainItemShadow,
       this.toggleBackgroundColor,
       this.toggleButtonColor,

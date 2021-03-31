@@ -1,10 +1,11 @@
+
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
-import 'package:to_pay_app/Pages/Payment/Forms/CustomForms.dart';
+import 'package:to_pay_app/View/Payment/Forms/CustomForms.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
 
-import 'package:to_pay_app/Pages/Clippers/Clippers.dart';
+import 'package:to_pay_app/View/Clippers/Clippers.dart';
 import 'package:to_pay_app/models/bill.dart';
 
 class AddPaymentPage extends StatefulWidget {
@@ -34,8 +35,8 @@ class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProvid
   }
   void createPayment(
       String title, double cost, DateTime deadline, String category) async {
-    String title = titleController.text;
-    double cost = double.parse(costController.text);
+    // String title = titleController.text;
+    // double cost = double.parse(costController.text);
     var paymentItem = new BillItem(
         title, cost, _date, false, 'PaymentDateStatus', false, category);
     paymentBox.add(paymentItem);
@@ -80,7 +81,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProvid
                         style: TextStyle(
                           fontFamily: 'avenir',
                           fontSize: 15,
-                          color: Colors.grey,
+                          color: Colors.blueGrey,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -105,7 +106,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProvid
                           style: TextStyle(
                             fontFamily: 'avenir',
                             fontSize: 15,
-                            color: Colors.grey,
+                            color: Colors.blueGrey,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -113,15 +114,15 @@ class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProvid
                       Row(
                       children: [
                         Chip(
-                          backgroundColor: Colors.deepPurple,
-                          label: Text("3rd Month"),
+                          backgroundColor: Colors.blueGrey[800],
+                          label: Text("Quarterly"),
                           labelStyle: TextStyle(color: Colors.white, fontFamily: "avenir", fontSize: 15, fontWeight: FontWeight.w700),
                         ),
                         SizedBox(
                           width: 20,
                         ),
                         Chip(
-                          backgroundColor: Colors.deepPurple,
+                          //backgroundColor: Colors.grey[800],
                           label: Text("Monthly"),
                           labelStyle: TextStyle(color: Colors.white, fontFamily: "avenir", fontSize: 15, fontWeight: FontWeight.w700),
                         ),
@@ -129,7 +130,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProvid
                           width: 20,
                         ),
                         Chip(
-                          backgroundColor: Colors.deepPurple,
+                          //backgroundColor: Colors.grey[700],
                           label: Text("Weekly"),
                           labelStyle: TextStyle(color: Colors.white, fontFamily: "avenir", fontSize: 15, fontWeight: FontWeight.w700),
                         ),
@@ -152,7 +153,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProvid
                         style: TextStyle(
                           fontFamily: 'Product Sans',
                           fontSize: 15,
-                          color: Colors.grey[600],
+                          color: Colors.blueGrey[600],
                         ),
                       ),
                     ),
@@ -204,7 +205,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProvid
                         style: TextStyle(
                           fontFamily: 'Product Sans',
                           fontSize: 15,
-                          color: Colors.grey[600],
+                          color: Colors.blueGrey[600],
                         ),
                       ),
                     ),
@@ -222,25 +223,26 @@ class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProvid
                       },
                       style: TextStyle(
                           fontSize: 19,
-                          color: Colors.deepPurple,
+                          color: Colors.blueAccent[700],
                           fontWeight: FontWeight.bold),
                       decoration: InputDecoration(
                         hintText: _date.toString().substring(0, 10),
                         hintStyle: TextStyle(
+                          fontFamily: 'avenir',
                             fontSize: 18,
                             color: themeProvider.themeMode().textColor,
                             fontWeight: FontWeight.w600),
                         contentPadding:
                         EdgeInsets.symmetric(vertical: 27, horizontal: 25),
-                        focusColor: Colors.deepPurple,
+                        focusColor: Colors.blueAccent[700],
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
-                          borderSide: BorderSide(color: Colors.deepPurpleAccent),
+                          borderSide: BorderSide(color: Colors.blueAccent[700]),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide(
-                            color: Colors.grey,
+                            color:themeProvider.themeMode().borderColor,
                           ),
                         ),
                       ),
@@ -260,23 +262,25 @@ class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProvid
                     ),
                     //
                   ),
-                  RaisedButton(
-                    color: themeProvider.themeMode().blendBackgroundColor,
-                    elevation: 0,
-                    focusElevation: 0,
-                    highlightElevation: 3,
-                    hoverElevation: 0,
-                      disabledElevation: 0,
-                    onPressed: (){
+                  TextButton(
+                   style: ButtonStyle(
+                       backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states){
+                     if(states.contains(MaterialState.pressed))
+                       return Colors.transparent;
+                     return null;
+                  }
+                   ),
+                   ),
 
-                     // createPayment();
+                    onPressed: (){
+                     createPayment("Jimmy Joy Shake", 437, _date,_categoryValue);
                     },
                   child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 20),
-                    width: scrWidth * 0.85,
+                    margin: EdgeInsets.all(20),
+                    width: scrWidth * 0.75,
                     height: 75,
                     decoration: BoxDecoration(
-                      color: Colors.deepPurple,
+                      color: Colors.blueGrey[800],
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Center(
@@ -292,49 +296,27 @@ class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProvid
                     ),
                   ),
                   ),
-                  // RichText(
-                  //   text: TextSpan(
-                  //     children: [
-                  //       TextSpan(
-                  //         text: 'Already have an account? ',
-                  //         style: TextStyle(
-                  //           fontFamily: 'Product Sans',
-                  //           fontSize: 15,
-                  //           fontWeight: FontWeight.bold,
-                  //           color: Color(0xff8f9db5).withOpacity(0.45),
-                  //         ),
-                  //       ),
-                  //       TextSpan(
-                  //         text: 'Sign In',
-                  //         style: TextStyle(
-                  //           fontFamily: 'Product Sans',
-                  //           fontSize: 15,
-                  //           fontWeight: FontWeight.bold,
-                  //           color: Color(0xff90b7ff),
-                  //         ),
-                  //       )
-                  //     ],
-                  //   ),
-                  // ),
                 ],
               ),
-              ClipPath(
-                clipper: OuterClippedPart(),
-                child: Container(
-                  color: Colors.deepPurple,
-                  width: scrWidth,
-                  height: scrHeight,
-                ),
-              ),
+
+              // ClipPath(
+              //   clipper: OuterClippedPart(),
+              //   child: Container(
+              //     color: Colors.deepPurple,
+              //     width: scrWidth,
+              //     height: scrHeight,
+              //   ),
+              // ),
               //
-              ClipPath(
-                clipper: InnerClippedPart(),
-                child: Container(
-                  color: Colors.deepPurple[800],
-                  width: scrWidth,
-                  height: scrHeight,
-                ),
-              ),
+              // ClipPath(
+              //   clipper: InnerClippedPart(),
+              //   child: Container(
+              //     color: Colors.deepPurple[800],
+              //     width: scrWidth,
+              //     height: scrHeight,
+              //   ),
+              // ),
+             // SizedBox(height: 20,)
             ],
           ),
         ),
@@ -347,7 +329,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProvid
       width: _width * 0.825,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(20)),
-        border:  Border.all(color: Colors.grey),
+        border:  Border.all(color: Colors.blueGrey[100]),
       ),
       padding: EdgeInsets.only(top: 12, left: 15, right: 12, bottom: 10),
       child: DropdownButton<String>(
@@ -355,7 +337,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> with SingleTickerProvid
         value: dropdownValue,
         icon: Icon(Icons.arrow_downward),
         iconSize: 0,
-        focusColor: Colors.deepPurple,
+        focusColor: Colors.blueAccent[700],
         elevation: 16,
         style: TextStyle(fontSize: 18, fontFamily: 'avenir', color: themeProvider.themeMode().textColor),
         underline: Container(

@@ -3,6 +3,12 @@ import 'package:hive/hive.dart';
 
 part 'bill.g.dart';
 
+enum Recurrence{
+  QUATERLY,
+  MONTHLY,
+  WEEKDLY,
+  NEVER,
+}
 class BillDateStatus { 
   List<String> paymentStatus = [
     'UpComing',
@@ -41,6 +47,8 @@ class BillItem {
   bool isPayed;
   @HiveField(6)
   String category;
+  @HiveField(40)
+  int recurrence;
 
   BillItem(String title, double cost, DateTime deadline, bool isChecked,
       String billDateStatus, bool isPayed, String category) {

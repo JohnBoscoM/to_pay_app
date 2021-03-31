@@ -33,9 +33,9 @@ class _CustomFormsState extends State<CustomForms> {
             child: Text(
               widget.label,
               style: TextStyle(
-                fontFamily: 'Product Sans',
+                fontFamily: 'avenir',
                 fontSize: 15,
-                color: Colors.grey[600],
+                color: Colors.blueGrey[600],
               ),
             ),
           ),
@@ -53,6 +53,7 @@ class _CustomFormsState extends State<CustomForms> {
               });
             },
             style: TextStyle(
+                fontFamily: 'avenir',
                 fontSize: 19,
                 color: Colors.deepPurple,
                 fontWeight: FontWeight.bold),
@@ -72,7 +73,7 @@ class _CustomFormsState extends State<CustomForms> {
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
                 borderSide: BorderSide(
-                  color: Colors.grey,
+                  color: themeProvider.themeMode().borderColor,
                 ),
               ),
               suffixIcon: isSubmitted == true

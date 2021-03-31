@@ -1,40 +1,62 @@
-
-
-
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
-import 'package:to_pay_app/Pages/CustomWidgets/CustomTabIndicator.dart';
-import 'package:to_pay_app/Pages/Payment/paidPayements.dart';
-import 'package:to_pay_app/Pages/Payment/unpaidPayments.dart';
-import 'package:to_pay_app/Pages/Payment/allPayments.dart';
-import 'package:to_pay_app/Pages/Payment/missedPayments.dart';
-import 'package:to_pay_app/budget/payments/addPayment_page.dart';
-import 'package:to_pay_app/model_providers/theme_provider.dart';
-import 'package:to_pay_app/models/bill.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:path_provider/path_provider.dart';
-
 import 'package:flutter/material.dart';
-import 'package:to_pay_app/budget/payments/paymentList.dart';
+import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
+import 'package:hive/hive.dart';
+import 'package:to_pay_app/View/Payment/AddPaymentPage.dart';
+import 'file:///C:/Users/John%20Bosco%20Matanda/Documents/App%20Development/to_pay_app/lib/View/payment/paymentsTabbedView.dart';
+import 'package:to_pay_app/View/setThemePage.dart';
+import 'package:provider/provider.dart';
+import 'package:to_pay_app/View/calendar/calendar_page.dart';
+import 'package:to_pay_app/model_providers/theme_provider.dart';
+import 'package:to_pay_app/View/home.dart';
+import 'package:to_pay_app/models/bill.dart';
 
 
-class PaymentsTabbedPage extends StatefulWidget {
+
+class NavPage extends StatefulWidget {
   @override
-  _PaymentsTabbedPageState createState() => _PaymentsTabbedPageState();
+  _NavState createState() => _NavState();
 }
 
-class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
-    with SingleTickerProviderStateMixin {
+class _NavState extends State<NavPage> {
   final Box paymentBox = Hive.box('paymentBox');
   final titleController = TextEditingController();
   final costController = TextEditingController();
   final deadlineController = TextEditingController();
-  int _sliding = 1;
-  AllPaymentsList pl = new AllPaymentsList();
+  int _selectedIndex = 0;
+  String dropdownValue = 'Other';
   Category category = new Category();
-  bool checkBoxValue = false;
+  void changeTab() {
+    if (mounted) setState(() {});
+  }
+  SnakeBarBehaviour snakeBarStyle = SnakeBarBehaviour.floating;
+  SnakeShape snakeShape = SnakeShape.indicator;
+  bool showSelectedLabels = false;
+  bool showUnselectedLabels = false;
+   ShapeBorder bottomBarShape = const RoundedRectangleBorder(
 
+     borderRadius: BorderRadius.all(Radius.circular(20)),
+   );
+  EdgeInsets padding = const EdgeInsets.only(top:2,bottom:16,right: 12,left:12);
+
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static final List<dynamic> _widgetOptions = [
+    HomePage(),
+    PaymentsTabbedPage(),
+    AddPaymentPage(),
+    CalendarPage(),
+    SetThemePage(),
+    //MyHomePage(),
+  ];
+  void createPayment(
+      String title, double cost, DateTime deadline, String category) async {
+    String title = titleController.text;
+    double cost = double.parse(costController.text);
+    var paymentItem = new BillItem(
+        title, cost, _date, false, 'PaymentDateStatus', false, category);
+    paymentBox.add(paymentItem);
+  }
   DateTime _date = DateTime.now();
   String _categoryValue;
   Future<Null> _selectDate(BuildContext context) async {
@@ -43,136 +65,55 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
         initialDate: _date,
         firstDate: DateTime(1900),
         lastDate: DateTime(3000));
-
     if (datePicker != null && datePicker != _date) {
       setState(() {
         _date = datePicker;
       });
     }
   }
-
-  TabController _controller;
-  int _selectedIndex = 0;
-  String dropdownValue = 'Other';
-
-   var  paymentStatusPages = [
-     UnPaidPaymentsPage(),
-     PaidBillsPage(),
-     MissedBillsPage()
-   ];
-
-  void createPayment(
-      String title, double cost, DateTime deadline, String category) async {
-
-    String title = titleController.text;
-    double cost = double.parse(costController.text);
-    var paymentItem = new BillItem(
-        title, cost, _date, false, 'PaymentDateStatus', false, category);
-    paymentBox.add(paymentItem);
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // Create TabController for getting the index of current tab
-    _controller = TabController(length: paymentStatusPages.length, vsync: this);
-    _controller.addListener(() {
-      setState(() {
-        _selectedIndex = _controller.index;
-      });
-      print("Selected Index: " + _controller.index.toString());
-    });
-  }
-
-  // Future _openBox() async {
-  //   var dir = await getApplicationDocumentsDirectory();
-  //   Hive.init(dir.path);
-  //   paymentBox = await Hive.openBox('paymentBox');
-  //   return;
-  // }
-
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    titleController.dispose();
-    costController.dispose();
-    deadlineController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-
     final themeProvider = Provider.of<ThemeProvider>(context);
-    var mediaQuery = MediaQuery.of(context);
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: themeProvider.themeMode().blendBackgroundColor,
-          elevation: 0,
+    return Scaffold(
+      backgroundColor: themeProvider.themeMode().blendBackgroundColor,
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
+      bottomNavigationBar: SnakeNavigationBar.color(
+        selectedLabelStyle: TextStyle(fontFamily: 'avenir'),
+        backgroundColor: themeProvider.themeMode().navBarColor,
+        behaviour: snakeBarStyle,
+        snakeShape: snakeShape,
+        shape: bottomBarShape,
 
-          bottom: PreferredSize(
-            preferredSize: Size(double.infinity, 45.0),
-            child: Padding(
-              padding: EdgeInsets.only(top: 15, bottom: 10),
-              child: Row(
-                children: [
-                  SizedBox(width: 15),
-                  Expanded(
-                    child: CupertinoSlidingSegmentedControl(
-                        children: {
-                          //0: Text('All', style: TextStyle(fontFamily: 'avenir', fontWeight: FontWeight.w600),),
-                          0: Text('UnPaid', style: TextStyle( fontFamily: 'avenir', fontWeight: FontWeight.w600),),
-                          1: Text('Paid', style: TextStyle( fontFamily: 'avenir', fontWeight: FontWeight.w600),),
-                          2: Text('Missed', style: TextStyle( fontFamily: 'avenir', fontWeight: FontWeight.w600),),
-                        },
-                        groupValue: _sliding,
-                        onValueChanged: (newValue) {
-                          setState(() {
-                            _sliding = newValue;
-                          });
-                        }
-                    ),
-                  ),
-                  SizedBox(width: 15),
-                ],
-              ),
-            ),
-          ),
-          //TabBar(
-          //   unselectedLabelColor: themeProvider.themeMode().textColor,
-          //   labelColor: Colors.white,
-          //   physics: BouncingScrollPhysics(),
-          //   indicatorPadding: EdgeInsets.all(0),
-          //   //indicatorSize: TabBarIndicatorSize.label,
-          //   indicator: CustomTabIndicator(),
-          //   //indicatorColor: Colors.grey[800],
-          //   onTap: (index) {
-          //     // Should not used it as it only called when tab options are clicked,
-          //     // not when user swapped
-          //   },
-          //   controller: _controller,
-          //   tabs: list,
-          // ),
-          title: Center(child: Padding(padding: EdgeInsets.only(top: 20), child: Text('Payments', style: TextStyle(fontSize: 26, fontFamily: 'avenir', fontWeight: FontWeight.w700),))),
-        ),
-        body:
-          paymentStatusPages[_sliding],
+        padding: padding,
 
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () {
-            _buildModal(themeProvider, mediaQuery, height);
-          },
-        ),
+        ///configuration for SnakeNavigationBar.color
+        snakeViewColor: themeProvider.themeMode().navBarForeground,
+        selectedItemColor: snakeShape == SnakeShape.indicator ? themeProvider.themeMode().navBarForeground : null,
+        unselectedItemColor: themeProvider.themeMode().unselectedItemColor,
+
+        ///configuration for SnakeNavigationBar.gradient
+        //snakeViewGradient: selectedGradient,
+        //selectedItemGradient: snakeShape == SnakeShape.indicator ? selectedGradient : null,
+        //unselectedItemGradient: unselectedGradient,
+
+        showUnselectedLabels: showUnselectedLabels,
+        showSelectedLabels: showSelectedLabels,
+
+        currentIndex: _selectedIndex,
+        onTap: (index) => setState(() => _selectedIndex = index),
+        items: [
+          BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(CupertinoIcons.creditcard), label: 'Expenses'),
+          BottomNavigationBarItem(icon: Icon(CupertinoIcons.add_circled_solid,size: 45,), label: 'Analytics'),
+          BottomNavigationBarItem(icon: Icon(CupertinoIcons.calendar_today), label: 'Calendar'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings_outlined), label: 'Settings'),
+
+        ],
       ),
     );
   }
-
-
-
   Widget _buildModal(
       ThemeProvider themeProvider, MediaQueryData mediaQuery, double height) {
     showModalBottomSheet(
@@ -293,7 +234,6 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
       ],
     );
   }
-
   Widget buildDropDownList() {
     return Container(
       padding: EdgeInsets.only(top: 10, left: 0, right: 0, bottom: 0),
@@ -305,7 +245,6 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
         style: TextStyle(fontSize: 18),
         underline: Container(
           height: 2,
-
         ),
         onChanged: (String newValue) {
           setState(() {
@@ -325,11 +264,4 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
       ),
     );
   }
-
-  void itemChange(bool val, int index) {
-    setState(() {
-      pl.payments[index].isChecked = val;
-    });
-  }
 }
-

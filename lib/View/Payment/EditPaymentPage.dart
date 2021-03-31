@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:to_pay_app/Pages/Payment/Forms/CustomForms.dart';
+import 'package:to_pay_app/View/Payment/Forms/CustomForms.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
 
 

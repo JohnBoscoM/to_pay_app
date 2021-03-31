@@ -25,6 +25,7 @@ class _SetThemePageState extends State<SetThemePage>
     final themeProvider = Provider.of<ThemeProvider>(context);
     bool darkMode = false;
     return CupertinoPageScaffold(
+      backgroundColor: themeProvider.themeMode().blendBackgroundColor,
         child: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
       return <Widget>[

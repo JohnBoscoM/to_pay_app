@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:to_pay_app/View/search/searchPage.dart';
 import 'package:to_pay_app/domain/Payment/Payments.dart';
 import 'package:to_pay_app/helpers/calendar.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
-import 'package:to_pay_app/Pages/Clippers/Clippers.dart';
+import 'package:to_pay_app/View/Clippers/Clippers.dart';
 
+import 'CustomWidgets/CustomCheckbox.dart';
 import 'Payment/AddPaymentPage.dart';
 
 class HomePage extends StatefulWidget {
@@ -161,7 +163,7 @@ class _HomePageState extends State<HomePage> {
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               CupertinoSliverNavigationBar(
-                backgroundColor: Colors.transparent,
+                backgroundColor: themeProvider.themeMode().appBarColor,
                 largeTitle: Text(
                   "Home",
                   style: TextStyle(
@@ -185,45 +187,39 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
-                  buildSearchBar(themeProvider),
-
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SearchPage()),
+                      );
+                    },
+                  child: buildSearchBar(themeProvider),
+                  ),
                   Padding(
                     padding: EdgeInsets.only(left: 10,right: 10),
                  child: Row(
                     children: [
-                      Chip(
-                        backgroundColor: themeProvider.themeMode().chipColor,
-                        label: Text("Overview"),
-                        labelStyle: TextStyle(color: Colors.white, fontFamily: "avenir", fontSize: 15, fontWeight: FontWeight.w700),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Chip(
-                        backgroundColor: themeProvider.themeMode().chipColor,
-                        label: Text("Statistics"),
-                        labelStyle: TextStyle(color: Colors.white, fontFamily: "avenir", fontSize: 15, fontWeight: FontWeight.w700),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
+
                     ],
                   ),
                   ),
 
                    SizedBox(height: 10,),
                    Container(
-                    height: _height * 0.27,
+                    height: _height * 0.35,
                     padding:
                         EdgeInsets.only(top: 10, bottom: 0, left: 0, right: 0),
                     margin: EdgeInsets.only(
                         top: 25, bottom: 10, left: 10, right: 10),
                     decoration: BoxDecoration(
                       boxShadow: themeProvider.themeMode().mainItemShadow,
-                      color: themeProvider.themeMode().appColor,
+                     // color: themeProvider.themeMode().appColor,
                       borderRadius: BorderRadius.all(Radius.circular(35)),
-
+                      gradient: LinearGradient(
+                          colors: themeProvider.themeMode().gradient,
+                          begin: Alignment.bottomRight,
+                          end: Alignment.topLeft),
                       // gradient: LinearGradient(
                       //     colors: themeProvider.themeMode().backgroundGradient,
                       //     begin: Alignment.bottomRight,
@@ -253,72 +249,78 @@ class _HomePageState extends State<HomePage> {
                             SizedBox(
                               height: 0,
                             ),
-                            Container(
+                            Expanded(
+                              flex: 0,
+                            child: Container(
+                              margin: EdgeInsets.only(left: 20),
                               padding: EdgeInsets.only(
-                                  top: 8, bottom: 8, right: 15, left: 50),
+                                  top: 8, bottom: 8, right: 15, left: 15),
                               decoration: BoxDecoration(
                                 color: themeProvider.themeMode().mainCardSecondaryColor,
                                 borderRadius: BorderRadius.only(
                                     bottomRight: Radius.circular(30),
+                                    bottomLeft: Radius.circular(30),
                                     topRight: Radius.circular(30),
-                                    topLeft: Radius.circular(0)),
+                                    topLeft: Radius.circular(30)),
                               ),
                               child: Text(
                                 "Overview",
                                 style: GoogleFonts.ubuntu(
-                                  color: themeProvider.themeMode().appColor,
-                                  fontSize: 22,
+                                  color: Colors.black,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ),
+                            ),
 
                             SizedBox(
-                              height: 35,
+                              height: 55,
                             ),
-                            Padding(
+                            Expanded(
+                              flex: 0,
+                            child: Padding(
                               padding: EdgeInsets.only(left: 20),
                               child: Text(
-                                "Total Payments: " +
+                                "Total Amount: " +
                                     totalAmount().toString() +
                                     " SEK",
-                                style: GoogleFonts.quicksand(
+                                style: GoogleFonts.ubuntu(
                                   color: themeProvider.themeMode().mainCardSecondaryColor,
-                                  fontSize: 19,
-                                  fontWeight: FontWeight.w700,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w600,
                                   //fontFamily: "avenir"
                                 ),
                               ),
                             ),
+                            ),
                             SizedBox(
-                              height: 10,
+                              height: 50,
                             ),
                             Padding(
                               padding: EdgeInsets.only(left: 20),
                               child: Text(
                                 "Paid: " + totalPaidAmount().toString() + " SEK",
-                                style: GoogleFonts.quicksand(
-                                  color:  themeProvider.themeMode().mainCardSecondaryColor,
-                                  fontSize: 19,
-                                  fontWeight: FontWeight.w700,
-                                  //fontFamily: "avenir"
+                                style: GoogleFonts.ubuntu(
+                                    color: themeProvider.themeMode().mainCardSecondaryColor,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w600,
+                                    //fontFamily: "avenir"
                                 ),
                               ),
                             ),
-
                             SizedBox(
-                              height: 15,
+                              height: 50,
                             ),
-
                             Padding(
                               padding: EdgeInsets.only(left: 20),
                               child: Text(
                                 "Total: " + totalBillsCount().toString(),
-                                style: GoogleFonts.quicksand(
-                                  color:  themeProvider.themeMode().mainCardSecondaryColor,
-                                  fontSize: 19,
-                                  fontWeight: FontWeight.w700,
-                                  //fontFamily: "avenir"
+                                style: GoogleFonts.ubuntu(
+                                    color: themeProvider.themeMode().mainCardSecondaryColor,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w600,
+                                    //fontFamily: "avenir"
                                 ),
                               ),
                             ),
@@ -326,19 +328,17 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Expanded(
                           child: Container(
-                            height: 450,
-                            width: 450,
+                            height: 200,
+                            width: 150,
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage(
-                                      "assets/images/overview-clip-2.png"),
+                                      "assets/images/overview.png"),
                                   alignment: Alignment.bottomRight,
                                   fit: BoxFit.scaleDown),
                             ),
                           ),
                         ),
-
-
                       ],
                     ),
                   ),
@@ -375,20 +375,20 @@ class _HomePageState extends State<HomePage> {
                   //   ),
                   // ),
                   Container(
-                    height: _height * 0.27,
+                    height: _height * 0.45,
                     padding:
                     EdgeInsets.only(top: 10, bottom: 0, left: 0, right: 0),
                     margin: EdgeInsets.only(
                         top: 25, bottom: 10, left: 10, right: 10),
                     decoration: BoxDecoration(
                       boxShadow: themeProvider.themeMode().mainItemShadow,
-                      color: themeProvider.themeMode().statusCardColor,
+                      //color: themeProvider.themeMode().statusCardColor,
                       borderRadius: BorderRadius.all(Radius.circular(35)),
 
-                      // gradient: LinearGradient(
-                      //     colors: themeProvider.themeMode().backgroundGradient,
-                      //     begin: Alignment.bottomRight,
-                      //     end: Alignment.topLeft),
+                      gradient: LinearGradient(
+                          colors: themeProvider.themeMode().gradient,
+                          begin: Alignment.bottomRight,
+                          end: Alignment.topLeft),
                       //Color(0xfff1f3f6),
                     ),
                     child: Row(
@@ -402,19 +402,21 @@ class _HomePageState extends State<HomePage> {
                               height: 20,
                             ),
                             Container(
+                              margin: EdgeInsets.only(left: 25),
                               padding: EdgeInsets.only(
-                                  top: 8, bottom: 8, right: 15, left: 50),
+                                  top: 8, bottom: 8, right: 20, left: 20),
                               decoration: BoxDecoration(
-                                color: themeProvider.themeMode().statusTextCardColor,
+                                color: themeProvider.themeMode().mainCardSecondaryColor,
                                 borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(30),
                                     bottomRight: Radius.circular(30),
                                     topRight: Radius.circular(30),
-                                    topLeft: Radius.circular(0)),
+                                    topLeft: Radius.circular(30)),
                               ),
                               child: Text(
                                 "Status",
                                 style: GoogleFonts.ubuntu(
-                                  color: themeProvider.themeMode().statusCardColor,
+                                  color: Colors.black,
                                   fontSize: 22,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -427,17 +429,18 @@ class _HomePageState extends State<HomePage> {
                             Padding(
                               padding: EdgeInsets.only(left: 20),
                               child: Text(
-                                "Unpaid Payments: " +
+                                "Unpaid Amount: " +
                                     totalUnPaidAmount().toString() +
                                     " SEK",
-                                style: GoogleFonts.quicksand(
-                                  color: themeProvider.themeMode().statusTextCardColor,
+                                style: GoogleFonts.ubuntu(
+                                  color: themeProvider.themeMode().mainCardSecondaryColor,
                                   fontSize: 19,
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.w600,
                                   //fontFamily: "avenir"
                                 ),
                               ),
                             ),
+
                             SizedBox(
                               height: 10,
                             ),
@@ -445,8 +448,8 @@ class _HomePageState extends State<HomePage> {
                               padding: EdgeInsets.only(left: 20),
                               child: Text(
                                 "Missed: " + missedBillsCount().toString() ,
-                                style: GoogleFonts.quicksand(
-                                  color:themeProvider.themeMode().statusTextCardColor,
+                                style: GoogleFonts.ubuntu(
+                                  color:themeProvider.themeMode().mainCardSecondaryColor,
                                   fontSize: 19,
                                   fontWeight: FontWeight.w700,
                                   //fontFamily: "avenir"
@@ -460,10 +463,10 @@ class _HomePageState extends State<HomePage> {
                               padding: EdgeInsets.only(left: 20),
                               child: Text(
                                 "Unpaid: " + unpaidBillsCount().toString() ,
-                                style: GoogleFonts.quicksand(
-                                  color: themeProvider.themeMode().statusTextCardColor,
+                                style: GoogleFonts.ubuntu(
+                                  color: themeProvider.themeMode().mainCardSecondaryColor,
                                   fontSize: 19,
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.w600,
                                   //fontFamily: "avenir"
                                 ),
                               ),
@@ -474,14 +477,14 @@ class _HomePageState extends State<HomePage> {
 
                   //
                             SizedBox(
-                              height: 15,
+                              height: 0,
                             ),
                           ],
                         ),
                         Expanded(
                           child: Container(
-                            height: 650,
-                            width: 550,
+                            height: 450,
+                            width: 50,
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage(
@@ -542,7 +545,7 @@ class _HomePageState extends State<HomePage> {
                       Padding(
                         padding: EdgeInsets.only(left: 25),
                         child: Text(
-                          'To Pay for ' +
+                          'Payments for ' +
                               monthName(DateTime.now().month),
                           style: TextStyle(
                               fontSize: 23,
@@ -596,7 +599,14 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         children: [
           SizedBox(height: 30,),
-          Container(
+          GestureDetector(
+            onTap: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SearchPage()),
+              );
+          },
+          child: Container(
             margin: EdgeInsets.only(right: 10, left: 10, bottom: 20, top: 0),
             decoration: BoxDecoration(
               color: themeProvider.themeMode().navBarColor,
@@ -610,7 +620,9 @@ class _HomePageState extends State<HomePage> {
                     child: Padding(
                       padding: EdgeInsets.only(left: 20),
                       child: TextFormField(
+                        readOnly: true,
                         decoration: InputDecoration(
+
                             border: InputBorder.none,
                             hintText: 'Quick Search Payments',
                             hintStyle:
@@ -622,6 +634,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
+          )
 
         ],
       ),
@@ -716,7 +729,7 @@ class _HomePageState extends State<HomePage> {
                               size: 30,
                             ),
                           ),
-
+                          //CustomCheckbox(paymentItem.isChecked,30.0,20.0,Colors.blueGrey,Colors.white),
                           // Checkbox(
                           //     value: paymentItem.isChecked,
                           //     onChanged: (bool value) {

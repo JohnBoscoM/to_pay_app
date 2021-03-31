@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
-import 'package:to_pay_app/Pages/Payment/Forms/CustomForms.dart';
+import 'package:to_pay_app/View/Payment/Forms/CustomForms.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
 
-import 'package:to_pay_app/Pages/Clippers/Clippers.dart';
+import 'package:to_pay_app/View//Clippers/Clippers.dart';
 import 'package:to_pay_app/models/bill.dart';
 
 class AddPaymentPage extends StatefulWidget {
