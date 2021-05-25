@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_calendar/flutter_clean_calendar.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:to_pay_app/View/CustomWidgets/CustomCheckbox.dart';
 import 'package:to_pay_app/View/Payment/EditPaymentPage.dart';
+import 'package:to_pay_app/controller/paymentController.dart';
 import 'package:to_pay_app/helpers/calendar.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
 import 'package:path_provider/path_provider.dart';
@@ -20,21 +20,23 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
+  PaymentController paymentController = new PaymentController();
   final paymentBox = Hive.box('paymentBox');
   var _selectedDay = DateTime.now();
+  List<dynamic> paymentList;
 
   CalendarController _calendarController;
   Map<DateTime, List> _event = new Map();
 
   List selectedPaymentItemList;
 
-
   @override
   void initState() {
     super.initState();
+    paymentList = paymentController.getAllPaymentItems();
     _calendarController = CalendarController();
     selectedPaymentItemList = getDateItemList(_selectedDay);
-    _event = getEvent(paymentBox.values.toList());
+    _event = getEvent(paymentList);
 
     //_datePaymentItemList = getDateItemList(paymentBox,_selectedDay);
   }
@@ -59,13 +61,13 @@ class _CalendarPageState extends State<CalendarPage> {
   // }
 
   List<dynamic> getDateItemList(DateTime selectedDate) {
-    var paymentlist = new List<dynamic>();
-    var items = paymentBox.values.toList();
+    var dateItemList = <dynamic>[];
+    var items = paymentList;
     items.forEach((value) {
       if (value.deadline.toString().substring(0, 10) ==
-          selectedDate.toString().substring(0, 10)) paymentlist.add(value);
+          selectedDate.toString().substring(0, 10)) dateItemList.add(value);
     });
-    return paymentlist;
+    return dateItemList;
   }
 
   void _onDaySelected(DateTime day) {
@@ -86,11 +88,10 @@ class _CalendarPageState extends State<CalendarPage> {
           fontWeight: fontWeight,
           fontFamily: "avenir");
     }
+
     TextStyle weekendStyle(FontWeight fontWeight) {
       return TextStyle(
-          color: Colors.red[200],
-          fontWeight: fontWeight,
-          fontFamily: "avenir");
+          color: Colors.red[200], fontWeight: fontWeight, fontFamily: "avenir");
     }
 
     ;
@@ -129,12 +130,11 @@ class _CalendarPageState extends State<CalendarPage> {
                 events: _event,
                 startingDayOfWeek: StartingDayOfWeek.monday,
                 calendarStyle: CalendarStyle(
-
-                  markersColor: Colors.blueGrey[700],
+                  markersColor: Colors.brown[600],
                   weekdayStyle: dayStyle(FontWeight.normal),
                   weekendStyle: weekendStyle(FontWeight.normal),
-                  selectedColor: Colors.blueGrey[400],
-                  todayColor: Colors.blueGrey[900],
+                  selectedColor: Colors.brown[400],
+                  todayColor: Colors.blueAccent,
                 ),
                 daysOfWeekStyle: DaysOfWeekStyle(
                     weekdayStyle: TextStyle(
@@ -152,7 +152,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       fontSize: 21,
                       fontFamily: "avenir",
                       fontWeight: FontWeight.bold,
-                      color: Colors.blueGrey[700]),
+                      color: Colors.brown[700]),
                 ),
                 calendarController: _calendarController,
                 //events: _datePaymentItemList,
@@ -174,9 +174,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     );
                   }
                   return children;
-                }
-
-                ),
+                }),
               ),
               Container(
                 width: _width,
@@ -225,7 +223,7 @@ class _CalendarPageState extends State<CalendarPage> {
             ? Colors.grey[700]
             : _calendarController.isToday(date)
                 ? Colors.red[300]
-                : Colors.blueGrey[300],
+                : Colors.brown[300],
       ),
       width: 16.0,
       height: 16.0,
@@ -257,22 +255,24 @@ class _CalendarPageState extends State<CalendarPage> {
               margin: new EdgeInsets.only(
                   left: 20.0, top: 0, right: 20.0, bottom: 15),
               child: new Container(
-                decoration:   BoxDecoration(
-                  //color: themeProvider.themeMode().color,
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  border: Border.all(color: themeProvider.themeMode().borderColor),
-                  // boxShadow: themeProvider.themeMode().itemShadow
+                decoration: BoxDecoration(
+                  color: themeProvider.themeMode().blendBackgroundColor,
+                  border: Border(
+                    bottom: BorderSide(
+                        color: themeProvider.themeMode().navBarColor),
+                  ),
                 ),
                 padding: new EdgeInsets.all(10),
                 child: Column(
                   children: <Widget>[
                     new ListTile(
-                      onLongPress: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => EditPaymentPage()),
-                        );
-                      },
+                      // onLongPress: () {
+                      //   Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => EditPaymentPage()),
+                      //   );
+                      // },
                       leading: Container(
                         height: 70,
                         width: 70,
@@ -292,40 +292,65 @@ class _CalendarPageState extends State<CalendarPage> {
                       dense: true,
                       //font change
                       contentPadding: EdgeInsets.all(0),
-                      title:Text(paymentItem.title, style: TextStyle(fontFamily:'avenir', fontSize: 16, fontWeight: FontWeight.w700)),
-                      subtitle: Container(child: Text(paymentItem.deadline.day.toString() + ' ' +monthName(paymentItem.deadline.month), style: TextStyle(fontFamily:'avenir', fontSize: 13, fontWeight: FontWeight.w700)),
+                      title: Text(paymentItem.title,
+                          style: TextStyle(
+                              fontFamily: 'avenir',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700)),
+                      subtitle: Container(
+                        child: Text(
+                            paymentItem.deadline.day.toString() +
+                                ' ' +
+                                monthName(paymentItem.deadline.month),
+                            style: TextStyle(
+                                fontFamily: 'avenir',
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700)),
                       ),
 
-                      trailing:  Flexible(
+                      trailing: Flexible(
                           flex: 1,
                           fit: FlexFit.loose,
                           child: Container(
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width * 0.350,
+                              width: MediaQuery.of(context).size.width * 0.350,
                               child: Wrap(
                                 children: [
                                   Expanded(
-
-                                      child: Align(
-
-                                       alignment: Alignment.centerRight,
-                                        child: Row(
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Row(
                                         children: [
-                                          SizedBox(width: 20,),
-                                          Text( paymentItem.cost.truncate().toString() + ' SEK ', style: TextStyle(fontFamily:'avenir', fontSize: 19, fontWeight: FontWeight.w700),),
-                                          SizedBox(width: 20,),
-                                          CustomCheckbox(paymentItem.isChecked,26.0,18.0,Colors.blueGrey,Colors.white),
-                                          SizedBox(width: 0,)
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Text(
+                                            paymentItem.cost
+                                                    .truncate()
+                                                    .toString() +
+                                                ' SEK ',
+                                            style: TextStyle(
+                                                fontFamily: 'avenir',
+                                                fontSize: 19,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          CustomCheckbox(
+                                              paymentItem.isChecked,
+                                              26.0,
+                                              18.0,
+                                              Colors.blueAccent,
+                                              Colors.white),
+                                          SizedBox(
+                                            width: 0,
+                                          )
                                         ],
                                       ),
                                     ),
                                   )
                                 ],
-                              )
-                          )
-                      ),
+                              ))),
 
                       // onChanged: (bool val) {
                       //   itemChange(val, index);

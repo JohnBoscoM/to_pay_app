@@ -15,9 +15,9 @@ class _SetThemePageState extends State<SetThemePage>
   AnimationController _animationController;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   // PaymentList pl = new PaymentList();
-  final Shader colorGradient =
-      LinearGradient(colors: <Color>[Colors.grey[900], Colors.grey[400]])
-          .createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0));
+  final Shader colorGradient = LinearGradient(
+          colors: <Color>[Colors.grey.shade900, Colors.grey.shade400])
+      .createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0));
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -26,65 +26,68 @@ class _SetThemePageState extends State<SetThemePage>
     bool darkMode = false;
     return CupertinoPageScaffold(
       backgroundColor: themeProvider.themeMode().blendBackgroundColor,
-        child: NestedScrollView(
+      child: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-      return <Widget>[
-        CupertinoSliverNavigationBar(
-          backgroundColor: themeProvider.themeMode().blendBackgroundColor,
-          largeTitle: Text(
-            "Settings",
-            style: TextStyle(
-                color: themeProvider.themeMode().textColor,
-                fontFamily: 'avenir',
-                fontWeight: FontWeight.w800),
-          ),
-        ),
-      ];
-    },
-      body: SafeArea(
-        child: SingleChildScrollView(
+          return <Widget>[
+            CupertinoSliverNavigationBar(
+              backgroundColor: themeProvider.themeMode().blendBackgroundColor,
+              largeTitle: Text(
+                "Settings",
+                style: TextStyle(
+                    color: themeProvider.themeMode().textColor,
+                    fontFamily: 'avenir',
+                    fontWeight: FontWeight.w800),
+              ),
+            ),
+          ];
+        },
+        body: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
           child: Column(
             children: [
               Stack(
                 children: [
-          Container(
-            margin: EdgeInsets.all(0),
-            padding: EdgeInsets.all(3),
-            decoration:
-            BoxDecoration(
-              color: themeProvider.themeMode().blendBackgroundColor,
-              border: Border(
-                bottom: BorderSide(
-                  color: themeProvider.themeMode().navBarColor
-                ),
-              ),
-            ),
-            child: ListTile(
-              title: Text('Dark Mode', style: TextStyle(fontFamily:'avenir', fontSize: 20, fontWeight: FontWeight.w700)),
-              trailing: CupertinoSwitch(
-                value: darkMode,
-                onChanged: (bool value) {
-                  setState(() {
-                    darkMode = value;
-                     changeThemeMode(darkMode, themeProvider);
-                  }
-                  );
-                  },
-              ),
-            ),
-          ),
-
+                  Container(
+                    // margin: EdgeInsets.all(bottom: 0),
+                    padding: EdgeInsets.only(bottom: 5, top: 5),
+                    decoration: BoxDecoration(
+                      color: themeProvider.themeMode().blendBackgroundColor,
+                      border: Border(
+                        bottom: BorderSide(
+                            color: themeProvider.themeMode().navBarColor),
+                      ),
+                    ),
+                    child: ListTile(
+                      leading: Icon(
+                        CupertinoIcons.paintbrush,
+                        size: 30,
+                        color: Colors.brown,
+                      ),
+                      title: Text('Dark Mode',
+                          style: TextStyle(
+                              fontFamily: 'avenir',
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700)),
+                      trailing: CupertinoSwitch(
+                        value: darkMode,
+                        onChanged: (bool value) {
+                          setState(() {
+                            darkMode = value;
+                            changeThemeMode(darkMode, themeProvider);
+                          });
+                        },
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ],
           ),
         ),
       ),
-      ),
     );
-
   }
+
 // function to toggle circle animation
   changeThemeMode(bool theme, ThemeProvider themeProvider) {
     if (!theme) {
@@ -93,17 +96,18 @@ class _SetThemePageState extends State<SetThemePage>
       themeProvider.toggleThemeData();
     }
   }
-  Container buildDot({double width, double height, Color color}) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 4),
-      width: width,
-      height: height,
-      decoration: ShapeDecoration(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        color: color,
-      ),
-    );
-  }
+
+  // Container buildDot({double width, double height, Color color}) {
+  //   return Container(
+  //     margin: EdgeInsets.symmetric(horizontal: 4),
+  //     width: width,
+  //     height: height,
+  //     decoration: ShapeDecoration(
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(20),
+  //       ),
+  //       color: color,
+  //     ),
+  //   );
+  // }
 }

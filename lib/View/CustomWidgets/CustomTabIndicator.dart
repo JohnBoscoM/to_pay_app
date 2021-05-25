@@ -1,37 +1,37 @@
-import 'package:flutter/widgets.dart';
-import 'package:flutter/material.dart';
+// import 'package:flutter/widgets.dart';
+// import 'package:flutter/material.dart';
 
-class CustomTabIndicator extends Decoration {
+// class CustomTabIndicator extends Decoration {
 
-  @override
-  _CustomPainter createBoxPainter([VoidCallback onChanged]) {
-    return new _CustomPainter(this, onChanged);
-  }
+//   @override
+//   _CustomPainter createBoxPainter([VoidCallback onChanged]) {
+//     return new _CustomPainter(this, onChanged);
+//   }
 
-}
+// }
 
-class _CustomPainter extends BoxPainter {
+// class _CustomPainter extends BoxPainter {
 
-  final CustomTabIndicator decoration;
+//   final CustomTabIndicator decoration;
 
-  _CustomPainter(this.decoration, VoidCallback onChanged)
-      : assert(decoration != null),
-        super(onChanged);
+//   _CustomPainter(this.decoration, VoidCallback onChanged)
+//       : assert(decoration != null),
+//         super(onChanged);
 
-  @override
-  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
-    final indicatorHeight = 35.0;
-    assert(configuration != null);
-    assert(configuration.size != null);
+//   @override
+//   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+//     final indicatorHeight = 35.0;
+//     assert(configuration != null);
+//     assert(configuration.size != null);
 
-    //offset is the position from where the decoration should be drawn.
-    //configuration.size tells us about the height and width of the tab.
-    final Rect rect = Offset(offset.dx, (configuration.size.height/2)- indicatorHeight/2) & Size(configuration.size.width, indicatorHeight);
+//     //offset is the position from where the decoration should be drawn.
+//     //configuration.size tells us about the height and width of the tab.
+//     final Rect rect = Offset(offset.dx, (configuration.size.height/2)- indicatorHeight/2) & Size(configuration.size.width, indicatorHeight);
 
-    final Paint paint = Paint();
-    paint.color = Colors.deepPurple;
-    paint.style = PaintingStyle.fill;
-    canvas.drawRRect(RRect.fromRectAndRadius(rect, Radius.circular(12.0)), paint);
-  }
+//     final Paint paint = Paint();
+//     paint.color = Colors.deepPurple;
+//     paint.style = PaintingStyle.fill;
+//     canvas.drawRRect(RRect.fromRectAndRadius(rect, Radius.circular(12.0)), paint);
+//   }
 
-}
+// }

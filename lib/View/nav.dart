@@ -11,8 +11,6 @@ import 'package:to_pay_app/model_providers/theme_provider.dart';
 import 'package:to_pay_app/View/home.dart';
 import 'package:to_pay_app/models/bill.dart';
 
-
-
 class NavPage extends StatefulWidget {
   @override
   _NavState createState() => _NavState();
@@ -29,15 +27,17 @@ class _NavState extends State<NavPage> {
   void changeTab() {
     if (mounted) setState(() {});
   }
+
   SnakeBarBehaviour snakeBarStyle = SnakeBarBehaviour.floating;
   SnakeShape snakeShape = SnakeShape.indicator;
   bool showSelectedLabels = false;
   bool showUnselectedLabels = false;
-   ShapeBorder bottomBarShape = const RoundedRectangleBorder(
-
-     borderRadius: BorderRadius.all(Radius.circular(20)),
-   );
-  EdgeInsets padding = const EdgeInsets.only(top:2,bottom:16,right: 12,left:12);
+  ShapeBorder bottomBarShape = const RoundedRectangleBorder(
+    borderRadius: BorderRadius.only(
+        topRight: Radius.circular(0), topLeft: Radius.circular(0)),
+  );
+  EdgeInsets padding =
+      const EdgeInsets.only(top: 0, bottom: 0, right: 2, left: 2);
 
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -54,9 +54,10 @@ class _NavState extends State<NavPage> {
     String title = titleController.text;
     double cost = double.parse(costController.text);
     var paymentItem = new BillItem(
-        title, cost, _date, false, 'PaymentDateStatus', false, category);
+        title, cost, _date, false, 'PaymentDateStatus', false, category, 3);
     paymentBox.add(paymentItem);
   }
+
   DateTime _date = DateTime.now();
   String _categoryValue;
   Future<Null> _selectDate(BuildContext context) async {
@@ -71,6 +72,7 @@ class _NavState extends State<NavPage> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -90,7 +92,9 @@ class _NavState extends State<NavPage> {
 
         ///configuration for SnakeNavigationBar.color
         snakeViewColor: themeProvider.themeMode().navBarForeground,
-        selectedItemColor: snakeShape == SnakeShape.indicator ? themeProvider.themeMode().navBarForeground : null,
+        selectedItemColor: snakeShape == SnakeShape.indicator
+            ? themeProvider.themeMode().navBarForeground
+            : null,
         unselectedItemColor: themeProvider.themeMode().unselectedItemColor,
 
         ///configuration for SnakeNavigationBar.gradient
@@ -104,16 +108,25 @@ class _NavState extends State<NavPage> {
         currentIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
         items: [
-          BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(CupertinoIcons.creditcard), label: 'Expenses'),
-          BottomNavigationBarItem(icon: Icon(CupertinoIcons.add_circled_solid,size: 45,), label: 'Analytics'),
-          BottomNavigationBarItem(icon: Icon(CupertinoIcons.calendar_today), label: 'Calendar'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings_outlined), label: 'Settings'),
-
+          BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.home), label: 'Home'),
+          BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.creditcard), label: 'Expenses'),
+          BottomNavigationBarItem(
+              icon: Icon(
+                CupertinoIcons.add_circled_solid,
+                size: 45,
+              ),
+              label: 'Analytics'),
+          BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.calendar_today), label: 'Calendar'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings_outlined), label: 'Settings'),
         ],
       ),
     );
   }
+
   Widget _buildModal(
       ThemeProvider themeProvider, MediaQueryData mediaQuery, double height) {
     showModalBottomSheet(
@@ -234,6 +247,7 @@ class _NavState extends State<NavPage> {
       ],
     );
   }
+
   Widget buildDropDownList() {
     return Container(
       padding: EdgeInsets.only(top: 10, left: 0, right: 0, bottom: 0),
@@ -252,7 +266,7 @@ class _NavState extends State<NavPage> {
           });
         },
         items:
-        category.categories.map<DropdownMenuItem<String>>((String value) {
+            category.categories.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(value),

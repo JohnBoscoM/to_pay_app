@@ -25,11 +25,11 @@ class _InputFieldState extends State<InputField> {
   String _categoryValue;
   String dropdownValue = 'Household';
   Future<Null> _selectDate(BuildContext context) async {
-    DateTime datePicker = await showDatePicker(
+    DateTime datePicker = (await showDatePicker(
         context: context,
         initialDate: _date,
         firstDate: DateTime(1900),
-        lastDate: DateTime(3000));
+        lastDate: DateTime(3000)));
     if (datePicker != null && datePicker != _date) {
       setState(() {
         _date = datePicker;
@@ -50,7 +50,11 @@ class _InputFieldState extends State<InputField> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Column(
       children: <Widget>[
-      Text("New Payment",style: TextStyle(fontSize: 30, fontFamily: "avenir", fontWeight: FontWeight.w700)),
+        Text("New Payment",
+            style: TextStyle(
+                fontSize: 30,
+                fontFamily: "avenir",
+                fontWeight: FontWeight.w700)),
         Container(
           padding: EdgeInsets.only(top: 50),
           decoration: BoxDecoration(
@@ -58,34 +62,36 @@ class _InputFieldState extends State<InputField> {
                 image: AssetImage("assets/images/add-payment.png"),
                 alignment: Alignment.center,
                 scale: 1),
-              ),
-           child:Container(
-             margin: EdgeInsets.only(right: 10, left: 10, bottom: 20, top: 0),
-             child: Row(
-               crossAxisAlignment: CrossAxisAlignment.start,
-               children: [
-                 Expanded(
-                   flex: 1,
-                   child: Padding(
-                     padding: EdgeInsets.only(left: 20),
-                     child: TextFormField(
-                       decoration: InputDecoration(
-                           focusColor: themeProvider.themeMode().appColor,
-                           labelText: "Title",
-                           labelStyle: TextStyle(
-                               fontSize: 20, color: themeProvider.themeMode().textColor, fontFamily: 'avenir'
-                           ),
-                           border: OutlineInputBorder(),
-                           hintText: 'Enter Title',
-                           hintStyle: TextStyle(color: Colors.grey[200],fontFamily: 'avenir'),
-                           suffixIcon: Icon(CupertinoIcons.bookmark,
-                               color: themeProvider.themeMode().textColor)),
-                     ),
-                   ),
-                 ),
-               ],
-             ),
-           ),
+          ),
+          child: Container(
+            margin: EdgeInsets.only(right: 10, left: 10, bottom: 20, top: 0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                          focusColor: themeProvider.themeMode().appColor,
+                          labelText: "Title",
+                          labelStyle: TextStyle(
+                              fontSize: 20,
+                              color: themeProvider.themeMode().textColor,
+                              fontFamily: 'avenir'),
+                          border: OutlineInputBorder(),
+                          hintText: 'Enter Title',
+                          hintStyle: TextStyle(
+                              color: Colors.grey[200], fontFamily: 'avenir'),
+                          suffixIcon: Icon(CupertinoIcons.bookmark,
+                              color: themeProvider.themeMode().textColor)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
           // TextField(
           //   controller: usernameController,
           //   decoration: InputDecoration(
@@ -112,23 +118,26 @@ class _InputFieldState extends State<InputField> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 20),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                          fillColor: themeProvider.themeMode().appColor,
+                flex: 1,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                        fillColor: themeProvider.themeMode().appColor,
                         labelText: "Cost",
-                          labelStyle: TextStyle(
-                            fontSize: 20, color: themeProvider.themeMode().textColor, fontFamily: 'avenir'
-                          ),
-                          border: OutlineInputBorder(),
-                          hintText: 'Enter Cost',
-                          hintStyle: TextStyle(color: themeProvider.themeMode().textColor,fontFamily: 'avenir'),
-                          suffixIcon: Icon(CupertinoIcons.creditcard,
-                              color: themeProvider.themeMode().textColor)),
-                    ),
+                        labelStyle: TextStyle(
+                            fontSize: 20,
+                            color: themeProvider.themeMode().textColor,
+                            fontFamily: 'avenir'),
+                        border: OutlineInputBorder(),
+                        hintText: 'Enter Cost',
+                        hintStyle: TextStyle(
+                            color: themeProvider.themeMode().textColor,
+                            fontFamily: 'avenir'),
+                        suffixIcon: Icon(CupertinoIcons.creditcard,
+                            color: themeProvider.themeMode().textColor)),
                   ),
+                ),
               ),
             ],
           ),
@@ -145,14 +154,17 @@ class _InputFieldState extends State<InputField> {
                   padding: EdgeInsets.only(left: 20),
                   child: TextFormField(
                     decoration: InputDecoration(
-                      focusColor: themeProvider.themeMode().appColor,
+                        focusColor: themeProvider.themeMode().appColor,
                         labelText: "Deadline",
                         labelStyle: TextStyle(
-                            fontSize: 20, color: themeProvider.themeMode().textColor, fontFamily: 'avenir'
-                        ),
+                            fontSize: 20,
+                            color: themeProvider.themeMode().textColor,
+                            fontFamily: 'avenir'),
                         border: OutlineInputBorder(),
                         enabled: false,
-                        hintStyle: TextStyle(color: themeProvider.themeMode().textColor,fontFamily: 'avenir'),
+                        hintStyle: TextStyle(
+                            color: themeProvider.themeMode().textColor,
+                            fontFamily: 'avenir'),
                         suffixIcon: Icon(CupertinoIcons.calendar,
                             color: themeProvider.themeMode().textColor)),
                   ),
@@ -175,11 +187,14 @@ class _InputFieldState extends State<InputField> {
                         focusColor: themeProvider.themeMode().appColor,
                         labelText: "Deadline",
                         labelStyle: TextStyle(
-                            fontSize: 20, color: themeProvider.themeMode().textColor, fontFamily: 'avenir'
-                        ),
+                            fontSize: 20,
+                            color: themeProvider.themeMode().textColor,
+                            fontFamily: 'avenir'),
                         border: OutlineInputBorder(),
                         enabled: false,
-                        hintStyle: TextStyle(color: themeProvider.themeMode().textColor,fontFamily: 'avenir'),
+                        hintStyle: TextStyle(
+                            color: themeProvider.themeMode().textColor,
+                            fontFamily: 'avenir'),
                         suffixIcon: Icon(CupertinoIcons.calendar,
                             color: themeProvider.themeMode().textColor)),
                   ),
@@ -198,9 +213,9 @@ class _InputFieldState extends State<InputField> {
             //     usernameController.text, double.parse(incomeController.text));
 
             Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => NavPage()),
-  );
+              context,
+              MaterialPageRoute(builder: (context) => NavPage()),
+            );
           },
           textColor: Colors.white,
           child: Container(
@@ -225,6 +240,7 @@ class _InputFieldState extends State<InputField> {
       ],
     );
   }
+
   Widget buildDropDownList() {
     return Container(
       padding: EdgeInsets.only(top: 10, left: 0, right: 0, bottom: 0),
@@ -243,7 +259,7 @@ class _InputFieldState extends State<InputField> {
           });
         },
         items:
-        category.categories.map<DropdownMenuItem<String>>((String value) {
+            category.categories.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(value),
@@ -256,13 +272,11 @@ class _InputFieldState extends State<InputField> {
     );
   }
 
-
   Widget buildSearchBar(ThemeProvider themeProvider) {
     return PreferredSize(
-      preferredSize: Size(0,150),
+      preferredSize: Size(0, 150),
       child: Column(
         children: [
-
           Container(
             margin: EdgeInsets.only(right: 10, left: 10, bottom: 20, top: 0),
             decoration: BoxDecoration(
@@ -280,8 +294,8 @@ class _InputFieldState extends State<InputField> {
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: 'Search',
-                            hintStyle:
-                            TextStyle(color: themeProvider.themeMode().textColor),
+                            hintStyle: TextStyle(
+                                color: themeProvider.themeMode().textColor),
                             icon: Icon(CupertinoIcons.search,
                                 color: themeProvider.themeMode().textColor)),
                       ),
@@ -311,7 +325,7 @@ class _InputFieldState extends State<InputField> {
                       border: InputBorder.none,
                       hintText: 'Search',
                       hintStyle:
-                      TextStyle(color: themeProvider.themeMode().textColor),
+                          TextStyle(color: themeProvider.themeMode().textColor),
                       icon: Icon(CupertinoIcons.search,
                           color: themeProvider.themeMode().textColor)),
                 ),

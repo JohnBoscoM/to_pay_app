@@ -1,15 +1,15 @@
-
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:to_pay_app/View/Clippers/Clippers.dart';
 import 'package:to_pay_app/View/CustomWidgets/CustomCheckbox.dart';
 import 'package:to_pay_app/View/CustomWidgets/CustomTabIndicator.dart';
 import 'package:to_pay_app/View/Payment/paidPayements.dart';
+import 'package:to_pay_app/View/Payment/paymentList/paymentList.dart';
 import 'package:to_pay_app/View/Payment/unpaidPayments.dart';
 import 'package:to_pay_app/View/Payment/allPayments.dart';
 import 'package:to_pay_app/View/Payment/missedPayments.dart';
 import 'package:to_pay_app/budget/payments/addPayment_page.dart';
+import 'package:to_pay_app/controller/paymentController.dart';
 import 'package:to_pay_app/helpers/calendar.dart';
 import 'package:to_pay_app/helpers/payments.dart';
 import 'package:to_pay_app/model_providers/theme_provider.dart';
@@ -21,7 +21,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:to_pay_app/budget/payments/paymentList.dart';
 
-
 class PaymentsTabbedPage extends StatefulWidget {
   @override
   _PaymentsTabbedPageState createState() => _PaymentsTabbedPageState();
@@ -29,6 +28,8 @@ class PaymentsTabbedPage extends StatefulWidget {
 
 class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
     with SingleTickerProviderStateMixin {
+  int _value = 1;
+  final PaymentController paymentController = new PaymentController();
   final Box paymentBox = Hive.box('paymentBox');
   final titleController = TextEditingController();
   final costController = TextEditingController();
@@ -39,6 +40,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
   AllPaymentsList pl = new AllPaymentsList();
   Category category = new Category();
   bool checkBoxValue = false;
+  List<dynamic> paymentList;
 
   DateTime _date = DateTime.now();
   String _categoryValue;
@@ -60,19 +62,18 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
   int _selectedIndex = 0;
   String dropdownValue = 'Other';
 
-   var  paymentStatusPages = [
-     UnPaidPaymentsPage(),
-     PaidBillsPage(),
-     MissedBillsPage()
-   ];
+  // var paymentStatusPages = [
+  //   UnPaidPaymentsPage(),
+  //   PaidBillsPage(),
+  //   MissedBillsPage()
+  // ];
 
   void createPayment(
       String title, double cost, DateTime deadline, String category) async {
-
     String title = titleController.text;
     double cost = double.parse(costController.text);
     var paymentItem = new BillItem(
-        title, cost, _date, false, 'PaymentDateStatus', false, category);
+        title, cost, _date, false, 'PaymentDateStatus', false, category, 3);
     paymentBox.add(paymentItem);
   }
 
@@ -81,7 +82,8 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
     // TODO: implement initState
     super.initState();
     // Create TabController for getting the index of current tab
-    _controller = TabController(length: paymentStatusPages.length, vsync: this);
+    paymentList = paymentController.getAllPaymentItems();
+    //_controller = TabController(length: paymentStatusPages.length, vsync: this);
     _controller.addListener(() {
       setState(() {
         _selectedIndex = _controller.index;
@@ -107,130 +109,137 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
 
   @override
   Widget build(BuildContext context) {
-
     final themeProvider = Provider.of<ThemeProvider>(context);
     var mediaQuery = MediaQuery.of(context);
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: themeProvider.themeMode().blendBackgroundColor,
-        body: SingleChildScrollView(
-          physics: PageScrollPhysics(),
-          child: Stack(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 40.0, top: 40),
-                      child: Text(
-                        'Payments',
-                        style: TextStyle(
-                          fontFamily: 'avenir',
-                          fontSize: 30,
-                          color: themeProvider.themeMode().textColor,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ), //
+        body: Stack(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 40.0, top: 40),
+                    child: Text(
+                      'Payments',
+                      style: TextStyle(
+                        fontFamily: 'avenir',
+                        fontSize: 30,
+                        color: themeProvider.themeMode().textColor,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ), //
+                  ),
+                ),
+                // Container(
+
+                //   padding: EdgeInsets.only(left: 12, top: 10, bottom: 10),
+                //   width: _width,
+                //   child: Text(
+                //     'Status: ',
+                //     textAlign: TextAlign.start,
+                //     style: TextStyle(
+                //       fontFamily: 'avenir',
+                //       fontSize: 15,
+                //       color: Colors.blueGrey,
+                //       fontWeight: FontWeight.w700,
+                //     ),
+                //   ),
+                // ),
+                SizedBox(
+                  height: 30,
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 20),
+                    child: Wrap(
+                      children: List<Widget>.generate(
+                        3,
+                        (int index) {
+                          return Padding(
+                            padding: EdgeInsets.all(10),
+                            child: ChoiceChip(
+                              backgroundColor: Colors.black38,
+                              selectedColor: Colors.brown[800],
+                              labelStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'avenir',
+                                  fontSize: 15),
+                              label: Text(getIndexLabel(index)),
+                              selected: _value == index,
+                              onSelected: (bool selected) {
+                                setState(() {
+                                  _value = selected ? index : null;
+                                  paymentList =
+                                      paymentController.getPaymentList(index);
+                                });
+                              },
+                            ),
+                          );
+                        },
+                      ).toList(),
                     ),
                   ),
-
-                  SizedBox(
-                    height: 30,
-                  ),
-                  //
-                  Container(
-                    margin: EdgeInsets.only(left: 38, right: 68),
-                    child: Column(
-
-                      children: [
-                        Row(
-                          children: [
-                           FilterChip(
-                              backgroundColor: Colors.grey[700],
-                              label: Text("Unpaid"),
-                              labelStyle: TextStyle(color: Colors.white, fontFamily: "avenir", fontSize: 15, fontWeight: FontWeight.w700),
-                              onSelected: (bool _selected){
-                                setState(() {
-                                  selected =  _selected;
-                                });
-                              },
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            FilterChip(
-                              backgroundColor: Colors.grey[700],
-                              selectedColor: Colors.blueAccent[700],
-                              label: Text("Missed"),
-                              labelStyle: TextStyle(color: Colors.white, fontFamily: "avenir", fontSize: 15, fontWeight: FontWeight.w700),
-                              onSelected: (_selected){
-                                setState(() {
-                                  selected = _selected;
-                                });
-                              },
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            FilterChip(
-                              backgroundColor: Colors.grey[700],
-                              label: Text("Paid"),
-                              labelStyle: TextStyle(color: Colors.white, fontFamily: "avenir", fontSize: 15, fontWeight: FontWeight.w700),
-                              onSelected: (_selected){
-                                setState(() {
-                                 selected =  _selected;
-                                });
-                              },
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  //
-                  Wrap(
-                  children: [ buildPaidList(_height * 0.7, _width, themeProvider),
-                    ]
-                  ),
-            ],
-          ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                //
+                Wrap(children: [
+                  buildPaymentList(paymentList, _height, _width, themeProvider)
+                ]),
+              ],
+            ),
+            ClipPath(
+              clipper: OuterClippedPart(),
+              child: Container(
+                color: Colors.brown,
+                width: _width,
+                height: _height,
+              ),
+            ),
+            ClipPath(
+              clipper: InnerClippedPart(),
+              child: Container(
+                color: Colors.brown[800],
+                width: _width,
+                height: _height,
+              ),
+            ),
           ],
         ),
       ),
-    ),
     );
   }
 
-
-
-  Widget buildPaidList(double _height, double _width, ThemeProvider themeProvider) {
-    return Expanded(
-      child: Container(
-        height: _height,
-        width: _width,
-
-        decoration: BoxDecoration(
-          color: themeProvider.themeMode().blendBackgroundColor,
-          borderRadius: BorderRadius.only(
-              topRight: Radius.circular(0), topLeft: Radius.circular(0)),
-        ),
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: paymentBox.length,
-          itemBuilder: (context, index) {
-            final paymentItem = paymentBox.get(index);
-            if(paymentItem != null) {
-              if (paymentItem.isChecked == false) {
+  Widget buildPaymentList(List<dynamic> paymentList, double _height,
+      double _width, ThemeProvider themeProvider) {
+    if (paymentList != null) {
+      return LimitedBox(
+        child: Container(
+          width: _width,
+          decoration: BoxDecoration(
+            color: themeProvider.themeMode().blendBackgroundColor,
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(0), topLeft: Radius.circular(0)),
+          ),
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: paymentList.length,
+            itemBuilder: (context, index) {
+              final paymentItem = paymentList[index];
+              if (paymentItem != null) {
                 return Dismissible(
                   direction: DismissDirection.startToEnd,
                   background: Container(
+                    color: Colors.red,
                     padding: EdgeInsets.only(left: 25),
                     alignment: AlignmentDirectional.centerStart,
                     child: Container(
@@ -238,30 +247,29 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
                       width: 70,
                       margin: EdgeInsets.only(right: 0),
                       decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.red
-                      ),
-                      child: Icon(
-                          CupertinoIcons.delete_solid, size: 32, color: Colors.black38),
+                          shape: BoxShape.circle, color: Colors.red),
+                      child: Icon(CupertinoIcons.delete_solid,
+                          size: 32, color: Colors.white),
                     ),
                   ),
                   key: Key(paymentItem.toString()),
                   onDismissed: (direction) {
-                    paymentBox.delete(index);
+                    paymentController.deletePaymentItem(index);
                     Scaffold.of(context).showSnackBar(new SnackBar(
                       content: Text(paymentItem.title + " has been removed"),
                     ));
                   },
                   child: new Container(
-                    padding: new EdgeInsets.all(15),
+                    padding: new EdgeInsets.all(10),
                     //elevation: 0,
-                      decoration:   BoxDecoration(
-                        //color: themeProvider.themeMode().color,
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                        border: Border.all(color: themeProvider.themeMode().borderColor),
-                        // boxShadow: themeProvider.themeMode().itemShadow
+                    decoration: BoxDecoration(
+                      color: themeProvider.themeMode().blendBackgroundColor,
+                      border: Border(
+                        bottom: BorderSide(
+                            color: themeProvider.themeMode().navBarColor),
                       ),
-                    margin: new EdgeInsets.all(10),
+                    ),
+                    margin: new EdgeInsets.all(0),
                     child: Column(
                       children: <Widget>[
                         new ListTile(
@@ -271,11 +279,11 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
                             width: 70,
                             margin: EdgeInsets.only(right: 0),
                             decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: themeProvider
-                                .categoryIcon(paymentItem.category)
-                                .color,
-                          ),
+                              shape: BoxShape.circle,
+                              color: themeProvider
+                                  .categoryIcon(paymentItem.category)
+                                  .color,
+                            ),
                             child: Icon(
                               themeProvider
                                   .categoryIcon(paymentItem.category)
@@ -295,39 +303,64 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
                           dense: true,
                           //font change
                           contentPadding: EdgeInsets.all(1),
-                          title: Text(paymentItem.title, style: TextStyle(fontFamily:'avenir', fontSize: 17, fontWeight: FontWeight.w700)),
+                          title: Text(paymentItem.title,
+                              style: TextStyle(
+                                  fontFamily: 'avenir',
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w700)),
                           subtitle: Container(
-                  child: Text(paymentItem.deadline.day.toString() + ' ' +monthName(paymentItem.deadline.month), style: TextStyle(fontFamily:'avenir', fontSize: 13, fontWeight: FontWeight.w700)),
-            ),
+                            child: Text(
+                                paymentItem.deadline.day.toString() +
+                                    ' ' +
+                                    monthName(paymentItem.deadline.month),
+                                style: TextStyle(
+                                    fontFamily: 'avenir',
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700)),
+                          ),
 
                           trailing: Flexible(
-                            flex: 1,
-                            fit: FlexFit.loose,
-                            child: Container(
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width * 0.350,
-                              child: Wrap(
-                                  children: [
-                                Expanded(
-                              child: Align(
-                                  alignment: Alignment.centerRight,
-                              child: Row(
-                                children: [
-                                  SizedBox(width: 50,),
-                                  Text( paymentItem.cost.truncate().toString() + ' SEK ', style: TextStyle(fontFamily:'avenir', fontSize: 20, fontWeight: FontWeight.w700),),
-                                  SizedBox(width: 10,),
-                                  CustomCheckbox(paymentItem.isChecked,23.0,18.0,Colors.blue,Colors.white),
-                                  SizedBox(width: 20,)
-                                ],
-                              ),
-                              ),
-                                )
-                              ],
-                              )
-                              )
-                            ),
+                              flex: 1,
+                              fit: FlexFit.loose,
+                              child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.4,
+                                  child: Wrap(
+                                    children: [
+                                      Expanded(
+                                        child: Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Row(
+                                            children: [
+                                              SizedBox(
+                                                width: 50,
+                                              ),
+                                              Text(
+                                                paymentItem.cost
+                                                        .truncate()
+                                                        .toString() +
+                                                    ' SEK ',
+                                                style: TextStyle(
+                                                    fontFamily: 'avenir',
+                                                    fontSize: 20,
+                                                    fontWeight:
+                                                        FontWeight.w700),
+                                              ),
+                                              SizedBox(
+                                                width: _width * 0.019,
+                                              ),
+                                              CustomCheckbox(
+                                                  paymentItem.isChecked,
+                                                  23.0,
+                                                  18.0,
+                                                  Colors.blue,
+                                                  Colors.white),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ))),
                           // onChanged: (bool val) {
                           //   itemChange(val, index);
                           // }
@@ -337,22 +370,22 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
                   ),
                 );
               }
-            }
-            return Container(
-              //     child: Center(
-              //   child: Text(
-              //     "You have no paid bills, Either you got no bills\n or you gotta get to work!",
-              //     style: TextStyle(
-              //         fontFamily: "avenir",
-              //         fontSize: 16,
-              //         fontWeight: FontWeight.bold),
-              //   ),
-              // )
-            );
-          },
+              return Container(
+                  child: Center(
+                child: Text(
+                  "You have no paid bills, Either you got no bills\n or you gotta get to work!",
+                  style: TextStyle(
+                      fontFamily: "avenir",
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold),
+                ),
+              ));
+            },
+          ),
         ),
-      ),
-    );
+      );
+    } else
+      return Container();
   }
 
   Widget _inputField(ThemeProvider themeProvider) {
@@ -467,7 +500,6 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
         style: TextStyle(fontSize: 18),
         underline: Container(
           height: 2,
-
         ),
         onChanged: (String newValue) {
           setState(() {
@@ -475,7 +507,7 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
           });
         },
         items:
-        category.categories.map<DropdownMenuItem<String>>((String value) {
+            category.categories.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(value),
@@ -494,4 +526,3 @@ class _PaymentsTabbedPageState extends State<PaymentsTabbedPage>
     });
   }
 }
-
