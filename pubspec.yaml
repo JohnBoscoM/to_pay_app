@@ -10,26 +10,28 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  hive: ^1.4.4+1
-  hive_flutter: ^0.3.1
+  url_launcher: ^5.7.10
+  hive: ^2.0.2
+  hive_flutter: ^1.0.0
   flutter_bloc: ^6.0.0
-  flutter_icons: ^1.1.0
-  bottom_bar_with_sheet: ^0.5.4
+  fl_chart: ^0.20.1
+  flutter_neumorphic: ^3.1.0
+  bottom_bar_with_sheet: ^0.6.1
   curved_navigation_bar: ^0.3.4
+  flutter_local_notifications: ^4.0.1
   google_fonts: ^1.1.1
   google_nav_bar: ^3.1.0
   responsive_navigation_bar: ^1.8.0
+  flutter_snake_navigationbar: ^0.4.4
   table_calendar: ^2.3.3
-  flutter_clean_calendar: ^1.0.2+1
   modal_bottom_sheet: ^1.0.0+1
-  flutter_neumorphic: ^3.0.3
   chips_choice: ^2.0.1
   flutter:
     sdk: flutter
 
   #used to store local state
-  path_provider: ^1.6.5
-  provider: ^4.3.1
+  path_provider: ^2.0.1
+  provider: ^4.3.3
   #used to manage global app state
 
 
@@ -40,8 +42,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  hive_generator: ^0.8.2
-  build_runner: ^1.10.11
+  hive_generator: ^1.0.1
+  build_runner: ^1.12.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

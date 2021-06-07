@@ -17,20 +17,20 @@ class BillItemAdapter extends TypeAdapter<BillItem> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return BillItem(
-      fields[0] as String,
-      fields[1] as double,
-      fields[2] as DateTime,
-      fields[4] as bool,
-      fields[3] as String,
-      fields[5] as bool,
-      fields[6] as String,
-    );
+        fields[0] as String,
+        fields[1] as double,
+        fields[2] as DateTime,
+        fields[4] as bool,
+        fields[3] as String,
+        fields[5] as bool,
+        fields[6] as String,
+        fields[40] as int);
   }
 
   @override
   void write(BinaryWriter writer, BillItem obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -44,7 +44,9 @@ class BillItemAdapter extends TypeAdapter<BillItem> {
       ..writeByte(5)
       ..write(obj.isPayed)
       ..writeByte(6)
-      ..write(obj.category);
+      ..write(obj.category)
+      ..writeByte(40)
+      ..write(obj.recurrence);
   }
 
   @override

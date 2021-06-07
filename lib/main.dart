@@ -1,17 +1,17 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
-import 'package:to_pay_app/Pages/userPage.dart';
-import 'package:to_pay_app/models/bill.dart';
 
-import 'Pages/paymentsTabbedView.dart';
-import 'Pages/setThemePage.dart';
-import 'Pages/home.dart';
-import 'Pages/userPage.dart';
+import 'package:to_pay_app/models/bill.dart';
+import 'View/payment/paymentsTabbedView.dart';
+import 'View/setThemePage.dart';
+import 'View/home.dart';
+import 'View/loginPage.dart';
 import 'model_providers/theme_provider.dart';
-import 'Pages/nav.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'View/nav.dart';
 import 'package:provider/provider.dart';
 import 'package:path_provider/path_provider.dart' as pathProvider;
 
@@ -20,7 +20,6 @@ void main() async {
   //Storage Path
   final appDocumentDirectory =
       await pathProvider.getApplicationDocumentsDirectory();
-
   Hive.init(appDocumentDirectory.path);
 
   final settings = await Hive.openBox('settings');
@@ -40,15 +39,15 @@ class AppStart extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
     return MyApp(
-         themeProvider: themeProvider,
-        );
+      themeProvider: themeProvider,
+    );
   }
 }
 
 class MyApp extends StatefulWidget with WidgetsBindingObserver {
   final ThemeProvider themeProvider;
 
-   const MyApp({Key key, @required this.themeProvider}) : super(key: key);
+  const MyApp({Key key, @required this.themeProvider}) : super(key: key);
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -67,7 +66,7 @@ class _MyAppState extends State<MyApp> {
             if (snapshot.hasError) {
               return Text(snapshot.error.toString());
             } else {
-              return NavPage();
+              return LoginPage();
             }
           } else {
             return Scaffold();
